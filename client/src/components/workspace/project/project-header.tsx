@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import CreateTaskDialog from "../task/create-task-dialog";
 import EditProjectDialog from "./edit-project-dialog";
 import useWorkspaceId from "@/hooks/use-workspace-id";
@@ -42,6 +43,9 @@ const ProjectHeader = () => {
       </>
     );
   };
+
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+
   return (
     <div className="flex items-center justify-between space-y-2">
       <div className="flex items-center gap-2">
@@ -52,7 +56,7 @@ const ProjectHeader = () => {
           <EditProjectDialog project={project} />
         </PermissionsGuard>
       </div>
-      <CreateTaskDialog projectId={projectId} />
+      <CreateTaskDialog projectId={projectId} open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen} />
     </div>
   );
 };

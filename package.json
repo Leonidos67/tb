@@ -1,0 +1,25 @@
+{
+  "name": "b2b",
+  "homepage": "https://leonidos67.github.io/teachboom",
+  "version": "1.0.0",
+  "description": "**[Subscribe to the Channel](https://tinyurl.com/subcribe-to-techwithEmma)** to stay updated with more exciting projects and tutorials!",
+  "bugs": {
+    "url": "https://github.com/Leonidos67/teachboom/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leonidos67/teachboom.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
