@@ -34,7 +34,7 @@ export default function EditWorkspaceForm() {
 
   const formSchema = z.object({
     name: z.string().trim().min(1, {
-      message: "Workspace name is required",
+      message: "Укажите название зоны",
     }),
     description: z.string().trim(),
   });
@@ -71,7 +71,7 @@ export default function EditWorkspaceForm() {
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -82,14 +82,6 @@ export default function EditWorkspaceForm() {
   return (
     <div className="w-full h-auto max-w-full">
       <div className="h-full">
-        <div className="mb-5 border-b">
-          <h1
-            className="text-[17px] tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1.5
-           text-center sm:text-left"
-          >
-            Edit Workspace
-          </h1>
-        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="mb-4">
@@ -99,11 +91,11 @@ export default function EditWorkspaceForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Workspace name
+                      Название
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Taco's Co."
+                        placeholder=""
                         className="!h-[48px] disabled:opacity-90 disabled:pointer-events-none"
                         disabled={!canEditWorkspace}
                         {...field}
@@ -121,9 +113,9 @@ export default function EditWorkspaceForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Workspace description
+                      Описание
                       <span className="text-xs font-extralight ml-2">
-                        Optional
+                        необязательно
                       </span>
                     </FormLabel>
                     <FormControl>
@@ -131,7 +123,7 @@ export default function EditWorkspaceForm() {
                         rows={6}
                         disabled={!canEditWorkspace}
                         className="disabled:opacity-90 disabled:pointer-events-none"
-                        placeholder="Our team organizes marketing projects and tasks here."
+                        placeholder=""
                         {...field}
                       />
                     </FormControl>
@@ -147,7 +139,7 @@ export default function EditWorkspaceForm() {
                 type="submit"
               >
                 {isPending && <Loader className="animate-spin" />}
-                Update Workspace
+                Сохранить изменения
               </Button>
             )}
           </form>

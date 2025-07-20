@@ -87,7 +87,7 @@ export default function EditProjectForm(props: {
         });
 
         toast({
-          title: "Success",
+          title: "Уведомление",
           description: data.message,
           variant: "success",
         });
@@ -96,7 +96,7 @@ export default function EditProjectForm(props: {
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -112,17 +112,17 @@ export default function EditProjectForm(props: {
             className="text-xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1
            text-center sm:text-left"
           >
-            Edit Project
+            Редактирование комнаты
           </h1>
           <p className="text-muted-foreground text-sm leading-tight">
-            Update the project details to refine task management
+            Обновите сведения, чтобы улучшить управление тренировками
           </p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Select Emoji
+                Установите фото
               </label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -162,7 +162,7 @@ export default function EditProjectForm(props: {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Описание проекта
+                      Описание
                       <span className="text-xs font-extralight ml-2">
                         необязательно
                       </span>

@@ -13,5 +13,5 @@ export const TaskPriorityEnum = {
   URGENT: "URGENT"
 };
 
-export type TaskStatusEnumType = keyof typeof TaskStatusEnum;
-export type TaskPriorityEnumType = keyof typeof TaskPriorityEnum;
+export type TaskStatusEnumType = (typeof TaskStatusEnum)[keyof typeof TaskStatusEnum];
+export type TaskPriorityEnumType = (typeof TaskPriorityEnum)[keyof typeof TaskPriorityEnum];

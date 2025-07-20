@@ -31,7 +31,7 @@ export const registerUserController = asyncHandler(
     await registerUserService(body);
 
     return res.status(HTTPSTATUS.CREATED).json({
-      message: "User created successfully",
+      message: "Пользователь успешно создан",
     });
   }
 );
@@ -51,7 +51,7 @@ export const loginController = asyncHandler(
 
         if (!user) {
           return res.status(HTTPSTATUS.UNAUTHORIZED).json({
-            message: info?.message || "Invalid email or password",
+            message: info?.message || "Неверный адрес электронной почты или пароль",
           });
         }
 
@@ -61,7 +61,7 @@ export const loginController = asyncHandler(
           }
 
           return res.status(HTTPSTATUS.OK).json({
-            message: "Logged in successfully",
+            message: "Успешно вошел в систему",
             user,
           });
         });
@@ -74,15 +74,15 @@ export const logOutController = asyncHandler(
   async (req: Request, res: Response) => {
     req.logout((err) => {
       if (err) {
-        console.error("Logout error:", err);
+        console.error("Ошибка выхода из системы:", err);
         return res
           .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
-          .json({ error: "Failed to log out" });
+          .json({ error: "Не удалось выйти из системы" });
       }
     });
 
     return res
       .status(HTTPSTATUS.OK)
-      .json({ message: "Logged out successfully" });
+      .json({ message: "Успешно вышел из системы" });
   }
 );

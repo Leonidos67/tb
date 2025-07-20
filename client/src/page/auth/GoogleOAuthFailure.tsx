@@ -14,18 +14,18 @@ const GoogleOAuthFailure = () => {
           className="flex items-center gap-2 self-center font-medium"
         >
           <Logo />
-          TeachBoom.
+          T-Sync.
         </Link>
         <div className="flex flex-col gap-6"></div>
       </div>
       <Card>
         <CardContent>
           <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <h1>Authentication Failed</h1>
-            <p>We couldn't sign you in with Google. Please try again.</p>
+            <h1>Ошибка входа</h1>
+            <p>Мы не смогли зарегистрировать вас в Google. Пожалуйста, попробуйте снова.</p>
 
             <Button onClick={() => navigate("/")} style={{ marginTop: "20px" }}>
-              Back to Login
+              Вернуться к входу
             </Button>
           </div>
         </CardContent>

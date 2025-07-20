@@ -2,28 +2,29 @@
 
 import {
   LucideIcon,
-  Settings,
+  // Settings,
   Users,
   CheckCircle,
   LayoutDashboard,
-  Archive as ArchiveIcon,
+  // Archive as ArchiveIcon,
   Flame,
-  Bell,
-  TrendingUp,
+  // Bell,
+  // TrendingUp,
   User,
+  // BookOpen,
 } from "lucide-react";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
+  // SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { useAuthContext } from "@/context/auth-provider";
-import { Permissions } from "@/constant";
-import { Separator } from "@/components/ui/separator";
+// import { useAuthContext } from "@/context/auth-provider";
+// import { Permissions } from "@/constant";
+// import { Separator } from "@/components/ui/separator";
 
 type ItemType = {
   title: string;
@@ -32,11 +33,11 @@ type ItemType = {
 };
 
 export function NavMain() {
-  const { hasPermission } = useAuthContext();
+  // const { hasPermission } = useAuthContext();
 
-  const canManageSettings = hasPermission(
-    Permissions.MANAGE_WORKSPACE_SETTINGS
-  );
+  // const canManageSettings = hasPermission(
+  //   Permissions.MANAGE_WORKSPACE_SETTINGS
+  // );
 
   const workspaceId = useWorkspaceId();
   const location = useLocation();
@@ -69,33 +70,38 @@ export function NavMain() {
       url: `/workspace/${workspaceId}/completed`,
       icon: CheckCircle,
     },
-    {
-      title: "Моя активность",
-      url: `/workspace/${workspaceId}/progress`,
-      icon: TrendingUp,
-    },
-    {
-      title: "Архив",
-      url: `/workspace/${workspaceId}/archive`,
-      icon: ArchiveIcon,
-    },
+    // {
+    //   title: "Моя активность",
+    //   url: `/workspace/${workspaceId}/progress`,
+    //   icon: TrendingUp,
+    // },
+    // {
+    //   title: "Архив",
+    //   url: `/workspace/${workspaceId}/archive`,
+    //   icon: ArchiveIcon,
+    // },
   ];
-  const bottomItems: ItemType[] = [
-    {
-      title: "Уведомления",
-      url: `/workspace/${workspaceId}/notifications`,
-      icon: Bell,
-    },
-    ...(canManageSettings
-      ? [
-          {
-            title: "Настройки",
-            url: `/workspace/${workspaceId}/settings`,
-            icon: Settings,
-          },
-        ]
-      : []),
-  ];
+  // const bottomItems: ItemType[] = [
+  //   {
+  //     title: "Уведомления",
+  //     url: `/workspace/${workspaceId}/notifications`,
+  //     icon: Bell,
+  //   },
+  //   {
+  //     title: "Руководство по использованию",
+  //     url: `/workspace/${workspaceId}/usage`,
+  //     icon: BookOpen,
+  //   },
+  //   ...(canManageSettings
+  //     ? [
+  //         {
+  //           title: "Настройки",
+  //           url: `/workspace/${workspaceId}/settings`,
+  //           icon: Settings,
+  //         },
+  //       ]
+  //     : []),
+  // ];
   return (
     <SidebarGroup className="h-auto">
       <SidebarMenu>
@@ -109,8 +115,8 @@ export function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-        <Separator className="my-2" />
-        <SidebarGroupLabel>Тренировки</SidebarGroupLabel>
+        {/* <Separator className="my-2" />
+        <SidebarGroupLabel>Тренировки</SidebarGroupLabel> */}
         {mainItems.slice(3).map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton isActive={item.url === pathname} asChild>
@@ -121,9 +127,9 @@ export function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-        <Separator className="my-2" />
-        <SidebarGroupLabel>Система</SidebarGroupLabel>
-        {bottomItems.map((item) => (
+        {/* <Separator className="my-2" /> */}
+        {/* <SidebarGroupLabel>Система</SidebarGroupLabel> */}
+        {/* {bottomItems.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton isActive={item.url === pathname} asChild>
               <Link to={item.url} className="!text-[15px]">
@@ -132,7 +138,7 @@ export function NavMain() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        ))}
+        ))} */}
       </SidebarMenu>
     </SidebarGroup>
   );

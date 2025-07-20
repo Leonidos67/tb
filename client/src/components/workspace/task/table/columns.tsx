@@ -2,23 +2,18 @@ import { Column, ColumnDef, Row } from "@tanstack/react-table";
 import { format } from "date-fns";
 
 import { DataTableColumnHeader } from "./table-column-header";
-import { DataTableRowActions } from "./table-row-actions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import {
-  TaskPriorityEnum,
-  TaskPriorityEnumType,
-  TaskStatusEnum,
-  TaskStatusEnumType,
-} from "@/constant";
+import { TaskStatusEnum } from "@/constant";
 import {
   formatStatusToEnum,
   getAvatarColor,
   getAvatarFallbackText,
 } from "@/lib/helper";
-import { priorities, statuses } from "./data";
+import { statuses } from "./data";
 import { TaskType } from "@/types/api.type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DataTableRowActions } from "./table-row-actions";
 
 export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
   const columns: ColumnDef<TaskType>[] = [
@@ -49,7 +44,7 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
     {
       accessorKey: "title",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Title" />
+        <DataTableColumnHeader column={column} title="Заголовок" />
       ),
       cell: ({ row }) => {
         return (
@@ -70,7 +65,7 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
           {
             accessorKey: "project",
             header: ({ column }: { column: Column<TaskType, unknown> }) => (
-              <DataTableColumnHeader column={column} title="Project" />
+              <DataTableColumnHeader column={column} title="Комната" />
             ),
             cell: ({ row }: { row: Row<TaskType> }) => {
               const project = row.original.project;
@@ -93,7 +88,7 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
     {
       accessorKey: "assignedTo",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Assigned To" />
+        <DataTableColumnHeader column={column} title="Спортсмен" />
       ),
       cell: ({ row }) => {
         const assignee = row.original.assignedTo || null;
@@ -135,7 +130,7 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
     {
       accessorKey: "status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader column={column} title="Статус тренировки" />
       ),
       cell: ({ row }) => {
         const status = statuses.find(
@@ -148,7 +143,7 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
 
         const statusKey = formatStatusToEnum(
           status.value
-        ) as TaskStatusEnumType;
+        ) as keyof typeof TaskStatusEnum;
         const Icon = status.icon;
 
         if (!Icon) {
@@ -169,50 +164,15 @@ export const getColumns = (projectId?: string): ColumnDef<TaskType>[] => {
       },
     },
     {
-      accessorKey: "priority",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Priority" />
-      ),
-      cell: ({ row }) => {
-        const priority = priorities.find(
-          (priority) => priority.value === row.getValue("priority")
-        );
-
-        if (!priority) {
-          return null;
-        }
-
-        const statusKey = formatStatusToEnum(
-          priority.value
-        ) as TaskPriorityEnumType;
-        const Icon = priority.icon;
-
-        if (!Icon) {
-          return null;
-        }
-
-        return (
-          <div className="flex items-center">
-            <Badge
-              variant={TaskPriorityEnum[statusKey]}
-              className="flex lg:w-[110px] p-1 gap-1 !bg-transparent font-medium !shadow-none uppercase border-0"
-            >
-              <Icon className="h-4 w-4 rounded-full text-inherit" />
-              <span>{priority.label}</span>
-            </Badge>
-          </div>
-        );
-      },
-    },
-    {
       id: "actions",
-      cell: ({ row }) => {
-        return (
-          <>
-            <DataTableRowActions row={row} />
-          </>
-        );
-      },
+      header: () => null,
+      cell: ({ row }) => (
+        <div className="flex justify-end w-full gap-1">
+          <DataTableRowActions row={row} />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
   ];
 

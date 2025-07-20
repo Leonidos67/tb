@@ -85,7 +85,7 @@ export function NavProjects() {
             queryKey: ["allprojects", workspaceId],
           });
           toast({
-            title: "Success",
+            title: "Уведомление",
             description: data.message,
             variant: "success",
           });
@@ -95,7 +95,7 @@ export function NavProjects() {
         },
         onError: (error) => {
           toast({
-            title: "Error",
+            title: "Уведомление",
             description: error.message,
             variant: "destructive",
           });

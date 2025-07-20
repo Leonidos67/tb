@@ -44,7 +44,7 @@ const InviteUser = () => {
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -60,17 +60,16 @@ const InviteUser = () => {
           className="flex items-center gap-2 self-center font-medium"
         >
           <Logo />
-          TeachBoom.
+          T-Sync.
         </Link>
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">
-                Hey there! You're invited to join a TeamSync Workspace!
+                Новое приглашение в рабочую зону
               </CardTitle>
               <CardDescription>
-                Looks like you need to be logged into your TeamSync account to
-                join this Workspace.
+                Чтобы продолжить, вам нужно войти в свою учетную запись T-Sync.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -89,7 +88,7 @@ const InviteUser = () => {
                           {isLoading && (
                             <Loader className="!w-6 !h-6 animate-spin" />
                           )}
-                          Join the Workspace
+                          Принять приглашение
                         </Button>
                       </form>
                     </div>
@@ -99,14 +98,16 @@ const InviteUser = () => {
                         className="flex-1 w-full text-base"
                         to={`/sign-up?returnUrl=${returnUrl}`}
                       >
-                        <Button className="w-full">Signup</Button>
+                        <Button className="w-full">
+                          Создать аккаунт
+                        </Button>
                       </Link>
                       <Link
                         className="flex-1 w-full text-base"
                         to={`/?returnUrl=${returnUrl}`}
                       >
                         <Button variant="secondary" className="w-full border">
-                          Login
+                          Войти
                         </Button>
                       </Link>
                     </div>

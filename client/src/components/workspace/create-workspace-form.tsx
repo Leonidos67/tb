@@ -34,7 +34,7 @@ export default function CreateWorkspaceForm({
 
   const formSchema = z.object({
     name: z.string().trim().min(1, {
-      message: "Workspace name is required",
+      message: "Укажите название зоны",
     }),
     description: z.string().trim(),
   });
@@ -61,7 +61,7 @@ export default function CreateWorkspaceForm({
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });

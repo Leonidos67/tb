@@ -31,10 +31,9 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   getAvatarColor,
   getAvatarFallbackText,
-  transformOptions,
 } from "@/lib/helper";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { TaskPriorityEnum, TaskStatusEnum } from "@/constant";
+import { TaskStatusEnum, TaskPriorityEnum } from "@/constant";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import useGetWorkspaceMembers from "@/hooks/api/use-get-workspace-members";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -100,26 +99,14 @@ export default function CreateTaskForm(props: {
 
   const formSchema = z.object({
     title: z.string().trim().min(1, {
-      message: "Title is required",
+      message: "Укажите название",
     }),
     description: z.string().trim(),
     projectId: z.string().trim().min(1, {
-      message: "Project is required",
+      message: "Укажите комнату",
     }),
-    status: z.enum(
-      Object.values(TaskStatusEnum) as [keyof typeof TaskStatusEnum],
-      {
-        required_error: "Status is required",
-      }
-    ),
-    priority: z.enum(
-      Object.values(TaskPriorityEnum) as [keyof typeof TaskPriorityEnum],
-      {
-        required_error: "Priority is required",
-      }
-    ),
     assignedTo: z.string().trim().min(1, {
-      message: "AssignedTo is required",
+      message: "Укажите спортсмена",
     }),
     dueDate: z.date({
       required_error: "Укажите дату",
@@ -135,11 +122,28 @@ export default function CreateTaskForm(props: {
     },
   });
 
-  const taskStatusList = Object.values(TaskStatusEnum);
-  const taskPriorityList = Object.values(TaskPriorityEnum); // ["LOW", "MEDIUM", "HIGH", "URGENT"]
+  // Для отслеживания значения priority
+  // const selectedPriority = useWatch({ control: form.control, name: "priority" });
 
-  const statusOptions = transformOptions(taskStatusList);
-  const priorityOptions = transformOptions(taskPriorityList);
+  // Варианты для бриков
+  // const brickSportsOptions = [
+  //   { value: TaskPriorityEnum.LOW, label: "Плавание" },
+  //   { value: TaskPriorityEnum.MEDIUM, label: "Велосипед" },
+  //   { value: TaskPriorityEnum.HIGH, label: "Бег" },
+  // ];
+
+  // Маппинг для пользовательских названий видов спорта
+  // const customPriorityOptions = [
+  //   { value: TaskPriorityEnum.LOW, label: "Плавание" },
+  //   { value: TaskPriorityEnum.MEDIUM, label: "Велосипед" },
+  //   { value: TaskPriorityEnum.HIGH, label: "Бег" },
+  //   { value: TaskPriorityEnum.URGENT, label: "Брики" },
+  // ];
+  // const priorityOptions = customPriorityOptions;
+
+  // Удалить useState для valueType, distance, duration
+  // Удалить кнопку 'Добавить значение', Select, Input для distance и duration
+  // Удалить valueType, distance, duration из payload в onSubmit
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (isPending) return;
@@ -148,6 +152,8 @@ export default function CreateTaskForm(props: {
       projectId: values.projectId,
       data: {
         ...values,
+        status: TaskStatusEnum.BACKLOG,
+        priority: TaskPriorityEnum.LOW,
         dueDate: values.dueDate.toISOString(),
       },
     };
@@ -163,15 +169,15 @@ export default function CreateTaskForm(props: {
         });
 
         toast({
-          title: "Success",
-          description: "Task created successfully",
+          title: "Уведомление",
+          description: "Тренировка успешно создана",
           variant: "success",
         });
         onClose();
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -225,7 +231,7 @@ export default function CreateTaskForm(props: {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Описание
+                      Комментарий к тренировке
                       <span className="text-xs font-extralight ml-2">
                         необязательно
                       </span>
@@ -248,14 +254,14 @@ export default function CreateTaskForm(props: {
                   name="projectId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Project</FormLabel>
+                      <FormLabel>Записать в комнату</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a project" />
+                            <SelectValue placeholder="" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -303,7 +309,7 @@ export default function CreateTaskForm(props: {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите спортсмена" />
+                          <SelectValue placeholder="" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -382,77 +388,10 @@ export default function CreateTaskForm(props: {
 
             {/* {Status} */}
 
-            <div>
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Вид спорта</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            className="!text-muted-foreground !capitalize"
-                            placeholder=""
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {statusOptions?.map((status) => (
-                          <SelectItem
-                            className="!capitalize"
-                            key={status.value}
-                            value={status.value}
-                          >
-                            {status.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             {/* {Priority} */}
-            <div>
-              <FormField
-                control={form.control}
-                name="priority"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Priority</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a priority" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {priorityOptions?.map((priority) => (
-                          <SelectItem
-                            className="!capitalize"
-                            key={priority.value}
-                            value={priority.value}
-                          >
-                            {priority.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+
+            {/* Если выбраны брики, показываем два выпадающих списка */}
+            {/* Удаляю все проверки, связанные с priority и бриками */}
 
             <Button
               className="flex place-self-end  h-[40px] text-white font-semibold"
@@ -460,7 +399,7 @@ export default function CreateTaskForm(props: {
               disabled={isPending}
             >
               {isPending && <Loader className="animate-spin" />}
-              Create
+              Создать
             </Button>
           </form>
         </Form>

@@ -38,7 +38,7 @@ export const createTaskController = asyncHandler(
     );
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Task created successfully",
+      message: "Тренировка успешно создана",
       task,
     });
   }
@@ -65,7 +65,7 @@ export const updateTaskController = asyncHandler(
     );
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Task updated successfully",
+      message: "Тренировка успешно обновлена",
       task: updatedTask,
     });
   }
@@ -103,7 +103,7 @@ export const getAllTasksController = asyncHandler(
     const result = await getAllTasksService(workspaceId, filters, pagination);
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "All tasks fetched successfully",
+      message: "Все тренировки были успешно выполнены",
       ...result,
     });
   }
@@ -123,7 +123,7 @@ export const getTaskByIdController = asyncHandler(
     const task = await getTaskByIdService(workspaceId, projectId, taskId);
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Task fetched successfully",
+      message: "Тренировка успешно выполнена",
       task,
     });
   }
@@ -142,7 +142,7 @@ export const deleteTaskController = asyncHandler(
     await deleteTaskService(workspaceId, taskId);
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Task deleted successfully",
+      message: "Тренировка успешно удалена",
     });
   }
 );

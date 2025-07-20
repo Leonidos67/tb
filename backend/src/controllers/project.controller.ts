@@ -31,7 +31,7 @@ export const createProjectController = asyncHandler(
     const { project } = await createProjectService(userId, workspaceId, body);
 
     return res.status(HTTPSTATUS.CREATED).json({
-      message: "Project created successfully",
+      message: "Комната успешно создана",
       project,
     });
   }
@@ -52,7 +52,7 @@ export const getAllProjectsInWorkspaceController = asyncHandler(
       await getProjectsInWorkspaceService(workspaceId, pageSize, pageNumber);
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Project fetched successfully",
+      message: "Комната успешно выбран",
       projects,
       pagination: {
         totalCount,
@@ -82,7 +82,7 @@ export const getProjectByIdAndWorkspaceIdController = asyncHandler(
     );
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Project fetched successfully",
+      message: "Комната успешно выбран",
       project,
     });
   }
@@ -104,7 +104,7 @@ export const getProjectAnalyticsController = asyncHandler(
     );
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Project analytics retrieved successfully",
+      message: "Аналитика комнаты успешно восстановлена",
       analytics,
     });
   }
@@ -129,7 +129,7 @@ export const updateProjectController = asyncHandler(
     );
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Project updated successfully",
+      message: "Комната успешно обновлена",
       project,
     });
   }
@@ -148,7 +148,7 @@ export const deleteProjectController = asyncHandler(
     await deleteProjectService(workspaceId, projectId);
 
     return res.status(HTTPSTATUS.OK).json({
-      message: "Project deleted successfully",
+      message: "Комната успешно удалена",
     });
   }
 );

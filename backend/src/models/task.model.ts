@@ -13,8 +13,8 @@ export interface TaskDocument extends Document {
   description: string | null;
   project: mongoose.Types.ObjectId;
   workspace: mongoose.Types.ObjectId;
-  status: TaskStatusEnumType;
-  priority: TaskPriorityEnumType;
+  status: TaskStatusEnumType; // теперь это значения enum
+  priority: TaskPriorityEnumType; // теперь это значения enum
   assignedTo: mongoose.Types.ObjectId | null;
   createdBy: mongoose.Types.ObjectId;
   dueDate: Date | null;

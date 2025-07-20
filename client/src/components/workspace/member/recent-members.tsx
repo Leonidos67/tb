@@ -50,7 +50,15 @@ const RecentMembers = () => {
                 <p className="text-sm font-medium text-gray-900">
                   {member.userId.name}
                 </p>
-                <p className="text-sm text-gray-500">{member.role.name}</p>
+                <p className="text-sm text-gray-500">
+                  {member.role.name === "OWNER"
+                    ? "владелец"
+                    : member.role.name === "ADMIN"
+                    ? "админ"
+                    : member.role.name === "MEMBER"
+                    ? "спортсмен"
+                    : member.role.name}
+                </p>
               </div>
 
               {/* Joined Date */}

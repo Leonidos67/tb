@@ -62,7 +62,7 @@ const SignUp = () => {
       onError: (error) => {
         console.log(error);
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -78,14 +78,14 @@ const SignUp = () => {
           className="flex items-center gap-2 self-center font-medium"
         >
           <Logo />
-          TeachBoom.
+          T-Sync.
         </Link>
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Create an account</CardTitle>
+              <CardTitle className="text-xl">Регистрация аккаунта</CardTitle>
               <CardDescription>
-                Signup with your Email or Google account
+                Зарегистрируйтесь при помощи электронной почты или аккаунта Google
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -97,7 +97,7 @@ const SignUp = () => {
                     </div>
                     <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                       <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                        Or continue with
+                        или
                       </span>
                     </div>
                     <div className="grid gap-2">
@@ -108,11 +108,11 @@ const SignUp = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                                Name
+                                Имя
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="Joh Doe"
+                                  placeholder=""
                                   className="!h-[48px]"
                                   {...field}
                                 />
@@ -130,11 +130,11 @@ const SignUp = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                                Email
+                                Почта
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="m@example.com"
+                                  placeholder=""
                                   className="!h-[48px]"
                                   {...field}
                                 />
@@ -152,7 +152,7 @@ const SignUp = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                                Password
+                                Пароль
                               </FormLabel>
                               <FormControl>
                                 <Input
@@ -173,13 +173,14 @@ const SignUp = () => {
                         className="w-full"
                       >
                         {isPending && <Loader className="animate-spin" />}
-                        Sign up
+                        Зарегистрироваться
                       </Button>
                     </div>
                     <div className="text-center text-sm">
-                      Already have an account?{" "}
+                      У вас есть аккаунт?{" "}
                       <Link to="/" className="underline underline-offset-4">
-                        Sign in
+                        {/* to="/sign-in" */}
+                        Войти
                       </Link>
                     </div>
                   </div>
@@ -188,8 +189,8 @@ const SignUp = () => {
             </CardContent>
           </Card>
           <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            Регистрируя аккаунт, вы соглашаетесь с нашими{" "}
+            <a href="#">Условиями предоставления услуг</a> и <a href="#">Политикой конфиденциальности</a>.
           </div>
         </div>
       </div>

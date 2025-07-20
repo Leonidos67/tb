@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { DataTableFacetedFilter } from "./table/table-faceted-filter";
-import { priorities, statuses } from "./table/data";
+import { statuses } from "./table/data";
 import useTaskTableFilter from "@/hooks/use-task-table-filter";
 import { useQuery } from "@tanstack/react-query";
 import useWorkspaceId from "@/hooks/use-workspace-id";
@@ -16,6 +16,7 @@ import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import useGetWorkspaceMembers from "@/hooks/api/use-get-workspace-members";
 import { getAvatarColor, getAvatarFallbackText } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import React from "react";
 
 type Filters = ReturnType<typeof useTaskTableFilter>[0];
 type SetFilters = ReturnType<typeof useTaskTableFilter>[1];
@@ -27,7 +28,11 @@ interface DataTableFilterToolbarProps {
   setFilters: SetFilters;
 }
 
-const TaskTable = () => {
+interface TaskTableProps {
+  defaultStatusFilter?: string;
+}
+
+const TaskTable = ({ defaultStatusFilter }: TaskTableProps) => {
   const param = useParams();
   const projectId = param.projectId as string;
 
@@ -35,6 +40,13 @@ const TaskTable = () => {
   const [pageSize, setPageSize] = useState(10);
 
   const [filters, setFilters] = useTaskTableFilter();
+  // Устанавливаем фильтр по статусу при первом рендере, если передан defaultStatusFilter
+  React.useEffect(() => {
+    if (defaultStatusFilter && !filters.status) {
+      setFilters({ ...filters, status: defaultStatusFilter });
+    }
+    // eslint-disable-next-line
+  }, [defaultStatusFilter]);
   const workspaceId = useWorkspaceId();
   const columns = getColumns(projectId);
 
@@ -157,79 +169,73 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full items-start space-y-2 mb-2 lg:mb-0 lg:space-x-2  lg:space-y-0">
-      <Input
-        placeholder="Поиск тренировок..."
-        value={filters.keyword || ""}
-        onChange={(e) =>
-          setFilters({
-            keyword: e.target.value,
-          })
-        }
-        className="h-8 w-full lg:w-[250px]"
-      />
-      {/* Status filter */}
-      <DataTableFacetedFilter
-        title="Status"
-        multiSelect={true}
-        options={statuses}
-        disabled={isLoading}
-        selectedValues={filters.status?.split(",") || []}
-        onFilterChange={(values) => handleFilterChange("status", values)}
-      />
+    <div className="w-full">
+      <div className="w-full mb-2">
+        <div className="flex flex-row items-start space-x-2">
+          <Input
+            placeholder="Поиск тренировок..."
+            value={filters.keyword || ""}
+            onChange={(e) =>
+              setFilters({
+                keyword: e.target.value,
+              })
+            }
+            className="h-8 w-full lg:w-[250px]"
+          />
+          {/* Status filter */}
+          <DataTableFacetedFilter
+            title="Статус тренировки"
+            multiSelect={true}
+            options={statuses}
+            disabled={isLoading}
+            selectedValues={filters.status?.split(",") || []}
+            onFilterChange={(values) => handleFilterChange("status", values)}
+          />
 
-      {/* Priority filter */}
-      <DataTableFacetedFilter
-        title="Priority"
-        multiSelect={true}
-        options={priorities}
-        disabled={isLoading}
-        selectedValues={filters.priority?.split(",") || []}
-        onFilterChange={(values) => handleFilterChange("priority", values)}
-      />
+          {/* Assigned To filter */}
+          <DataTableFacetedFilter
+            title="Спортсмен"
+            multiSelect={true}
+            options={assigneesOptions}
+            disabled={isLoading}
+            selectedValues={filters.assigneeId?.split(",") || []}
+            onFilterChange={(values) => handleFilterChange("assigneeId", values)}
+          />
 
-      {/* Assigned To filter */}
-      <DataTableFacetedFilter
-        title="Assigned To"
-        multiSelect={true}
-        options={assigneesOptions}
-        disabled={isLoading}
-        selectedValues={filters.assigneeId?.split(",") || []}
-        onFilterChange={(values) => handleFilterChange("assigneeId", values)}
-      />
+          {!projectId && (
+            <DataTableFacetedFilter
+              title="Комнаты"
+              multiSelect={false}
+              options={projectOptions}
+              disabled={isLoading}
+              selectedValues={filters.projectId?.split(",") || []}
+              onFilterChange={(values) => handleFilterChange("projectId", values)}
+            />
+          )}
 
-      {!projectId && (
-        <DataTableFacetedFilter
-          title="Projects"
-          multiSelect={false}
-          options={projectOptions}
-          disabled={isLoading}
-          selectedValues={filters.projectId?.split(",") || []}
-          onFilterChange={(values) => handleFilterChange("projectId", values)}
-        />
-      )}
-
-      {Object.values(filters).some(
-        (value) => value !== null && value !== ""
-      ) && (
-        <Button
-          disabled={isLoading}
-          variant="ghost"
-          className="h-8 px-2 lg:px-3"
-          onClick={() =>
-            setFilters({
-              keyword: null,
-              status: null,
-              priority: null,
-              projectId: null,
-              assigneeId: null,
-            })
-          }
-        >
-          Reset
-          <X />
-        </Button>
-      )}
+          {Object.values(filters).some(
+            (value) => value !== null && value !== ""
+          ) && (
+            <Button
+              disabled={isLoading}
+              variant="ghost"
+              className="h-8 px-2 lg:px-3"
+              onClick={() =>
+                setFilters({
+                  keyword: null,
+                  status: null,
+                  priority: null,
+                  projectId: null,
+                  assigneeId: null,
+                })
+              }
+            >
+              Сбросить фильтры
+              <X />
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

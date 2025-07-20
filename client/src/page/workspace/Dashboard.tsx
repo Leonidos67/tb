@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RecentProjects from "@/components/workspace/project/recent-projects";
 import RecentTasks from "@/components/workspace/task/recent-tasks";
 import RecentMembers from "@/components/workspace/member/recent-members";
+import CompletedTasks from "./CompletedTasks";
 
 const WorkspaceDashboard = () => {
   return (
@@ -28,6 +29,9 @@ const WorkspaceDashboard = () => {
             <TabsTrigger className="py-2" value="tasks">
               Актуальные тренировки
             </TabsTrigger>
+            <TabsTrigger className="py-2" value="completed">
+              Выполненные тренировки
+            </TabsTrigger>
             <TabsTrigger className="py-2" value="members">
               Участники зоны
             </TabsTrigger>
@@ -37,6 +41,9 @@ const WorkspaceDashboard = () => {
           </TabsContent>
           <TabsContent value="tasks">
             <RecentTasks />
+          </TabsContent>
+          <TabsContent value="completed">
+            <CompletedTasks />
           </TabsContent>
           <TabsContent value="members">
             <RecentMembers />

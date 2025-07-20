@@ -116,7 +116,7 @@ export function DataTablePagination<TData>({
               onClick={() => handlePageChange(pageCount - 1)}
               disabled={pageIndex >= pageCount - 1}
             >
-              <span className="sr-only">Go to last page</span>
+              <span className="sr-only">Перейти к последней странице</span>
               <ChevronsRight />
             </Button>
           </div>

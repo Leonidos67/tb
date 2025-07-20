@@ -28,12 +28,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "../../ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { TaskPriorityEnum, TaskStatusEnum } from "@/constant";
+import { TaskStatusEnum, TaskStatusEnumType } from "@/constant";
 import useGetWorkspaceMembers from "@/hooks/api/use-get-workspace-members";
 import { editTaskMutationFn } from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { TaskType } from "@/types/api.type";
+import { cn } from "@/lib/utils";
 
 export default function EditTaskForm({ task, onClose }: { task: TaskType; onClose: () => void }) {
   const queryClient = useQueryClient();
@@ -53,21 +54,20 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
   }));
 
   // Status & Priority Options
-  const statusOptions = Object.values(TaskStatusEnum).map((status) => ({
-    label: status.charAt(0) + status.slice(1).toLowerCase(),
-    value: status,
-  }));
-
-  const priorityOptions = Object.values(TaskPriorityEnum).map((priority) => ({
-    label: priority.charAt(0) + priority.slice(1).toLowerCase(),
-    value: priority,
-  }));
+  const statusOptions = [
+    { value: TaskStatusEnum.BACKLOG, label: "Загружено" },
+    { value: TaskStatusEnum.TODO, label: "Просмотрено" },
+    { value: TaskStatusEnum.DONE, label: "Выполнено" },
+  ];
 
   const formSchema = z.object({
-    title: z.string().trim().min(1, { message: "Title is required" }),
+    title: z.string().trim().min(1, { message: "Укажите название" }),
     description: z.string().trim(),
-    status: z.enum(Object.values(TaskStatusEnum) as [keyof typeof TaskStatusEnum]),
-    priority: z.enum(Object.values(TaskPriorityEnum) as [keyof typeof TaskPriorityEnum]),
+    status: z.enum([
+      TaskStatusEnum.BACKLOG,
+      TaskStatusEnum.TODO,
+      TaskStatusEnum.DONE,
+    ] as [string, string, string]),
     assignedTo: z.string().trim().min(1, { message: "AssignedTo is required" }),
     dueDate: z.date({ required_error: "A due date is required." }),
   });
@@ -78,7 +78,6 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
       title: task?.title ?? "",
       description: task?.description ?? "",
       status: task?.status ?? "TODO",
-      priority: task?.priority ?? "MEDIUM",
       assignedTo: task.assignedTo?._id ?? "",
       dueDate: task?.dueDate ? new Date(task.dueDate) : new Date(),
     },
@@ -93,6 +92,8 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
       taskId: task._id,
       data: {
         ...values,
+        priority: task.priority || 'LOW',
+        status: values.status as TaskStatusEnumType,
         dueDate: values.dueDate.toISOString(),
       },
     };
@@ -101,15 +102,15 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["all-tasks", workspaceId] });
         toast({
-          title: "Success",
-          description: "Task updated successfully",
+          title: "Уведомление",
+          description: "Тренировка успешно обновлена",
           variant: "success",
         });
         onClose();
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -128,8 +129,8 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
             {/* Title */}
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem>
-                <FormLabel>Task Title</FormLabel>
-                <FormControl><Input {...field} placeholder="Task title" /></FormControl>
+                <FormLabel>Заголовок</FormLabel>
+                <FormControl><Input {...field} placeholder="" /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
@@ -137,8 +138,8 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
             {/* Description */}
             <FormField control={form.control} name="description" render={({ field }) => (
               <FormItem>
-                <FormLabel>Task Description</FormLabel>
-                <FormControl><Textarea {...field} rows={2} placeholder="Description" /></FormControl>
+                <FormLabel>Комментарий к тренировке</FormLabel>
+                <FormControl><Textarea {...field} rows={2} placeholder="" /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
@@ -146,9 +147,9 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
             {/* Assigned To */}
             <FormField control={form.control} name="assignedTo" render={({ field }) => (
               <FormItem>
-                <FormLabel>Assigned To</FormLabel>
+                <FormLabel>Назначить для</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                  <FormControl><SelectTrigger><SelectValue placeholder="Select an assignee" /></SelectTrigger></FormControl>
+                  <FormControl><SelectTrigger><SelectValue placeholder="" /></SelectTrigger></FormControl>
                   <SelectContent>
                   <div className="w-full max-h-[200px] overflow-y-auto scrollbar">
                     {membersOptions.map((option) => (
@@ -164,18 +165,32 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
             {/* Due Date */}
             <FormField control={form.control} name="dueDate" render={({ field }) => (
               <FormItem>
-                <FormLabel>Дата</FormLabel>
+                <FormLabel className="dark:text-[#f1f7feb5] text-sm">Дата</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
-                      <Button variant="outline">
-                        {field.value ? format(field.value, "PPP") : "Выберите дату"}
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full flex-1 pl-3 text-left font-normal mt-1",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <></>
+                        )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent>
-                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                    />
                   </PopoverContent>
                 </Popover>
                 <FormMessage />
@@ -185,7 +200,7 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
             {/* Status */}
             <FormField control={form.control} name="status" render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Изменить статус</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                   <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
                   <SelectContent>
@@ -198,25 +213,9 @@ export default function EditTaskForm({ task, onClose }: { task: TaskType; onClos
               </FormItem>
             )} />
 
-            {/* Priority */}
-            <FormField control={form.control} name="priority" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Priority</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                  <FormControl><SelectTrigger><SelectValue placeholder="Select priority" /></SelectTrigger></FormControl>
-                  <SelectContent>
-                    {priorityOptions.map((priority) => (
-                      <SelectItem key={priority.value} value={priority.value}>{priority.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
-
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending && <Loader className="animate-spin" />}
-              Save Changes
+              Сохранить изменения
             </Button>
           </form>
         </Form>

@@ -77,8 +77,8 @@ export default function CreateProjectForm({
         });
 
         toast({
-          title: "Success",
-          description: "Project created successfully",
+          title: "Уведомление",
+          description: "Комната успешно создана",
           variant: "success",
         });
 
@@ -87,7 +87,7 @@ export default function CreateProjectForm({
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -113,7 +113,7 @@ export default function CreateProjectForm({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Выберите Эмодзи
+                Установите фото
               </label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -157,7 +157,7 @@ export default function CreateProjectForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Описание проекта
+                      Описание
                       <span className="text-xs font-extralight ml-2">
                         необязательно
                       </span>

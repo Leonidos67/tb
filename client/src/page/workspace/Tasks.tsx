@@ -12,7 +12,7 @@ export default function Tasks() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Все тренировки</h2>
           <p className="text-muted-foreground">
-            Список тренировок этого рабочего пространства
+            Список тренировок
           </p>
         </div>
         <div className="flex gap-2 items-center">
@@ -28,7 +28,7 @@ export default function Tasks() {
       </div>
       <CreateTaskDialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen} />
       {/* {Task Table} */}
-      <div>
+      <div className="w-full overflow-x-auto">
         <TaskTable />
       </div>
     </div>

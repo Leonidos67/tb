@@ -64,7 +64,7 @@ const SignIn = () => {
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -80,14 +80,14 @@ const SignIn = () => {
           className="flex items-center gap-2 self-center font-medium"
         >
           <Logo />
-          TeachBoom.
+          T-Sync.
         </Link>
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Welcome back</CardTitle>
+              <CardTitle className="text-xl">Вход</CardTitle>
               <CardDescription>
-                Login with your Email or Google account
+                Войдите в систему при помощи электронной почты или Google
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -99,7 +99,7 @@ const SignIn = () => {
                     </div>
                     <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                       <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                        Or continue with
+                        или
                       </span>
                     </div>
                     <div className="grid gap-3">
@@ -110,11 +110,11 @@ const SignIn = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                                Email
+                                Почта
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="m@example.com"
+                                  placeholder=""
                                   className="!h-[48px]"
                                   {...field}
                                 />
@@ -133,14 +133,14 @@ const SignIn = () => {
                             <FormItem>
                               <div className="flex items-center">
                                 <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                                  Password
+                                  Пароль
                                 </FormLabel>
-                                <a
+                                {/* <a
                                   href="#"
                                   className="ml-auto text-sm underline-offset-4 hover:underline"
                                 >
-                                  Forgot your password?
-                                </a>
+                                  Забыли пароль?
+                                </a> */}
                               </div>
                               <FormControl>
                                 <Input
@@ -161,16 +161,16 @@ const SignIn = () => {
                         className="w-full"
                       >
                         {isPending && <Loader className="animate-spin" />}
-                        Login
+                        Войти
                       </Button>
                     </div>
                     <div className="text-center text-sm">
-                      Don&apos;t have an account?{" "}
+                      Нет учетной записи?{" "}
                       <Link
                         to="/sign-up"
                         className="underline underline-offset-4"
                       >
-                        Sign up
+                        Создать аккаунт
                       </Link>
                     </div>
                   </div>
@@ -178,10 +178,6 @@ const SignIn = () => {
               </Form>
             </CardContent>
           </Card>
-          <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-          </div>
         </div>
       </div>
     </div>

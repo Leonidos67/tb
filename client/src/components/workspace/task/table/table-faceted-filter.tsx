@@ -98,7 +98,7 @@ export function DataTableFacetedFilter({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
-          <CommandInput placeholder={`Filter ${title}`} />
+          <CommandInput placeholder={`Фильтр по: ${title}`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
@@ -148,7 +148,7 @@ export function DataTableFacetedFilter({
                     onSelect={() => onFilterChange([])} // Clear all filters
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    Очистить фильтры
                   </CommandItem>
                 </CommandGroup>
               </>

@@ -175,7 +175,7 @@ export type CreateProjectPayloadType = {
 };
 
 export type ProjectResponseType = {
-  message: "Project created successfully";
+  message: "Комната успешно создана";
   project: ProjectType;
 };
 

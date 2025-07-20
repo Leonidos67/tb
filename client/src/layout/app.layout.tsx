@@ -10,19 +10,19 @@ const AppLayout = () => {
   return (
     <AuthProvider>
       <SidebarProvider>
-        <Asidebar />
-        <SidebarInset className="overflow-x-hidden">
-          <div className="w-full">
-            <>
+        <div className="flex h-screen min-h-screen w-full">
+          <Asidebar />
+          <SidebarInset className="overflow-x-hidden flex-1">
+            <div className="w-full">
               <Header />
               <div className="px-3 lg:px-20 py-3">
                 <Outlet />
               </div>
-            </>
-            <CreateWorkspaceDialog />
-            <CreateProjectDialog />
-          </div>
-        </SidebarInset>
+              <CreateWorkspaceDialog />
+              <CreateProjectDialog />
+            </div>
+          </SidebarInset>
+        </div>
       </SidebarProvider>
     </AuthProvider>
   );

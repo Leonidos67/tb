@@ -55,14 +55,14 @@ const AllMembers = () => {
           queryKey: ["members", workspaceId],
         });
         toast({
-          title: "Success",
-          description: "Member's role changed successfully",
+          title: "Уведомление",
+          description: "Роль участника успешно изменилась",
           variant: "success",
         });
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: "Уведомление",
           description: error.message,
           variant: "destructive",
         });
@@ -112,7 +112,13 @@ const AllMembers = () => {
                       member.userId._id === user?._id
                     }
                   >
-                    {member.role.name?.toLowerCase()}{" "}
+                    {member.role.name === "OWNER"
+                      ? "владелец"
+                      : member.role.name === "ADMIN"
+                      ? "админ"
+                      : member.role.name === "MEMBER"
+                      ? "спортсмен"
+                      : member.role.name?.toLowerCase()}
                     {canChangeMemberRole && member.userId._id !== user?._id && (
                       <ChevronDown className="text-muted-foreground" />
                     )}
@@ -122,7 +128,7 @@ const AllMembers = () => {
                   <PopoverContent className="p-0" align="end">
                     <Command>
                       <CommandInput
-                        placeholder="Select new role..."
+                        placeholder="Выбрать другую роль..."
                         disabled={isLoading}
                         className="disabled:pointer-events-none"
                       />
@@ -148,14 +154,20 @@ const AllMembers = () => {
                                       }}
                                     >
                                       <p className="capitalize">
-                                        {role.name?.toLowerCase()}
+                                        {role.name === "OWNER"
+                                          ? "владелец"
+                                          : role.name === "ADMIN"
+                                          ? "админ"
+                                          : role.name === "MEMBER"
+                                          ? "спортсмен"
+                                          : role.name?.toLowerCase()}
                                       </p>
                                       <p className="text-sm text-muted-foreground">
                                         {role.name === "ADMIN" &&
-                                          `Can view, create, edit tasks, project and manage settings .`}
+                                          `Может просматривать, создавать, редактировать комнаты, тренировки и управлять настройками.`}
 
                                         {role.name === "MEMBER" &&
-                                          `Can view,edit only task created by.`}
+                                          `Может просматривать и редактировать только созданные им тренировки.`}
                                       </p>
                                     </CommandItem>
                                   )

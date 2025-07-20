@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronDown, Loader, Plus } from "lucide-react";
+import { Check, ChevronDown, Loader, Plus, Settings } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -92,7 +92,7 @@ export function WorkspaceSwitcher() {
                       <span className="truncate font-semibold">
                         {activeWorkspace?.name}
                       </span>
-                      <span className="truncate text-xs">Free</span>
+                      {/* <span className="truncate text-xs">Free</span> */}
                     </div>
                   </>
                 ) : (
@@ -112,7 +112,7 @@ export function WorkspaceSwitcher() {
               sideOffset={4}
             >
               <DropdownMenuLabel className="text-xs text-muted-foreground">
-                Workspaces
+                Все зоны
               </DropdownMenuLabel>
               {isPending ? <Loader className=" w-5 h-5 animate-spin" /> : null}
 
@@ -139,11 +139,18 @@ export function WorkspaceSwitcher() {
                 className="gap-2 p-2 !cursor-pointer"
                 onClick={onOpen}
               >
-                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                  <Plus className="size-4" />
-                </div>
+                <Plus className="size-4 text-muted-foreground" />
                 <div className="font-medium text-muted-foreground">
-                  Add workspace
+                  Добавить зону
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="gap-2 p-2 !cursor-pointer"
+                onClick={() => navigate(`/workspace/${workspaceId}/settings`)}
+              >
+                <Settings className="size-4 text-muted-foreground" />
+                <div className="font-medium text-muted-foreground">
+                  Перейти в настройки
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>

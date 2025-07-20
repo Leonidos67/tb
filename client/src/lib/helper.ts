@@ -13,7 +13,16 @@ export const transformOptions = (
   }));
 
 export const transformStatusEnum = (status: string): string => {
-  return status.replace(/_/g, " ");
+  switch (status) {
+    case 'BACKLOG':
+      return 'Загружено';
+    case 'TODO':
+      return 'Просмотрено';
+    case 'DONE':
+      return 'Выполнено';
+    default:
+      return status.replace(/_/g, ' ');
+  }
 };
 
 export const formatStatusToEnum = (status: string): string => {

@@ -93,7 +93,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto w-full lg:w-auto">
-              Columns <ChevronDown />
+              Отображать <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -104,13 +104,24 @@ export function DataTable<TData, TValue>({
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
-                    className="capitalize"
+                    className="capitalize cursor-pointer"
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {(() => {
+                      switch (column.id) {
+                        case '_id': return 'Выбрать всё';
+                        case 'title': return 'Заголовок';
+                        case 'project': return 'Комната';
+                        case 'assignedTo': return 'Спортсмен';
+                        case 'dueDate': return 'Дата';
+                        case 'status': return 'Статус';
+                        // case 'actions': return 'Действия';
+                        default: return column.id;
+                      }
+                    })()}
                   </DropdownMenuCheckboxItem>
                 );
               })}

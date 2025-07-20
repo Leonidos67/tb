@@ -7,26 +7,25 @@ import withPermission from "@/hoc/with-permission";
 
 const Settings = () => {
   return (
-    <div className="w-full h-auto py-2">
+    <main className="flex flex-1 flex-col py-4 md:pt-3">
+      <div className="flex items-center justify-between space-y-2 mb-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Настройки</h2>
+        </div>
+      </div>
       <WorkspaceHeader />
-      <Separator className="my-4 " />
-      <main>
-        <div className="w-full max-w-3xl mx-auto py-3">
-          <h2 className="text-[20px] leading-[30px] font-semibold mb-3">
-            Workspace settings
-          </h2>
-
-          <div className="flex flex-col pt-0.5 px-0 ">
-            <div className="pt-2">
-              <EditWorkspaceForm />
-            </div>
-            <div className="pt-2">
-              <DeleteWorkspaceCard />
-            </div>
+      <Separator className="my-4" />
+      <div className="w-full max-w-3xl mx-auto py-3">
+        <div className="flex flex-col pt-0.5 px-0 ">
+          <div className="pt-2">
+            <EditWorkspaceForm />
+          </div>
+          <div className="pt-2">
+            <DeleteWorkspaceCard />
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 };
 
