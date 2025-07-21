@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { HTTPSTATUS } from "../config/http.config";
 import { getCurrentUserService } from "../services/user.service";
-import UserModel, { FollowerModel } from "../models/user.model";
+import UserModel, { FollowerModel, PostModel } from "../models/user.model";
 
 export const getCurrentUserController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -137,4 +137,51 @@ export const unfollowUserController = asyncHandler(async (req: Request, res: Res
 export const getAllUsersController = asyncHandler(async (req: Request, res: Response) => {
   const users = await UserModel.find({}, "name username profilePicture");
   return res.status(200).json({ users });
+});
+
+// Получить посты пользователя
+export const getUserPostsController = asyncHandler(async (req: Request, res: Response) => {
+  const { username } = req.params;
+  const user = await UserModel.findOne({ username: username.toLowerCase().trim() });
+  if (!user) return res.status(404).json({ message: "User not found" });
+  const posts = await PostModel.find({ author: user._id }).sort({ createdAt: -1 });
+  return res.status(200).json({ posts });
+});
+
+// Создать пост
+export const createPostController = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const { text, image } = req.body;
+  if (!text || typeof text !== "string") {
+    return res.status(400).json({ message: "Текст обязателен" });
+  }
+  const post = await PostModel.create({ author: userId, text, image });
+  return res.status(201).json({ post });
+});
+
+// Удалить пост
+export const deletePostController = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const { postId } = req.params;
+  const post = await PostModel.findById(postId);
+  if (!post) return res.status(404).json({ message: "Пост не найден" });
+  if (!post.author.equals(userId)) return res.status(403).json({ message: "Нет прав на удаление" });
+  await post.deleteOne();
+  return res.status(200).json({ message: "Пост удалён" });
+});
+
+// Лайк/дизлайк поста
+export const likePostController = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const { postId } = req.params;
+  const post = await PostModel.findById(postId);
+  if (!post) return res.status(404).json({ message: "Пост не найден" });
+  const liked = post.likes.some((id: any) => id.equals(userId));
+  if (liked) {
+    post.likes = post.likes.filter((id: any) => !id.equals(userId));
+  } else {
+    post.likes.push(userId);
+  }
+  await post.save();
+  return res.status(200).json({ liked: !liked, likesCount: post.likes.length });
 });

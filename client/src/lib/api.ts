@@ -296,3 +296,23 @@ export const unfollowUserMutationFn = async (username: string) => {
   const response = await API.post(`/user/${username}/unfollow`);
   return response.data;
 };
+
+export const getUserPostsQueryFn = async (username: string) => {
+  const response = await API.get(`/user/${username}/posts`);
+  return response.data;
+};
+
+export const createUserPostMutationFn = async (username: string, data: { text: string; image?: string | null }) => {
+  const response = await API.post(`/user/${username}/posts`, data);
+  return response.data;
+};
+
+export const deleteUserPostMutationFn = async (postId: string) => {
+  const response = await API.delete(`/user/posts/${postId}`);
+  return response.data;
+};
+
+export const likeUserPostMutationFn = async (postId: string) => {
+  const response = await API.post(`/user/posts/${postId}/like`);
+  return response.data;
+};
