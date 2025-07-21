@@ -15,7 +15,7 @@ const Settings = () => {
       </div>
       <WorkspaceHeader />
       <Separator className="my-4" />
-      <div className="w-full max-w-3xl mx-auto py-3">
+      <div className="w-full py-3">
         <div className="flex flex-col pt-0.5 px-0 ">
           <div className="pt-2">
             <EditWorkspaceForm />

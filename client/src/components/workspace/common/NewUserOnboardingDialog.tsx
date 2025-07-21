@@ -193,7 +193,7 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
               <Button variant="outline" onClick={handleBack} disabled={loading}>
                 Назад
               </Button>
-              <Button onClick={handleFinish} disabled={!usageContext || loading}>
+              <Button onClick={handleFinish} disabled={!usageContext || loading}> 
                 Продолжить
               </Button>
             </DialogFooter>

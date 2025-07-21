@@ -10,19 +10,19 @@ import {
 import { Separator } from "./ui/separator";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { RefreshCcw, Maximize2, Minimize2, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import useCreateProjectDialog from "@/hooks/use-create-project-dialog";
-import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
-import CreateTaskDialog from "@/components/workspace/task/create-task-dialog";
+// import { RefreshCcw, Maximize2, Minimize2, Plus } from "lucide-react";
+// import { useEffect, useState } from "react";
+// import { Dialog, DialogContent } from "@/components/ui/dialog";
+// import {
+//   DropdownMenu,
+//   DropdownMenuTrigger,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+// } from "@/components/ui/dropdown-menu";
+// import { Button } from "@/components/ui/button";
+// import useCreateProjectDialog from "@/hooks/use-create-project-dialog";
+// import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
+// import CreateTaskDialog from "@/components/workspace/task/create-task-dialog";
 
 const Header = () => {
   const location = useLocation();
@@ -32,42 +32,44 @@ const Header = () => {
 
   const getPageLabel = (pathname: string) => {
     if (pathname.includes("/project/")) return "Комната";
-    if (pathname.includes("/settings")) return "Настройки";
+    if (pathname.includes("/settings")) return "Настройки зоны";
     if (pathname.includes("/tasks")) return "Все тренировки";
     if (pathname.includes("/members")) return "Участники";
+    if (pathname.includes("/profile")) return "Мой профиль";
+    if (pathname.includes("/completed")) return "Выполненные тренировки";
     return null; // Default label
   };
 
   const pageHeading = getPageLabel(pathname);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [time, setTime] = useState(() => {
-    const now = new Date();
-    return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-  });
-  const [openTimeDialog, setOpenTimeDialog] = useState(false);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
+  // const [time, setTime] = useState(() => {
+  //   const now = new Date();
+  //   return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  // });
+  // const [openTimeDialog, setOpenTimeDialog] = useState(false);
 
   // Для диалога создания тренировки
-  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
-  // Для диалога создания комнаты
-  const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
+  // const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  // // Для диалога создания комнаты
+  // const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
 
-  useEffect(() => {
-    function handleFullscreenChange() {
-      setIsFullscreen(!!document.fullscreenElement);
-    }
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  // useEffect(() => {
+  //   function handleFullscreenChange() {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   }
+  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setTime(now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0'));
-    }, 1000 * 10); // обновлять каждые 10 секунд для надежности
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const now = new Date();
+  //     setTime(now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0'));
+  //   }, 1000 * 10); // обновлять каждые 10 секунд для надежности
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <header className="flex sticky top-0 z-50 bg-white h-12 shrink-0 items-center border-b">
@@ -101,8 +103,7 @@ const Header = () => {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="flex items-center gap-2 ml-auto">
-            {/* Кнопки управления */}
+          {/* <div className="flex items-center gap-2 ml-auto">
             <button
               type="button"
               title="Обновить страницу"
@@ -129,7 +130,6 @@ const Header = () => {
             >
               {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </button>
-            {/* Время как кнопка с выпадающим меню */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -160,7 +160,6 @@ const Header = () => {
                 <div className="text-center text-2xl mt-2 font-mono">{time}</div>
               </DialogContent>
             </Dialog>
-            {/* Кнопка + последней справа */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button>
@@ -176,10 +175,9 @@ const Header = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            {/* Диалоги */}
             <CreateProjectDialog />
             <CreateTaskDialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen} />
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

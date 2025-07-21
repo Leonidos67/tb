@@ -77,7 +77,7 @@ export default function CreateWorkspaceForm({
             className="text-2xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1.5
            text-center sm:text-left"
           >
-            Создать новую зону
+            Создание новой зоны
           </h1>
           <p className="text-muted-foreground text-lg leading-tight">
             Повысьте свою производительность, упростив доступ к проектам для всех в одном месте.
