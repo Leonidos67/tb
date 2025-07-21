@@ -47,8 +47,8 @@ export const loginOrCreateAccountService = async (data: {
 
       // 3. Create a new workspace for the new user
       const workspace = new WorkspaceModel({
-        name: `My Workspace`,
-        description: `Workspace created for ${user.name}`,
+        name: `Мое первое рабочее пространство`,
+        description: `Данная зона создана пользователем ${user.name}`,
         owner: user._id,
       });
       await workspace.save({ session });
@@ -118,8 +118,8 @@ export const registerUserService = async (body: {
 
     // 3. Create a new workspace for the new user
     const workspace = new WorkspaceModel({
-      name: `My Workspace`,
-      description: `Workspace created for ${user.name}`,
+      name: `Мое первое рабочее пространство`,
+      description: `Данная зона создана пользователем ${user.name}`,
       owner: user._id,
     });
     await workspace.save({ session });
