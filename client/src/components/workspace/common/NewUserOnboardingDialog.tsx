@@ -29,7 +29,7 @@ const options = [
 ];
 
 const athleteInfo = (
-  <div className="mt-6 text-center text-base text-gray-700">
+  <div className="mt-0 text-base text-gray-700">
     Тренер должен прислать вам вступительную ссылку-приглашение
   </div>
 );
@@ -158,14 +158,14 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
               <DialogTitle>Вам нужно получить приглашение</DialogTitle>
             </DialogHeader>
             {athleteInfo}
-            <DialogFooter>
+            {/* <DialogFooter>
               <Button variant="outline" onClick={handleBack} disabled={loading}>
                 Назад
               </Button>
               <Button onClick={handleFinish} disabled={loading}>
                 Понятно
               </Button>
-            </DialogFooter>
+            </DialogFooter> */}
           </>
         )}
         {step === 3 && role === "coach" && (

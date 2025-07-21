@@ -32,7 +32,7 @@ const Header = () => {
 
   const getPageLabel = (pathname: string) => {
     if (pathname.includes("/project/")) return "Комната";
-    if (pathname.includes("/settings")) return "Настройки зоны";
+    if (pathname.includes("/settings")) return "Настройки";
     if (pathname.includes("/tasks")) return "Все тренировки";
     if (pathname.includes("/members")) return "Участники";
     if (pathname.includes("/profile")) return "Мой профиль";

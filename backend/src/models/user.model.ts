@@ -4,6 +4,7 @@ import { compareValue, hashValue } from "../utils/bcrypt";
 export interface UserDocument extends Document {
   name: string;
   email: string;
+  username?: string; // новое поле
   password?: string;
   profilePicture: string | null;
   isActive: boolean;
@@ -28,6 +29,13 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    username: {
+      type: String,
+      unique: true,
+      sparse: true,
       trim: true,
       lowercase: true,
     },
@@ -70,4 +78,12 @@ userSchema.methods.comparePassword = async function (value: string) {
 };
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);
+
+const followerSchema = new Schema({
+  follower: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // кто подписался
+  following: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // на кого подписан
+}, { timestamps: true });
+
+export const FollowerModel = mongoose.model("Follower", followerSchema);
+
 export default UserModel;

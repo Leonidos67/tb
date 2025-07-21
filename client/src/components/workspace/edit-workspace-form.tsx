@@ -91,7 +91,7 @@ export default function EditWorkspaceForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Название
+                      Имя спортсмена
                     </FormLabel>
                     <FormControl>
                       <Input

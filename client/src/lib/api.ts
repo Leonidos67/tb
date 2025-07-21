@@ -266,3 +266,33 @@ export const onboardingMutationFn = async (data: { answer: string }) => {
   const response = await API.patch("/user/onboarding", data);
   return response.data;
 };
+
+export const updateProfilePictureMutationFn = async (profilePicture: string) => {
+  const response = await API.patch("/user/profile-picture", { profilePicture });
+  return response.data;
+};
+
+export const setUsernameMutationFn = async (username: string) => {
+  const response = await API.patch("/user/set-username", { username });
+  return response.data;
+};
+
+export const getFollowersQueryFn = async (username: string) => {
+  const response = await API.get(`/user/${username}/followers`);
+  return response.data;
+};
+
+export const getFollowingQueryFn = async (username: string) => {
+  const response = await API.get(`/user/${username}/following`);
+  return response.data;
+};
+
+export const followUserMutationFn = async (username: string) => {
+  const response = await API.post(`/user/${username}/follow`);
+  return response.data;
+};
+
+export const unfollowUserMutationFn = async (username: string) => {
+  const response = await API.post(`/user/${username}/unfollow`);
+  return response.data;
+};

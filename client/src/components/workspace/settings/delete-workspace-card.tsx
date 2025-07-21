@@ -49,7 +49,7 @@ const DeleteWorkspaceCard = () => {
             className="text-[17px] tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1.5
            text-center sm:text-left"
           >
-            Удаление зоны
+            Удаление спортсмена
           </h1>
         </div>
 
@@ -60,8 +60,8 @@ const DeleteWorkspaceCard = () => {
           <div className="flex flex-col items-start justify-between py-0">
             <div className="flex-1 mb-2">
               <p>
-              Удаление рабочей зоны является постоянным действием и не может быть отменено. После удаления 
-              все связанные с ней данные, включая комнаты, тренировки и роли участников, будут удалены безвозвратно. 
+              Удаление участника является постоянным действием и не может быть отменено. После удаления 
+              все связанные с ней данные, включая комнаты, тренировки и роли, будут удалены безвозвратно. 
               Пожалуйста, соблюдайте осторожность и убедитесь, что это действие является намеренным.
               </p>
             </div>
@@ -81,8 +81,8 @@ const DeleteWorkspaceCard = () => {
         isLoading={isPending}
         onClose={onCloseDialog}
         onConfirm={handleConfirm}
-        title={`Удаление рабочей зоны "${workspace?.name}".`}
-        description={`Вы уверены, что хотите удалить эту зону? Это действие невозможно отменить.`}
+        title={`Удаление участника "${workspace?.name}".`}
+        description={`Вы уверены, что хотите удалить этого спортсмена? Это действие невозможно отменить.`}
         confirmText="Удалить"
         cancelText="Отменить"
       />

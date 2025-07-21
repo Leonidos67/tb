@@ -36,11 +36,11 @@ const SignIn = () => {
   });
 
   const formSchema = z.object({
-    email: z.string().trim().email("Invalid email address").min(1, {
-      message: "Workspace name is required",
+    email: z.string().trim().email("Неверный адрес почты").min(1, {
+      message: "Укажите название для рабочей области",
     }),
     password: z.string().trim().min(1, {
-      message: "Password is required",
+      message: "Укажите пароль",
     }),
   });
 

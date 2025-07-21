@@ -67,7 +67,7 @@ export function WorkspaceSwitcher() {
   return (
     <>
       <SidebarGroupLabel className="w-full justify-between pr-0">
-        <span>Мои данные</span>
+        <span>Мои спортсмены</span>
         <button
           onClick={onOpen}
           className="flex size-5 items-center justify-center rounded-full border"
@@ -112,7 +112,7 @@ export function WorkspaceSwitcher() {
               sideOffset={4}
             >
               <DropdownMenuLabel className="text-xs text-muted-foreground">
-                Все зоны
+                Мои спортсмены
               </DropdownMenuLabel>
               {isPending ? <Loader className=" w-5 h-5 animate-spin" /> : null}
 
@@ -141,7 +141,7 @@ export function WorkspaceSwitcher() {
               >
                 <Plus className="size-4 text-muted-foreground" />
                 <div className="font-medium text-muted-foreground">
-                  Добавить зону
+                  Добавить участника
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem

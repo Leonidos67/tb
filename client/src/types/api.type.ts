@@ -24,6 +24,7 @@ export type UserType = {
   _id: string;
   name: string;
   email: string;
+  username?: string;
   profilePicture: string | null;
   isActive: true;
   lastLogin: null;

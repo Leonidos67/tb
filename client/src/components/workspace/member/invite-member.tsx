@@ -26,7 +26,7 @@ const InviteMember = () => {
         setCopied(true);
         toast({
           title: "Уведомление",
-          description: "Адрес приглашения, успешно скопированн.",
+          description: "Адрес приглашения успешно скопированн.",
           variant: "success",
         });
         setTimeout(() => setCopied(false), 2000);

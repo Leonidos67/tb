@@ -11,6 +11,9 @@ import Usage from "@/page/workspace/Usage";
 import CompletedTasks from "@/page/workspace/CompletedTasks";
 import { AUTH_ROUTES, BASE_ROUTE, PROTECTED_ROUTES } from "./routePaths";
 import InviteUser from "@/page/invite/InviteUser";
+import UsersListPage from "@/page/users/UsersList";
+import UserProfile from "@/page/users/Profile";
+import SocialMainPage from "@/page/users/index";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_IN, element: <SignIn /> },
@@ -31,4 +34,7 @@ export const protectedRoutePaths = [
 
 export const baseRoutePaths = [
   { path: BASE_ROUTE.INVITE_URL, element: <InviteUser /> },
+  { path: "/u/", element: <SocialMainPage /> },
+  { path: "/u/users", element: <UsersListPage /> },
+  { path: "/u/users/:username", element: <UserProfile /> },
 ];

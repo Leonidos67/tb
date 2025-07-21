@@ -35,7 +35,7 @@ const ProjectHeader = () => {
 
   const renderContent = () => {
     if (isPending) return <span>Loading...</span>;
-    if (isError) return <span>Error occured</span>;
+    if (isError) return <span>Произошла ошибка</span>;
     return (
       <>
         <span>{projectEmoji}</span>

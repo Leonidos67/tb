@@ -34,13 +34,13 @@ const SignUp = () => {
   });
   const formSchema = z.object({
     name: z.string().trim().min(1, {
-      message: "Name is required",
+      message: "Укажите название",
     }),
-    email: z.string().trim().email("Invalid email address").min(1, {
-      message: "Workspace name is required",
+    email: z.string().trim().email("Неверный адрес почты").min(1, {
+      message: "Требуется указать имя рабочей области",
     }),
     password: z.string().trim().min(1, {
-      message: "Password is required",
+      message: "Укажите пароль",
     }),
   });
 

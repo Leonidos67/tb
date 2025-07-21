@@ -22,11 +22,11 @@ export const errorHandler: ErrorRequestHandler = (
   res,
   next
 ): any => {
-  console.error(`Error Occured on PATH: ${req.path} `, error);
+  console.error(`Произошла ошибка в пути: ${req.path} `, error);
 
   if (error instanceof SyntaxError) {
     return res.status(HTTPSTATUS.BAD_REQUEST).json({
-      message: "Invalid JSON format. Please check your request body.",
+      message: "Недопустимый формат json-файла. Пожалуйста, проверьте текст вашего запроса.",
     });
   }
 
@@ -42,7 +42,7 @@ export const errorHandler: ErrorRequestHandler = (
   }
 
   return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
-    message: "Internal Server Error",
-    error: error?.message || "Unknow error occurred",
+    message: "Внутренняя ошибка сервера",
+    error: error?.message || "Произошла неизвестная ошибка",
   });
 };
