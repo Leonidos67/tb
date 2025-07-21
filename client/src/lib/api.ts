@@ -261,3 +261,8 @@ export const deleteTaskMutationFn = async ({
   );
   return response.data;
 };
+
+export const onboardingMutationFn = async (data: { answer: string }) => {
+  const response = await API.patch("/user/onboarding", data);
+  return response.data;
+};

@@ -11,6 +11,8 @@ export interface UserDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
   currentWorkspace: mongoose.Types.ObjectId | null;
+  isNewUser: boolean;
+  onboardingAnswer?: string | null;
   comparePassword(value: string): Promise<boolean>;
   omitPassword(): Omit<UserDocument, "password">;
 }
@@ -40,6 +42,8 @@ const userSchema = new Schema<UserDocument>(
     },
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date, default: null },
+    isNewUser: { type: Boolean, default: true },
+    onboardingAnswer: { type: String, default: null },
   },
   {
     timestamps: true,

@@ -58,7 +58,7 @@ export const loginOrCreateAccountService = async (data: {
       }).session(session);
 
       if (!ownerRole) {
-        throw new NotFoundException("Owner role not found");
+        throw new NotFoundException("Роль владельца не найдена");
       }
 
       const member = new MemberModel({
@@ -99,7 +99,7 @@ export const registerUserService = async (body: {
 
     const existingUser = await UserModel.findOne({ email }).session(session);
     if (existingUser) {
-      throw new BadRequestException("Email already exists");
+      throw new BadRequestException("Данный адрес электронной почта уже существует");
     }
 
     const user = new UserModel({
@@ -129,7 +129,7 @@ export const registerUserService = async (body: {
     }).session(session);
 
     if (!ownerRole) {
-      throw new NotFoundException("Owner role not found");
+      throw new NotFoundException("Роль владельца не найдена");
     }
 
     const member = new MemberModel({
@@ -170,18 +170,18 @@ export const verifyUserService = async ({
 }) => {
   const account = await AccountModel.findOne({ provider, providerId: email });
   if (!account) {
-    throw new NotFoundException("Invalid email or password");
+    throw new NotFoundException("Неверный адрес электронной почты или пароль");
   }
 
   const user = await UserModel.findById(account.userId);
 
   if (!user) {
-    throw new NotFoundException("User not found for the given account");
+    throw new NotFoundException("Пользователь не найден");
   }
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    throw new UnauthorizedException("Invalid email or password");
+    throw new UnauthorizedException("Неверный адрес электронной почты или пароль");
   }
 
   return user.omitPassword();

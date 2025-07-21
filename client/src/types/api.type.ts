@@ -35,6 +35,7 @@ export type UserType = {
     owner: string;
     inviteCode: string;
   };
+  isNewUser?: boolean; // добавлено для поддержки онбординга
 };
 
 export type CurrentUserResponseType = {
