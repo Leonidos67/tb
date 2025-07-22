@@ -316,3 +316,8 @@ export const likeUserPostMutationFn = async (postId: string) => {
   const response = await API.post(`/user/posts/${postId}/like`);
   return response.data;
 };
+
+export const getFeedQueryFn = async () => {
+  const response = await API.get(`/user/feed`);
+  return response.data;
+};

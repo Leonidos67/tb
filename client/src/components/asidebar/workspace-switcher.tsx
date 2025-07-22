@@ -141,7 +141,7 @@ export function WorkspaceSwitcher() {
               >
                 <Plus className="size-4 text-muted-foreground" />
                 <div className="font-medium text-muted-foreground">
-                  Добавить участника
+                  Создать нового участника
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem

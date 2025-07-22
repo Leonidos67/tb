@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// eslint-disable @typescript-eslint/no-explicit-any
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import CreateTaskDialog from "../task/create-task-dialog";

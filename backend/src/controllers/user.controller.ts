@@ -185,3 +185,11 @@ export const likePostController = asyncHandler(async (req: Request, res: Respons
   await post.save();
   return res.status(200).json({ liked: !liked, likesCount: post.likes.length });
 });
+
+// Лента новостей (все посты)
+export const getFeedController = asyncHandler(async (req: Request, res: Response) => {
+  const posts = await PostModel.find({})
+    .sort({ createdAt: -1 })
+    .populate("author", "username name profilePicture");
+  return res.status(200).json({ posts });
+});

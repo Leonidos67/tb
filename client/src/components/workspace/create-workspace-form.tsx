@@ -77,10 +77,10 @@ export default function CreateWorkspaceForm({
             className="text-2xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1.5
            text-center sm:text-left"
           >
-            Создание новой зоны
+            Создание нового участника
           </h1>
           <p className="text-muted-foreground text-lg leading-tight">
-            Повысьте свою производительность, упростив доступ к проектам для всех в одном месте.
+            Повысьте производительность, упростив доступ к проектам для всех в одном месте.
           </p>
         </div>
         <Form {...form}>
@@ -129,7 +129,7 @@ export default function CreateWorkspaceForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Добавьте пару слов о вашем рабочем пространстве.
+                      Добавьте пару слов.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
