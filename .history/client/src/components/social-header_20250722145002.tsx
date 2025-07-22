@@ -12,7 +12,7 @@ const menuItems = [
   { to: "/u/articles", label: "Статьи" },
 ];
 
-export function SocialSidebarMenu() {
+function SocialSidebarMenu() {
   const location = useLocation();
   return (
     <aside className="hidden md:flex flex-col w-64 border-r bg-white p-6 gap-4 min-h-svh sticky top-0">
@@ -21,7 +21,7 @@ export function SocialSidebarMenu() {
           <Link
             key={item.to}
             to={item.to}
-            className={`rounded-full font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === item.to ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
+            className={`font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === item.to ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
           >
             <span className="pl-2">{item.label}</span>
           </Link>

@@ -1,35 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "@/components/logo";
 import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useAuth from "@/hooks/api/use-auth";
 import { useState } from "react";
-
-const menuItems = [
-  { to: "/u/", label: "Лента" },
-  { to: "/u/users", label: "Пользователи" },
-  { to: "/u/articles", label: "Статьи" },
-];
-
-export function SocialSidebarMenu() {
-  const location = useLocation();
-  return (
-    <aside className="hidden md:flex flex-col w-64 border-r bg-white p-6 gap-4 min-h-svh sticky top-0">
-      <nav className="flex flex-col gap-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            className={`rounded-full font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === item.to ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
-          >
-            <span className="pl-2">{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-    </aside>
-  );
-}
 
 const SocialHeader = () => {
   const { data: currentUser } = useAuth();

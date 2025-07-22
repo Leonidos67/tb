@@ -12,7 +12,7 @@ const menuItems = [
   { to: "/u/articles", label: "Статьи" },
 ];
 
-export function SocialSidebarMenu() {
+function SocialSidebarMenu() {
   const location = useLocation();
   return (
     <aside className="hidden md:flex flex-col w-64 border-r bg-white p-6 gap-4 min-h-svh sticky top-0">
@@ -21,7 +21,7 @@ export function SocialSidebarMenu() {
           <Link
             key={item.to}
             to={item.to}
-            className={`rounded-full font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === item.to ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
+            className={`font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === item.to ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
           >
             <span className="pl-2">{item.label}</span>
           </Link>
@@ -37,7 +37,8 @@ const SocialHeader = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <header className="w-full bg-white border-b shadow-sm px-4 py-2 flex items-center gap-4 sticky top-0 z-50">
+    <header className="w-full bg-white border-b shadow-sm px-4 py-2 flex items-center gap-4 sticky top-0 z-30">
+      <SocialSidebarMenu />
       <Link to="/u/" className="flex items-center gap-2">
         <Logo />
         <span className="hidden md:flex ml-2 items-center gap-2 self-center font-medium">T-Sync.</span>
