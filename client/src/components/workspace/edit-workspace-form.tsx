@@ -34,7 +34,7 @@ export default function EditWorkspaceForm() {
 
   const formSchema = z.object({
     name: z.string().trim().min(1, {
-      message: "Укажите название зоны",
+      message: "Укажите имя участника",
     }),
     description: z.string().trim(),
   });

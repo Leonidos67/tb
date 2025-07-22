@@ -20,7 +20,7 @@ const SocialHeader = () => {
       <form className="flex-1 max-w-md mx-4">
         <Input
           type="text"
-          placeholder="Поиск пользователей или постов..."
+          placeholder="Поиск..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="w-full"

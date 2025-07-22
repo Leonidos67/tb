@@ -34,7 +34,7 @@ export default function CreateWorkspaceForm({
 
   const formSchema = z.object({
     name: z.string().trim().min(1, {
-      message: "Укажите название зоны",
+      message: "Укажите имя спортсмена",
     }),
     description: z.string().trim(),
   });
@@ -92,7 +92,7 @@ export default function CreateWorkspaceForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="dark:text-[#f1f7feb5] text-sm">
-                      Название зоны
+                      Имя спортсмена
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -102,7 +102,7 @@ export default function CreateWorkspaceForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Это название увидят все участники зоны
+                      Это название увидят все участники
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

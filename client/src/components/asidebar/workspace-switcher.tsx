@@ -98,7 +98,7 @@ export function WorkspaceSwitcher() {
                 ) : (
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      Зона не выбрана
+                      Участник не выбран
                     </span>
                   </div>
                 )}
