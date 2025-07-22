@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getFeedQueryFn, likeUserPostMutationFn, deleteUserPostMutationFn, getFollowingQueryFn } from "@/lib/api";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useAuth from "@/hooks/api/use-auth";
-import SocialHeader from "@/components/social-header";
+import SocialHeader, { SocialSidebarMenu } from "@/components/social-header";
 import { EllipsisVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
@@ -32,7 +32,6 @@ const SocialMainPage = () => {
   const [loading, setLoading] = useState(true);
   const { data: currentUser } = useAuth();
   const userId = currentUser?.user?._id;
-  const location = useLocation();
   const [following, setFollowing] = useState<FollowingUser[]>([]);
 
   useEffect(() => {
@@ -76,29 +75,7 @@ const SocialMainPage = () => {
       <SocialHeader />
       <div className="flex min-h-svh bg-muted">
         {/* Левая колонка */}
-        <aside className="hidden md:flex flex-col w-64 border-r bg-white p-6 gap-4 min-h-svh sticky top-0">
-          <nav className="flex flex-col gap-2">
-            <Link
-              // rounded-[30px]
-              to="/u/"
-              className={`font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === "/u/" ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
-            >
-              <span className="pl-2">Лента</span>
-            </Link>
-            <Link
-              to="/u/users"
-              className={`font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === "/u/users" ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
-            >
-              <span className="pl-2">Пользователи</span>
-            </Link>
-            <Link
-              to="/u/articles"
-              className={`font-semibold text-lg px-3 py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === "/u/articles" ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
-            >
-              <span className="pl-2">Статьи</span>
-            </Link>
-          </nav>
-        </aside>
+        <SocialSidebarMenu />
         {/* Центр: лента */}
         <main className="flex-1 flex flex-col items-center px-2 py-8">
           <div className="w-full max-w-2xl flex flex-col gap-6">

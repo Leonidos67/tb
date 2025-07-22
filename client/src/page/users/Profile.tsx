@@ -9,6 +9,9 @@ import { getFollowersQueryFn, followUserMutationFn, unfollowUserMutationFn } fro
 import { getUserPostsQueryFn, createUserPostMutationFn, deleteUserPostMutationFn, likeUserPostMutationFn } from "@/lib/api";
 import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
 import SocialHeader from "@/components/social-header";
+import { getFollowingQueryFn } from "@/lib/api";
+import { EllipsisVertical } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface PublicUser {
   name: string;
@@ -54,6 +57,7 @@ const UserProfile = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [following, setFollowing] = useState<FollowerUser[]>([]);
 
   useEffect(() => {
     if (!username) return;
@@ -78,6 +82,13 @@ const UserProfile = () => {
         }
       })
       .catch(() => setFollowers([]));
+
+    // Получить подписки текущего пользователя для правого блока
+    if (currentUser?.user?.username) {
+      getFollowingQueryFn(currentUser.user.username)
+        .then((data) => setFollowing(data.following || []))
+        .catch(() => setFollowing([]));
+    }
   }, [username, currentUser]);
 
   // Получение постов
@@ -171,9 +182,13 @@ const UserProfile = () => {
   return (
     <>
       <SocialHeader />
-      <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        <div className="flex w-full max-w-md flex-col gap-6">
-          <div className="flex flex-col gap-6">
+      <div className="flex min-h-svh bg-muted w-full justify-center">
+        {/* Левая колонка */}
+        
+        {/* Центр: профиль */}
+        <main className="flex-1 flex flex-col items-center px-2 py-8 max-w-2xl w-full">
+          {/* Весь старый JSX профиля */}
+          <div className="w-full flex flex-col gap-6">
             <Card className="p-0">
               <div className="flex flex-col items-center gap-2 pt-8">
                 <div className="text-lg font-semibold mb-2">👋 Привет! Я пользуюсь T-Sync.</div>
@@ -233,38 +248,70 @@ const UserProfile = () => {
               </div>
             </Card>
           </div>
-        </div>
-        <div className="mt-8 w-full">
-          <div className="font-semibold mb-2">Посты:</div>
-          {posts.length === 0 && <div className="text-gray-400">Нет постов</div>}
-          <div className="flex flex-col gap-4">
-            {posts.map(post => {
-              const isOwner = currentUser?.user?._id && post.author === currentUser.user._id;
-              const isLiked = post.likes && userId ? post.likes.includes(userId) : false;
-              return (
-                <div key={post._id} className="p-4 border rounded bg-white relative">
-                  <div className="mb-2 text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</div>
-                  <div className="mb-2 whitespace-pre-line">{post.text}</div>
-                  {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
-                  <div className="flex items-center gap-3 mt-2">
-                    <button
-                      className={`text-pink-500 flex items-center gap-1 ${isLiked ? 'font-bold' : ''}`}
-                      onClick={() => handleLikePost(post._id)}
-                      disabled={!userId}
-                    >
-                      <span>❤</span> {post.likes?.length || 0}
-                    </button>
-                    {isOwner && (
-                      <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
-                        Удалить
+          <div className="mt-8 w-full">
+            <div className="font-semibold mb-2">Посты:</div>
+            {posts.length === 0 && <div className="text-gray-400">Нет постов</div>}
+            <div className="flex flex-col gap-4">
+              {posts.map(post => {
+                const isOwner = currentUser?.user?._id && post.author === currentUser.user._id;
+                const isLiked = post.likes && userId ? post.likes.includes(userId) : false;
+                return (
+                  <div key={post._id} className="p-4 border rounded bg-white relative">
+                    <div className="mb-2 text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</div>
+                    <div className="mb-2 whitespace-pre-line">{post.text}</div>
+                    {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
+                    <div className="flex items-center gap-3 mt-2">
+                      <button
+                        className={`text-pink-500 flex items-center gap-1 ${isLiked ? 'font-bold' : ''}`}
+                        onClick={() => handleLikePost(post._id)}
+                        disabled={!userId}
+                      >
+                        <span>❤</span> {post.likes?.length || 0}
                       </button>
-                    )}
+                      {isOwner && (
+                        <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
+                          Удалить
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </main>
+        {/* Правая колонка */}
+        <aside className="hidden lg:flex flex-col w-64 border-l bg-white p-6 gap-6 min-h-svh sticky top-0">
+          <div>
+            <div className="font-semibold text-lg mb-2">Мои подписки</div>
+            {following.length === 0 ? (
+              <div className="text-gray-500 text-sm">Вы ни на кого не подписаны.</div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {following.map(user => (
+                  <div key={user.username} className="flex items-center gap-2 group">
+                    <Link to={`/u/users/${user.username}`} className="flex items-center gap-2 hover:underline flex-1 min-w-0">
+                      <img src={user.profilePicture || ''} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+                      <span className="font-semibold truncate">{user.name}</span>
+                    </Link>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 rounded-full hover:bg-gray-100 ml-1">
+                          <EllipsisVertical className="w-5 h-5 text-gray-500" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link to={`/u/users/${user.username}`}>Посмотреть профиль</Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </aside>
       </div>
       <ConfirmDialog
         isOpen={deleteDialogOpen}
