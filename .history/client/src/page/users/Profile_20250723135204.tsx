@@ -318,10 +318,10 @@ const UserProfile = () => {
         isLoading={deleteLoading}
         onClose={() => { setDeleteDialogOpen(false); setDeletePostId(null); }}
         onConfirm={handleDeletePost}
-        title="Вы уверены, что хотите удалить этот пост?"
-        description="Это действие невозможно отменить. После удаления восстановить пост будет невозможно."
+        title="Удаление поста"
+        description="Вы действительно хотите удалить этот пост? Это действие невозможно отменить."
         confirmText="Удалить"
-        cancelText="Отменить"
+        cancelText="Отмена"
       />
     </>
   );

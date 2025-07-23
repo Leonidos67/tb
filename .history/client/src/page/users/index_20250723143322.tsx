@@ -229,7 +229,7 @@ const SocialMainPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem asChild>
-                                <Link to={`/u/users/${post.author.username}`}>Посмотреть профиль</Link>
+                                <Link to={`/u/users/${post.author.username}`}>Перейти в профиль</Link>
                               </DropdownMenuItem>
                               {isOwner && (
                                 <>
@@ -243,6 +243,7 @@ const SocialMainPage = () => {
                       </div>
                       <div className="mb-2 whitespace-pre-line">{post.text}</div>
                       {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
+                      
                       <hr className="my-3" />
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <button

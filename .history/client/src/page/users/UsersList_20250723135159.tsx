@@ -65,6 +65,10 @@ const UsersListPage = () => {
             <div className="font-semibold text-lg mb-2">Мои подписки</div>
             <div className="text-gray-500 text-sm">Скоро здесь появятся ваши подписки на пользователей.</div>
           </div>
+          <div>
+            <div className="font-semibold text-lg mb-2">Рекомендации</div>
+            <div className="text-gray-500 text-sm">Здесь будут рекомендации по интересным людям и постам.</div>
+          </div>
         </aside>
       </div>
     </>

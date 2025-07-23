@@ -229,7 +229,7 @@ const SocialMainPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem asChild>
-                                <Link to={`/u/users/${post.author.username}`}>Посмотреть профиль</Link>
+                                <Link to={`/u/users/${post.author.username}`}>Перейти в профиль</Link>
                               </DropdownMenuItem>
                               {isOwner && (
                                 <>

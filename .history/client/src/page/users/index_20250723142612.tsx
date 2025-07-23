@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFeedQueryFn, likeUserPostMutationFn, deleteUserPostMutationFn, getFollowingQueryFn, createUserPostMutationFn, followUserMutationFn, unfollowUserMutationFn } from "@/lib/api";
+import { getFeedQueryFn, likeUserPostMutationFn, deleteUserPostMutationFn, getFollowingQueryFn, createUserPostMutationFn } from "@/lib/api";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useAuth from "@/hooks/api/use-auth";
@@ -9,8 +9,6 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale/ru";
 
 interface FeedPost {
   _id: string;
@@ -45,7 +43,6 @@ const SocialMainPage = () => {
   const [postText, setPostText] = useState("");
   const [postImage, setPostImage] = useState<string | null>(null);
   const [postLoading, setPostLoading] = useState(false);
-  const [followLoading, setFollowLoading] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -116,25 +113,6 @@ const SocialMainPage = () => {
     }
   };
 
-  const handleFollow = async (username: string) => {
-    setFollowLoading(username);
-    try {
-      await followUserMutationFn(username);
-      setFollowing(f => [...f, { username, name: '', profilePicture: null }]);
-    } finally {
-      setFollowLoading(null);
-    }
-  };
-  const handleUnfollow = async (username: string) => {
-    setFollowLoading(username);
-    try {
-      await unfollowUserMutationFn(username);
-      setFollowing(f => f.filter(u => u.username !== username));
-    } finally {
-      setFollowLoading(null);
-    }
-  };
-
   return (
     <>
       <SocialHeader />
@@ -145,7 +123,7 @@ const SocialMainPage = () => {
         <main className="flex-1 flex flex-col items-center px-2 py-8">
           <div className="w-full max-w-2xl flex flex-col gap-6">
             <button
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-black text-white font-semibold hover:bg-gray-900 transition w-full justify-center"
+              className="flex items-center gap-2 px-4 py-1 rounded-full bg-black text-white font-semibold hover:bg-gray-900 transition w-full justify-center"
               onClick={() => setCreateDialogOpen(true)}
             >
               <Plus className="w-5 h-5" />
@@ -187,7 +165,7 @@ const SocialMainPage = () => {
                   const isFollowing = following.some(f => f.username === post.author.username);
                   return (
                     <div key={post._id} className="p-4 border rounded bg-white relative">
-                      <div className="flex items-start gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-2">
                         <Link to={`/u/users/${post.author.username}`} className="flex items-center gap-2 hover:underline">
                           <Avatar className="w-8 h-8">
                             <AvatarImage src={post.author.profilePicture || ''} alt={post.author.name} />
@@ -195,54 +173,27 @@ const SocialMainPage = () => {
                           </Avatar>
                           <span className="font-semibold">{post.author.name}</span>
                         </Link>
-                        {userId && post.author._id !== userId && (
-                          <div className="ml-2 flex items-center">
-                            {isFollowing ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={followLoading === post.author.username}
-                                onClick={() => handleUnfollow(post.author.username)}
-                                className="ml-2"
-                              >
-                                {followLoading === post.author.username ? '...' : 'Отписаться'}
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="default"
-                                size="sm"
-                                disabled={followLoading === post.author.username}
-                                onClick={() => handleFollow(post.author.username)}
-                                className="ml-2 bg-black hover:bg-gray-900"
-                              >
-                                {followLoading === post.author.username ? '...' : 'Подписаться'}
-                              </Button>
-                            )}
-                          </div>
-                        )}
+                        {/* <span className="text-blue-600 font-mono">@{post.author.username}</span> убрано */}
+                        {/* <span className="text-xs text-gray-400 ml-auto">{new Date(post.createdAt).toLocaleString()}</span> убрано */}
                         <div className="ml-auto">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className="p-1 rounded-full hover:bg-gray-100">
-                                <EllipsisVertical className="w-5 h-5 text-gray-500" />
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem asChild>
-                                <Link to={`/u/users/${post.author.username}`}>Посмотреть профиль</Link>
-                              </DropdownMenuItem>
-                              {isOwner && (
-                                <>
-                                  <DropdownMenuItem>Редактировать</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>Удалить</DropdownMenuItem>
-                                </>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          {userId && post.author._id !== userId && (
+                            isFollowing ? (
+                              <button className="text-xs px-3 py-1 rounded-full border text-gray-600 hover:bg-gray-100 transition">Вы подписаны</button>
+                            ) : (
+                              <button className="text-xs px-3 py-1 rounded-full bg-black text-white hover:bg-gray-900 transition">Подписаться</button>
+                            )
+                          )}
                         </div>
                       </div>
                       <div className="mb-2 whitespace-pre-line">{post.text}</div>
                       {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
+                      <div className="flex items-center gap-3 mt-2">
+                        {isOwner && (
+                          <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
+                            Удалить
+                          </button>
+                        )}
+                      </div>
                       <hr className="my-3" />
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <button
@@ -252,7 +203,7 @@ const SocialMainPage = () => {
                         >
                           <span>❤</span> {post.likes?.length || 0}
                         </button>
-                        <span>{format(new Date(post.createdAt), 'dd.MM HH:mm', { locale: ru })}</span>
+                        <span>{new Date(post.createdAt).toLocaleString()}</span>
                       </div>
                     </div>
                   );

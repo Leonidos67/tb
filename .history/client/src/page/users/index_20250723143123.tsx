@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFeedQueryFn, likeUserPostMutationFn, deleteUserPostMutationFn, getFollowingQueryFn, createUserPostMutationFn, followUserMutationFn, unfollowUserMutationFn } from "@/lib/api";
+import { getFeedQueryFn, likeUserPostMutationFn, deleteUserPostMutationFn, getFollowingQueryFn, createUserPostMutationFn } from "@/lib/api";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useAuth from "@/hooks/api/use-auth";
@@ -10,7 +10,7 @@ import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale/ru";
+import ru from "date-fns/locale/ru";
 
 interface FeedPost {
   _id: string;
@@ -195,31 +195,6 @@ const SocialMainPage = () => {
                           </Avatar>
                           <span className="font-semibold">{post.author.name}</span>
                         </Link>
-                        {userId && post.author._id !== userId && (
-                          <div className="ml-2 flex items-center">
-                            {isFollowing ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={followLoading === post.author.username}
-                                onClick={() => handleUnfollow(post.author.username)}
-                                className="ml-2"
-                              >
-                                {followLoading === post.author.username ? '...' : 'Отписаться'}
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="default"
-                                size="sm"
-                                disabled={followLoading === post.author.username}
-                                onClick={() => handleFollow(post.author.username)}
-                                className="ml-2 bg-black hover:bg-gray-900"
-                              >
-                                {followLoading === post.author.username ? '...' : 'Подписаться'}
-                              </Button>
-                            )}
-                          </div>
-                        )}
                         <div className="ml-auto">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -229,7 +204,7 @@ const SocialMainPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem asChild>
-                                <Link to={`/u/users/${post.author.username}`}>Посмотреть профиль</Link>
+                                <Link to={`/u/users/${post.author.username}`}>Перейти в профиль</Link>
                               </DropdownMenuItem>
                               {isOwner && (
                                 <>
@@ -241,8 +216,41 @@ const SocialMainPage = () => {
                           </DropdownMenu>
                         </div>
                       </div>
+                      {/* Кнопка подписки под именем */}
+                      {userId && post.author._id !== userId && (
+                        <div className="mb-2 ml-10">
+                          {isFollowing ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={followLoading === post.author.username}
+                              onClick={() => handleUnfollow(post.author.username)}
+                              className="mt-1"
+                            >
+                              {followLoading === post.author.username ? '...' : 'Отписаться'}
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              disabled={followLoading === post.author.username}
+                              onClick={() => handleFollow(post.author.username)}
+                              className="mt-1 bg-black hover:bg-gray-900"
+                            >
+                              {followLoading === post.author.username ? '...' : 'Подписаться'}
+                            </Button>
+                          )}
+                        </div>
+                      )}
                       <div className="mb-2 whitespace-pre-line">{post.text}</div>
                       {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
+                      <div className="flex items-center gap-3 mt-2">
+                        {isOwner && (
+                          <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
+                            Удалить
+                          </button>
+                        )}
+                      </div>
                       <hr className="my-3" />
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <button

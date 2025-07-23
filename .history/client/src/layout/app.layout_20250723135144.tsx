@@ -4,7 +4,7 @@ import { AuthProvider } from "@/context/auth-provider";
 import Asidebar from "@/components/asidebar/asidebar";
 import CreateWorkspaceDialog from "@/components/workspace/create-workspace-dialog";
 import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
-import Header from "@/components/header";
+import SocialHeader from "@/components/social-header";
 
 const AppLayout = () => {
   return (
@@ -14,7 +14,7 @@ const AppLayout = () => {
           <Asidebar />
           <SidebarInset className="overflow-x-hidden flex-1">
             <div className="w-full">
-              <Header />
+              {/* <SocialHeader /> Удалено, чтобы не показывать на всех страницах */}
               <div className="px-3 lg:px-20 py-3">
                 <Outlet />
               </div>

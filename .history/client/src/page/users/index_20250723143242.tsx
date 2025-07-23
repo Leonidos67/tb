@@ -229,7 +229,7 @@ const SocialMainPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem asChild>
-                                <Link to={`/u/users/${post.author.username}`}>Посмотреть профиль</Link>
+                                <Link to={`/u/users/${post.author.username}`}>Перейти в профиль</Link>
                               </DropdownMenuItem>
                               {isOwner && (
                                 <>
@@ -243,6 +243,13 @@ const SocialMainPage = () => {
                       </div>
                       <div className="mb-2 whitespace-pre-line">{post.text}</div>
                       {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
+                      <div className="flex items-center gap-3 mt-2">
+                        {isOwner && (
+                          <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
+                            Удалить
+                          </button>
+                        )}
+                      </div>
                       <hr className="my-3" />
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <button
