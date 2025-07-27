@@ -40,6 +40,8 @@ const InviteUser = () => {
         queryClient.resetQueries({
           queryKey: ["userWorkspaces"],
         });
+        // Обновляем данные пользователя после успешного присоединения
+        queryClient.invalidateQueries({ queryKey: ["auth"] });
         navigate(`/workspace/${data.workspaceId}`);
       },
       onError: (error) => {
@@ -66,10 +68,10 @@ const InviteUser = () => {
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">
-                Новое приглашение в рабочую зону
+                Приглашение в тренировочную зону
               </CardTitle>
               <CardDescription>
-                Чтобы продолжить, вам нужно войти в свою учетную запись T-Sync.
+                Вас пригласили присоединиться к тренировочной зоне. Войдите в свою учетную запись T-Sync, чтобы начать тренировки.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -88,7 +90,7 @@ const InviteUser = () => {
                           {isLoading && (
                             <Loader className="!w-6 !h-6 animate-spin" />
                           )}
-                          Принять приглашение
+                          Присоединиться к тренировкам
                         </Button>
                       </form>
                     </div>

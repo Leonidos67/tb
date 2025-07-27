@@ -3,7 +3,7 @@ import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { config } from "../config/app.config";
 import { registerSchema } from "../validation/auth.validation";
 import { HTTPSTATUS } from "../config/http.config";
-import { registerUserService } from "../services/auth.service";
+import { registerUserService, updateUserRoleService } from "../services/auth.service";
 import passport from "passport";
 
 export const googleLoginCallback = asyncHandler(
@@ -84,5 +84,24 @@ export const logOutController = asyncHandler(
     return res
       .status(HTTPSTATUS.OK)
       .json({ message: "Успешно вышел из системы" });
+  }
+);
+
+export const updateUserRoleController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userRole } = req.body;
+    
+    if (!req.user?._id) {
+      return res.status(HTTPSTATUS.UNAUTHORIZED).json({
+        message: "Пользователь не авторизован",
+      });
+    }
+
+    const updatedUser = await updateUserRoleService(req.user._id.toString(), userRole);
+
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Роль пользователя успешно обновлена",
+      user: updatedUser,
+    });
   }
 );

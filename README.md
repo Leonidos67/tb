@@ -1,124 +1,74 @@
-# 🌟 Advanced MERN B2B Teams Project Management SaaS - *TeachBoom*  
+# T-Sync - Платформа для ведения тренировок
 
-## 🎥 Watch the Full Video on YouTube  
-**[Subscribe to the Channel](https://tinyurl.com/subcribe-to-techwithEmma)** to stay updated with more exciting projects and tutorials!  
+T-Sync - это B2B платформа для управления тренировками, где тренеры могут создавать рабочие пространства и приглашать спортсменов для совместной работы.
 
----
+## Новая функциональность: Разделение ролей
 
-## ❤️ Support the Channel
-If you love this project and want to see more, consider supporting the channel:
-- Give this repository a ⭐️ on GitHub.
-- **[Buy Me a Coffee](https://www.buymeacoffee.com/techwithemmaofficial)** to help fund more educational content.  
-- Like, share, and subscribe to the channel for more tutorials and updates!
+### Роли пользователей
 
----
+1. **Тренер (Coach)** - имеет полный доступ ко всем функциям:
+   - Создание и управление рабочими пространствами
+   - Создание проектов (комнат) и задач (тренировок)
+   - Управление спортсменами
+   - Просмотр всех данных
 
-## 📌 Project Overview  
+2. **Спортсмен (Athlete)** - ограниченный доступ:
+   - Просмотр назначенных тренировок
+   - Редактирование своих данных
+   - Нет доступа к управлению участниками
 
-Welcome to **T-Sync**, a powerful and scalable multi-tenancy project management system built with **Node.js**, **MongoDB**, and **React**. Designed for real-world B2B needs, this project delivers features like Google Sign-In, workspace management, project tracking, task collaboration, role-based permissions, and more. Perfect for developers aiming to create SaaS-based team collaboration platforms.  
+### Изменения в интерфейсе
 
----
+#### Для тренеров:
+- В сайдбаре отображается "Мои спортсмены"
+- В проектах отображается "Мои комнаты"
+- Полный доступ ко всем функциям
 
-## 🌟 Key Features  
+#### Для спортсменов:
+- В сайдбаре отображается "Мои данные" вместо "Мои спортсмены"
+- В проектах отображается "Мои тренировки"
+- Скрыты функции создания проектов и управления участниками
 
-- 🔐 **Authentication** (Google Sign-In, Email, Password)  
-- 🏢 **Create & Manage Multiple Workspaces**  
-- 📊 **Projects & Epics Management**  
-- ✅ **Tasks** (CRUD, Status, Priority, Assignee)  
-- 👥 **Roles & Permissions** (Owner, Admin, Member)  
-- ✉️ **Invite Members to Workspaces**  
-- 🔍 **Filters & Search** (Status, Priority, AssignedTo)  
-- 📈 **Analytics Dashboard**  
-- 📅 **Pagination & Load More**  
-- 🔒 **Cookie Session Management**  
-- 🚪 **Logout & Session Termination**  
-- 🌱 **Seeding** for Test Data  
-- 💾 **Mongoose Transactions** for Robust Data Integrity  
-- 🌐 **Built with MERN Stack** (Node.js, MongoDB, React, TypeScript)  
+### Тестирование
 
----
+1. **Запуск приложения:**
+   ```bash
+   # Backend
+   cd backend
+   npm run dev
+   
+   # Frontend
+   cd client
+   npm run dev
+   ```
 
-## 🚀 Tools & Technologies  
+2. **Тестирование ролей:**
+   - При первом входе нового пользователя появится модальное окно онбординга
+   - Выберите роль "Я - Тренер" или "Я - Спортсмен"
+   - После выбора роли интерфейс изменится соответственно
 
-This project leverages the latest tools and frameworks for modern development:  
+3. **Проверка различий:**
+   - Тренеры видят "Мои спортсмены" в сайдбаре
+   - Спортсмены видят "Мои данные" в сайдбаре
+   - Тренеры могут создавать проекты, спортсмены - нет
+   - Тренеры видят "Мои комнаты", спортсмены - "Мои тренировки"
 
-- **Node.js**: Scalable backend architecture  
-- **React.js**: Dynamic frontend framework  
-- **MongoDB & Mongoose**: Flexible and scalable database solutions  
-- **Google OAuth**: Seamless Google Sign-In integration  
-- **TypeScript**: For a type-safe codebase  
-- **TailwindCSS & Shadcn UI**: Beautiful, responsive design  
-- **Vite.js**: Lightning-fast frontend development  
+### Технические детали
 
----
+- Добавлено поле `userRole` в модель пользователя
+- Создан API endpoint `/auth/role` для обновления роли
+- Обновлены компоненты навигации для отображения разного контента
+- Добавлена логика условного рендеринга в зависимости от роли
 
-## 🔄 Getting Started  
+### Структура изменений
 
-### 1. Watch the Video  
-Follow along step-by-step by watching the full guide on YouTube.  
-
-### 2. Set Up Environment Variables  
-
-Create a `.env` file in the root of your project and configure these variables:  
-
-```plaintext  
-PORT=8000
-NODE_ENV=development
-MONGO_URI="mongodb+srv://<username>:<password>@<>.mongodb.net/TeachBoom_db"  
-
-SESSION_SECRET="session_secret_key"
-
-GOOGLE_CLIENT_ID=<your-google-client-id>  
-GOOGLE_CLIENT_SECRET=<your-google-client-secret>  
-GOOGLE_CALLBACK_URL=http://localhost:8000/api/auth/google/callback
-
-FRONTEND_ORIGIN=http://localhost:3000
-FRONTEND_GOOGLE_CALLBACK_URL=http://localhost:3000/google/callback
-```  
-
-### 3. Run the Application  
-
-Install dependencies and start the development server:  
-
-```bash  
-npm install  
-npm run dev  
-```  
-
-Access the backend at `http://localhost:8000`.  
-
----
-
-## 🌐 Deploying TeachBoom  
-
-### 1. Add Environment Variables  
-Add the `.env` variables to your hosting platform (e.g., Vercel).  
-
-### 2. Deploy  
-Deploy your app using your preferred method to make it live.  
-
----
-
-## 📚 Comprehensive Guide  
-
-**🚀 Deepen Your Understanding!**  
-We’ve developed an all-encompassing guide for this project that explains:  
-
-- The architecture and design principles behind TeachBoom  
-- Step-by-step breakdowns of each feature  
-- Advanced techniques for implementing seeding, Mongoose transactions, and performance optimizations  
-- Insights into multi-tenancy and role-based permission models  
-- Best practices for building scalable SaaS applications  
-
-This guide ensures you gain a thorough understanding of every concept and feature in TeachBoom, empowering you to build similar systems or expand upon this project.  
-
-**💡 Ready to learn more?** Check out the full guide now—**[link in the description!](#)**  
-
----
-
-### 📺 Like, Share & Subscribe  
-
-Don’t miss out! **[Subscribe to the Channel](https://tinyurl.com/subcribe-to-techwithEmma)** for more amazing content and exciting projects.  
-
-Now, let’s dive into the demo of **TeachBoom**! 🚀
+- `backend/src/models/user.model.ts` - добавлено поле userRole
+- `backend/src/services/auth.service.ts` - добавлена функция updateUserRoleService
+- `backend/src/controllers/auth.controller.ts` - добавлен контроллер updateUserRoleController
+- `backend/src/routes/auth.route.ts` - добавлен route для обновления роли
+- `client/src/components/workspace/common/NewUserOnboardingDialog.tsx` - обновлен для сохранения роли
+- `client/src/components/asidebar/nav-main.tsx` - обновлена навигация
+- `client/src/components/asidebar/nav-projects.tsx` - обновлены проекты
+- `client/src/page/workspace/Members.tsx` - обновлена страница участников
+- `client/src/components/header.tsx` - обновлены заголовки
 

@@ -28,6 +28,7 @@ const AllMembers = () => {
   const { user, hasPermission } = useAuthContext();
 
   const canChangeMemberRole = hasPermission(Permissions.CHANGE_MEMBER_ROLE);
+  const isCoach = user?.userRole === "coach";
 
   const queryClient = useQueryClient();
   const workspaceId = useWorkspaceId();
@@ -117,7 +118,7 @@ const AllMembers = () => {
                       : member.role.name === "ADMIN"
                       ? "админ"
                       : member.role.name === "MEMBER"
-                      ? "спортсмен"
+                      ? isCoach ? "спортсмен" : "участник"
                       : member.role.name?.toLowerCase()}
                     {canChangeMemberRole && member.userId._id !== user?._id && (
                       <ChevronDown className="text-muted-foreground" />
@@ -159,7 +160,7 @@ const AllMembers = () => {
                                           : role.name === "ADMIN"
                                           ? "админ"
                                           : role.name === "MEMBER"
-                                          ? "спортсмен"
+                                          ? isCoach ? "спортсмен" : "участник"
                                           : role.name?.toLowerCase()}
                                       </p>
                                       <p className="text-sm text-muted-foreground">

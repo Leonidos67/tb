@@ -186,3 +186,19 @@ export const verifyUserService = async ({
 
   return user.omitPassword();
 };
+
+export const updateUserRoleService = async (
+  userId: string,
+  userRole: "coach" | "athlete"
+) => {
+  const user = await UserModel.findById(userId);
+  
+  if (!user) {
+    throw new NotFoundException("Пользователь не найден");
+  }
+
+  user.userRole = userRole;
+  await user.save();
+
+  return user.omitPassword();
+};

@@ -8,6 +8,7 @@ import { CopyIcon, Pencil, ChevronDown, ExternalLink, Info } from "lucide-react"
 import { toast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 
 const PROFILE_BASE_URL = window.location.origin + "/u/users/";
@@ -238,7 +239,21 @@ const Profile = () => {
               />
             </div>
             <div>
-              <div className="text-xl font-semibold mb-1">{user.name}</div>
+              <div className="text-xl font-semibold mb-1 flex items-center gap-2">
+                {user.name}
+                {user.userRole === "coach" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <span className="text-2xl cursor-help">🏋️‍♂️</span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Этот эмодзи присваивается только тренерам</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
               <div className="text-gray-500">{user.email}</div>
               {/* username section */}
               <div className="mt-4 w-full flex flex-row items-start justify-between gap-4">

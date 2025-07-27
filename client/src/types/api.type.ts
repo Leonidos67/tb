@@ -37,6 +37,7 @@ export type UserType = {
     inviteCode: string;
   };
   isNewUser?: boolean; // добавлено для поддержки онбординга
+  userRole?: "coach" | "athlete" | null; // роль пользователя: тренер или спортсмен
 };
 
 export type CurrentUserResponseType = {

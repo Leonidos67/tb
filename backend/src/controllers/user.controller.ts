@@ -88,6 +88,7 @@ export const getPublicUserController = asyncHandler(
       name: user.name,
       username: user.username,
       profilePicture: user.profilePicture,
+      userRole: user.userRole, // Добавляем информацию о роли
       // email: user.email, // если нужно показывать email
     });
   }
@@ -98,7 +99,7 @@ export const getFollowersController = asyncHandler(async (req: Request, res: Res
   const { username } = req.params;
   const user = await UserModel.findOne({ username: username.toLowerCase().trim() });
   if (!user) return res.status(404).json({ message: "User not found" });
-  const followers = await FollowerModel.find({ following: user._id }).populate({ path: "follower", select: "username name profilePicture" });
+  const followers = await FollowerModel.find({ following: user._id }).populate({ path: "follower", select: "username name profilePicture userRole" });
   return res.status(200).json({ followers: followers.map((f: any) => f.follower) });
 });
 
@@ -107,7 +108,7 @@ export const getFollowingController = asyncHandler(async (req: Request, res: Res
   const { username } = req.params;
   const user = await UserModel.findOne({ username: username.toLowerCase().trim() });
   if (!user) return res.status(404).json({ message: "User not found" });
-  const following = await FollowerModel.find({ follower: user._id }).populate({ path: "following", select: "username name profilePicture" });
+  const following = await FollowerModel.find({ follower: user._id }).populate({ path: "following", select: "username name profilePicture userRole" });
   return res.status(200).json({ following: following.map((f: any) => f.following) });
 });
 
@@ -136,6 +137,24 @@ export const unfollowUserController = asyncHandler(async (req: Request, res: Res
 
 export const getAllUsersController = asyncHandler(async (req: Request, res: Response) => {
   const users = await UserModel.find({}, "name username profilePicture");
+  return res.status(200).json({ users });
+});
+
+// Поиск пользователей по имени
+export const searchUsersController = asyncHandler(async (req: Request, res: Response) => {
+  const { query } = req.query;
+  
+  if (!query || typeof query !== 'string') {
+    return res.status(200).json({ users: [] });
+  }
+
+  const users = await UserModel.find({
+    $or: [
+      { name: { $regex: query, $options: 'i' } },
+      { username: { $regex: query, $options: 'i' } }
+    ]
+  }, "name username profilePicture userRole").limit(10);
+
   return res.status(200).json({ users });
 });
 
@@ -190,6 +209,6 @@ export const likePostController = asyncHandler(async (req: Request, res: Respons
 export const getFeedController = asyncHandler(async (req: Request, res: Response) => {
   const posts = await PostModel.find({})
     .sort({ createdAt: -1 })
-    .populate("author", "username name profilePicture");
+    .populate("author", "username name profilePicture userRole");
   return res.status(200).json({ posts });
 });

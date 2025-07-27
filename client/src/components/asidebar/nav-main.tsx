@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
-// import { useAuthContext } from "@/context/auth-provider";
+import { useAuthContext } from "@/context/auth-provider";
 // import { Permissions } from "@/constant";
 // import { Separator } from "@/components/ui/separator";
 
@@ -33,16 +33,12 @@ type ItemType = {
 };
 
 export function NavMain() {
-  // const { hasPermission } = useAuthContext();
-
-  // const canManageSettings = hasPermission(
-  //   Permissions.MANAGE_WORKSPACE_SETTINGS
-  // );
-
+  const { user } = useAuthContext();
   const workspaceId = useWorkspaceId();
   const location = useLocation();
 
   const pathname = location.pathname;
+  const isCoach = user?.userRole === "coach";
 
   const mainItems: ItemType[] = [
     {
@@ -55,11 +51,12 @@ export function NavMain() {
       url: `/workspace/${workspaceId}/profile`,
       icon: User,
     },
-    {
-      title: "Участники",
+    // Показываем "Мои спортсмены" только тренерам
+    ...(isCoach ? [{
+      title: "Мои спортсмены",
       url: `/workspace/${workspaceId}/members`,
       icon: Users,
-    },
+    }] : []),
     {
       title: "Все тренировки",
       url: `/workspace/${workspaceId}/tasks`,

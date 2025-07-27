@@ -8,15 +8,19 @@ import useAuth from "@/hooks/api/use-auth";
 import { getFollowersQueryFn, followUserMutationFn, unfollowUserMutationFn } from "@/lib/api";
 import { getUserPostsQueryFn, createUserPostMutationFn, deleteUserPostMutationFn, likeUserPostMutationFn } from "@/lib/api";
 import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
-import SocialHeader from "@/components/social-header";
+import SocialHeader, { SocialSidebarMenu } from "@/components/social-header";
 import { getFollowingQueryFn } from "@/lib/api";
 import { EllipsisVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale/ru";
 
 interface PublicUser {
   name: string;
   username: string;
   profilePicture: string | null;
+  userRole?: "coach" | "athlete" | null;
   email?: string;
 }
 
@@ -24,6 +28,7 @@ interface FollowerUser {
   username: string;
   name: string;
   profilePicture: string | null;
+  userRole?: "coach" | "athlete" | null;
 }
 
 interface Post {
@@ -182,65 +187,93 @@ const UserProfile = () => {
   return (
     <>
       <SocialHeader />
-      <div className="flex min-h-svh bg-muted w-full justify-center">
+      <div className="flex min-h-svh bg-muted">
         {/* Левая колонка */}
-        
+        <SocialSidebarMenu />
         {/* Центр: профиль */}
-        <main className="flex-1 flex flex-col items-center px-2 py-8 max-w-2xl w-full">
+        <main className="flex-1 flex flex-col items-center px-2 sm:px-4 py-4 sm:py-8">
           {/* Весь старый JSX профиля */}
-          <div className="w-full flex flex-col gap-6">
+          <div className="w-full flex flex-col gap-4 sm:gap-6 max-w-2xl">
             <Card className="p-0">
-              <div className="flex flex-col items-center gap-2 pt-8">
-                <div className="text-lg font-semibold mb-2">👋 Привет! Я пользуюсь T-Sync.</div>
+              <div className="flex flex-col items-center gap-2 pt-6 sm:pt-8">
+                <div className="text-base sm:text-lg font-semibold mb-2 text-center">👋 Привет! Я пользуюсь T-Sync.</div>
               </div>
-              <div className="flex flex-col items-center gap-4 px-8 pb-8">
-                <Avatar className="w-24 h-24 mt-2">
+              <div className="flex flex-col items-center gap-3 sm:gap-4 px-4 sm:px-8 pb-6 sm:pb-8">
+                <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mt-2">
                   <AvatarImage src={user.profilePicture || ''} alt={user.name} />
-                  <AvatarFallback>{user.name?.[0]}</AvatarFallback>
+                  <AvatarFallback className="text-lg sm:text-xl">{user.name?.[0]}</AvatarFallback>
                 </Avatar>
-                <div className="text-2xl font-bold">{user.name}</div>
-                <div className="text-blue-600 font-mono text-lg">@{user.username}</div>
-                {user.email && <div className="text-gray-500">{user.email}</div>}
+                <div className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-center">
+                  {user.name}
+                  {user.userRole === "coach" && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <span className="text-xl sm:text-2xl cursor-help">🏋️‍♂️</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Этот эмодзи присваивается только тренерам</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+                <div className="text-blue-600 font-mono text-base sm:text-lg">@{user.username}</div>
+                {user.email && <div className="text-gray-500 text-sm sm:text-base">{user.email}</div>}
                 {currentUser?.user?.username === user.username && (
                   <>
-                    <Button className="mt-4">Редактировать профиль</Button>
-                    <form onSubmit={handleCreatePost} className="w-full flex flex-col gap-2 mt-6 p-4 border rounded bg-gray-50">
+                    <Button className="mt-4 text-sm sm:text-base">Редактировать профиль</Button>
+                    <form onSubmit={handleCreatePost} className="w-full flex flex-col gap-2 mt-4 sm:mt-6 p-3 sm:p-4 border rounded bg-gray-50">
                       <textarea
-                        className="border rounded p-2 resize-none"
+                        className="border rounded p-2 sm:p-3 resize-none text-sm sm:text-base"
                         rows={3}
                         placeholder="Что нового?"
                         value={postText}
                         onChange={e => setPostText(e.target.value)}
                         disabled={postLoading}
                       />
-                      <input type="file" accept="image/*" onChange={handleImageChange} disabled={postLoading} />
-                      {postImage && <img src={postImage} alt="preview" className="max-h-40 object-contain rounded" />}
-                      <Button type="submit" disabled={postLoading || !postText.trim()} className="self-end">Опубликовать</Button>
+                      <input type="file" accept="image/*" onChange={handleImageChange} disabled={postLoading} className="text-sm" />
+                      {postImage && <img src={postImage} alt="preview" className="max-h-32 sm:max-h-40 object-contain rounded" />}
+                      <Button type="submit" disabled={postLoading || !postText.trim()} className="self-end text-sm sm:text-base">Опубликовать</Button>
                     </form>
                   </>
                 )}
                 {currentUser?.user && currentUser.user.username !== user.username && (
                   isFollowing ? (
-                    <Button variant="outline" className="mt-4" onClick={handleUnfollow} disabled={followLoading}>
+                    <Button variant="outline" className="mt-4 text-sm sm:text-base" onClick={handleUnfollow} disabled={followLoading}>
                       Отписаться
                     </Button>
                   ) : (
-                    <Button className="mt-4" onClick={handleFollow} disabled={followLoading}>
+                    <Button className="mt-4 text-sm sm:text-base" onClick={handleFollow} disabled={followLoading}>
                       Подписаться
                     </Button>
                   )
                 )}
-                <div className="mt-6 w-full">
-                  <div className="font-semibold mb-2">Подписчики: {followers.length}</div>
-                  <div className="flex flex-wrap gap-3">
-                    {followers.length === 0 && <span className="text-gray-400">Нет подписчиков</span>}
+                <div className="mt-4 sm:mt-6 w-full">
+                  <div className="font-semibold mb-2 text-sm sm:text-base">Подписчики: {followers.length}</div>
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    {followers.length === 0 && <span className="text-gray-400 text-sm sm:text-base">Нет подписчиков</span>}
                     {followers.map((f) => (
-                      <Link key={f.username} to={`/u/users/${f.username}`} className="flex items-center gap-2 hover:underline">
-                        <Avatar className="w-8 h-8">
+                      <Link key={f.username} to={`/u/users/${f.username}`} className="flex items-center gap-1.5 sm:gap-2 hover:underline">
+                        <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                           <AvatarImage src={f.profilePicture || ''} alt={f.name} />
-                          <AvatarFallback>{f.name?.[0]}</AvatarFallback>
+                          <AvatarFallback className="text-xs sm:text-sm">{f.name?.[0]}</AvatarFallback>
                         </Avatar>
-                        <span>@{f.username}</span>
+                        <span className="flex items-center gap-1 text-xs sm:text-sm">
+                          @{f.username}
+                          {f.userRole === "coach" && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <span className="text-xs sm:text-sm cursor-help">🏋️‍♂️</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Тренер</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </span>
                       </Link>
                     ))}
                   </div>
@@ -248,7 +281,7 @@ const UserProfile = () => {
               </div>
             </Card>
           </div>
-          <div className="mt-8 w-full">
+          <div className="mt-8 w-full max-w-2xl">
             <div className="font-semibold mb-2">Посты:</div>
             {posts.length === 0 && <div className="text-gray-400">Нет постов</div>}
             <div className="flex flex-col gap-4">
@@ -257,10 +290,53 @@ const UserProfile = () => {
                 const isLiked = post.likes && userId ? post.likes.includes(userId) : false;
                 return (
                   <div key={post._id} className="p-4 border rounded bg-white relative">
-                    <div className="mb-2 text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</div>
+                    <div className="flex items-start gap-3 mb-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={user?.profilePicture || ''} alt={user?.name} />
+                          <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-semibold flex items-center gap-1">
+                          {user?.name}
+                          {user?.userRole === "coach" && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <span className="text-lg cursor-help">🏋️‍♂️</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Тренер</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </span>
+                      </div>
+                      <div className="ml-auto">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-1 rounded-full hover:bg-gray-100">
+                              <EllipsisVertical className="w-5 h-5 text-gray-500" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link to={`/u/users/${user?.username}`}>Посмотреть профиль</Link>
+                            </DropdownMenuItem>
+                            {isOwner && (
+                              <>
+                                <DropdownMenuItem>Редактировать</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>Удалить</DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
                     <div className="mb-2 whitespace-pre-line">{post.text}</div>
                     {post.image && <img src={post.image} alt="post" className="max-h-60 object-contain rounded" />}
-                    <div className="flex items-center gap-3 mt-2">
+                    <hr className="my-3" />
+                    <div className="flex items-center justify-between text-sm text-gray-500">
                       <button
                         className={`text-pink-500 flex items-center gap-1 ${isLiked ? 'font-bold' : ''}`}
                         onClick={() => handleLikePost(post._id)}
@@ -268,11 +344,7 @@ const UserProfile = () => {
                       >
                         <span>❤</span> {post.likes?.length || 0}
                       </button>
-                      {isOwner && (
-                        <button className="text-red-500 ml-2" onClick={() => { setDeleteDialogOpen(true); setDeletePostId(post._id); }}>
-                          Удалить
-                        </button>
-                      )}
+                      <span>{format(new Date(post.createdAt), 'dd.MM', { locale: ru })} в {format(new Date(post.createdAt), 'HH:mm', { locale: ru })}</span>
                     </div>
                   </div>
                 );
@@ -281,23 +353,37 @@ const UserProfile = () => {
           </div>
         </main>
         {/* Правая колонка */}
-        <aside className="hidden lg:flex flex-col w-64 border-l bg-white p-6 gap-6 min-h-svh sticky top-0">
+        <aside className="hidden lg:flex flex-col w-64 border-l bg-white p-4 sm:p-6 gap-4 sm:gap-6 min-h-svh sticky top-0">
           <div>
-            <div className="font-semibold text-lg mb-2">Мои подписки</div>
+            <div className="font-semibold text-base sm:text-lg mb-2">Мои подписки</div>
             {following.length === 0 ? (
               <div className="text-gray-500 text-sm">Вы ни на кого не подписаны.</div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2 sm:gap-3">
                 {following.map(user => (
-                  <div key={user.username} className="flex items-center gap-2 group">
-                    <Link to={`/u/users/${user.username}`} className="flex items-center gap-2 hover:underline flex-1 min-w-0">
-                      <img src={user.profilePicture || ''} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
-                      <span className="font-semibold truncate">{user.name}</span>
+                  <div key={user.username} className="flex items-center gap-1.5 sm:gap-2 group">
+                    <Link to={`/u/users/${user.username}`} className="flex items-center gap-1.5 sm:gap-2 hover:underline flex-1 min-w-0">
+                      <img src={user.profilePicture || ''} alt={user.name} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover" />
+                      <span className="font-semibold truncate flex items-center gap-1 text-sm sm:text-base">
+                        {user.name}
+                        {user.userRole === "coach" && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <span className="text-xs sm:text-sm cursor-help">🏋️‍♂️</span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Тренер</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </span>
                     </Link>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button className="p-1 rounded-full hover:bg-gray-100 ml-1">
-                          <EllipsisVertical className="w-5 h-5 text-gray-500" />
+                          <EllipsisVertical className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

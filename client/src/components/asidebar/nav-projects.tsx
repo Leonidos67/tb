@@ -36,11 +36,13 @@ import { PaginationType } from "@/types/api.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProjectMutationFn } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
+import { useAuthContext } from "@/context/auth-provider";
 
 export function NavProjects() {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
+  const { user } = useAuthContext();
 
   const queryClient = useQueryClient();
   const workspaceId = useWorkspaceId();
@@ -51,6 +53,9 @@ export function NavProjects() {
 
   const [pageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+
+  const isCoach = user?.userRole === "coach";
+  const isAthlete = user?.userRole === "athlete";
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: deleteProjectMutationFn,
@@ -107,8 +112,11 @@ export function NavProjects() {
     <>
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel className="w-full justify-between pr-0">
-          <span>Мои комнаты</span>
+          <span>
+            {isCoach ? "Мои комнаты" : isAthlete ? "Мои тренировки" : "Мои комнаты"}
+          </span>
 
+          {/* Кнопка создания для всех пользователей */}
           <PermissionsGuard requiredPermission={Permissions.CREATE_PROJECT}>
             <button
               onClick={onOpen}
@@ -132,8 +140,14 @@ export function NavProjects() {
           {!isPending && projects?.length === 0 ? (
             <div className="pl-3">
               <p className="text-xs text-muted-foreground">
-                У вас пока нет комнат. Созданные вами комнаты будут отображаться здесь.
+                {isCoach 
+                  ? "У вас пока нет комнат. Созданные вами комнаты будут отображаться здесь."
+                  : isAthlete 
+                  ? "У вас пока нет тренировок. Назначенные вам тренировки будут отображаться здесь."
+                  : "У вас пока нет комнат. Созданные вами комнаты будут отображаться здесь."
+                }
               </p>
+              {/* Кнопка создания для всех пользователей */}
               <PermissionsGuard requiredPermission={Permissions.CREATE_PROJECT}>
                 <Button
                   variant="link"
@@ -141,7 +155,7 @@ export function NavProjects() {
                   className="h-0 p-0 text-[13px] underline font-semibold mt-4"
                   onClick={onOpen}
                 >
-                  Создать комнату
+                  {isCoach ? "Создать комнату" : isAthlete ? "Создать тренировку" : "Создать комнату"}
                   <ArrowRight />
                 </Button>
               </PermissionsGuard>
@@ -179,13 +193,18 @@ export function NavProjects() {
                       <span>Открыть</span>
                     </DropdownMenuItem>
                     
+                    {/* Кнопка "Добавить участника" только для тренеров */}
+                    {isCoach && (
                       <DropdownMenuItem asChild className="!cursor-pointer">
                         <Link to={`/workspace/${workspaceId}/members`} className="flex items-center gap-2">
                           <Plus className="text-muted-foreground" />
                           <span>Добавить участника</span>
                         </Link>
                       </DropdownMenuItem>
+                    )}
 
+                    {/* Кнопка "Удалить" только для тренеров */}
+                    {isCoach && (
                       <PermissionsGuard
                         requiredPermission={Permissions.DELETE_PROJECT}
                       >
@@ -199,6 +218,7 @@ export function NavProjects() {
                           <span>Удалить комнату</span>
                         </DropdownMenuItem>
                       </PermissionsGuard>
+                    )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </SidebarMenuItem>
@@ -226,7 +246,7 @@ export function NavProjects() {
         isLoading={isLoading}
         onClose={onCloseDialog}
         onConfirm={handleConfirm}
-        title="Удаление комнаты"
+        title={isCoach ? "Удаление комнаты" : "Удаление тренировки"}
         description={`Вы уверены, что хотите удалить "${
           context?.name || "this item"
         }"? Это действие невозможно отменить.`}

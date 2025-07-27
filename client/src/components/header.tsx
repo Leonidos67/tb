@@ -10,6 +10,7 @@ import {
 import { Separator } from "./ui/separator";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
+import { useAuthContext } from "@/context/auth-provider";
 // import { RefreshCcw, Maximize2, Minimize2, Plus } from "lucide-react";
 // import { useEffect, useState } from "react";
 // import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -27,14 +28,16 @@ import useWorkspaceId from "@/hooks/use-workspace-id";
 const Header = () => {
   const location = useLocation();
   const workspaceId = useWorkspaceId();
+  const { user } = useAuthContext();
 
   const pathname = location.pathname;
+  const isCoach = user?.userRole === "coach";
 
   const getPageLabel = (pathname: string) => {
-    if (pathname.includes("/project/")) return "Комната";
+    if (pathname.includes("/project/")) return isCoach ? "Комната" : "Тренировка";
     if (pathname.includes("/settings")) return "Настройки";
     if (pathname.includes("/tasks")) return "Все тренировки";
-    if (pathname.includes("/members")) return "Участники";
+    if (pathname.includes("/members")) return isCoach ? "Мои спортсмены" : "Участники";
     if (pathname.includes("/profile")) return "Мой профиль";
     if (pathname.includes("/completed")) return "Выполненные тренировки";
     return null; // Default label

@@ -14,6 +14,7 @@ export interface UserDocument extends Document {
   currentWorkspace: mongoose.Types.ObjectId | null;
   isNewUser: boolean;
   onboardingAnswer?: string | null;
+  userRole?: "coach" | "athlete" | null; // роль пользователя: тренер или спортсмен
   comparePassword(value: string): Promise<boolean>;
   omitPassword(): Omit<UserDocument, "password">;
 }
@@ -52,6 +53,11 @@ const userSchema = new Schema<UserDocument>(
     lastLogin: { type: Date, default: null },
     isNewUser: { type: Boolean, default: true },
     onboardingAnswer: { type: String, default: null },
+    userRole: { 
+      type: String, 
+      enum: ["coach", "athlete", null], 
+      default: null 
+    },
   },
   {
     timestamps: true,

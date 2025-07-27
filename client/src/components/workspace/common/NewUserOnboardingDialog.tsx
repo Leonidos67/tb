@@ -9,6 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/context/auth-provider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { updateUserRoleMutationFn } from "@/lib/api";
 
 interface NewUserOnboardingDialogProps {
   open: boolean;
@@ -25,7 +29,7 @@ const options = [
   {
     key: "athlete",
     title: "Я - Спортсмен",
-    description: "У меня уже есть тренер/Ищу себе тренера",
+    description: "У меня уже есть тренер",
   },
 ];
 
@@ -63,6 +67,29 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
   const [usageContext, setUsageContext] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState<string>("");
+  const { refetchAuth } = useAuthContext();
+  const queryClient = useQueryClient();
+
+  // Мутация для обновления роли пользователя
+  const updateUserRoleMutation = useMutation({
+    mutationFn: updateUserRoleMutationFn,
+    onSuccess: () => {
+      // Обновляем данные пользователя
+      refetchAuth();
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+      toast({
+        title: "Успешно",
+        description: "Ваша роль была обновлена",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message || "Не удалось обновить роль пользователя",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleRoleSelect = (key: string) => {
     setRole(key);
@@ -77,9 +104,23 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
   const handleFinish = async () => {
     setLoading(true);
     try {
-      if (role === "coach" && onFinish) await onFinish(usageContext || coachCount || "coach");
-      else if (role === "athlete" && onFinish) await onFinish("athlete");
+      // Обновляем роль пользователя на сервере
+      if (role === "coach") {
+        await updateUserRoleMutation.mutateAsync("coach");
+      } else if (role === "athlete") {
+        await updateUserRoleMutation.mutateAsync("athlete");
+      }
+      
+      if (onFinish) {
+        if (role === "coach") {
+          await onFinish(usageContext || coachCount || "coach");
+        } else if (role === "athlete") {
+          await onFinish("athlete");
+        }
+      }
       onClose();
+    } catch (error) {
+      console.error("Ошибка при завершении онбординга:", error);
     } finally {
       setLoading(false);
     }
@@ -175,14 +216,14 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
                   <DialogTitle>Вам нужно получить приглашение</DialogTitle>
                 </DialogHeader>
                 {athleteInfo}
-                {/* <DialogFooter>
+                <DialogFooter>
                   <Button variant="outline" onClick={handleBack} disabled={loading}>
                     Назад
                   </Button>
                   <Button onClick={handleFinish} disabled={loading}>
-                    Понятно
+                    Продолжить
                   </Button>
-                </DialogFooter> */}
+                </DialogFooter>
               </>
             )}
             {step === 3 && role === "coach" && (

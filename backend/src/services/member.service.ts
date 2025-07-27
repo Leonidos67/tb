@@ -3,6 +3,7 @@ import { Roles } from "../enums/role.enum";
 import MemberModel from "../models/member.model";
 import RoleModel from "../models/roles-permission.model";
 import WorkspaceModel from "../models/workspace.model";
+import UserModel from "../models/user.model";
 import {
   BadRequestException,
   NotFoundException,
@@ -68,6 +69,12 @@ export const joinWorkspaceByInviteService = async (
     role: role._id,
   });
   await newMember.save();
+
+  // Устанавливаем роль пользователя как "athlete" для тех, кто приходит по приглашению
+  await UserModel.findByIdAndUpdate(userId, {
+    userRole: "athlete",
+    isNewUser: false, // Убираем флаг нового пользователя
+  });
 
   return { workspaceId: workspace._id, role: role.name };
 };

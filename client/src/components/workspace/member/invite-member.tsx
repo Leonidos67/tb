@@ -10,8 +10,10 @@ import PermissionsGuard from "@/components/resuable/permission-guard";
 import { Permissions } from "@/constant";
 
 const InviteMember = () => {
-  const { workspace, workspaceLoading } = useAuthContext();
+  const { workspace, workspaceLoading, user } = useAuthContext();
   const [copied, setCopied] = useState(false);
+
+  const isCoach = user?.userRole === "coach";
 
   const inviteUrl = workspace
     ? `${window.location.origin}${BASE_ROUTE.INVITE_URL.replace(
@@ -33,10 +35,11 @@ const InviteMember = () => {
       });
     }
   };
+
   return (
     <div className="flex flex-col pt-0.5 px-0 ">
       <h5 className="text-lg  leading-[30px] font-semibold mb-1">
-        Пригласите спортсменов присоединиться к вам по специальной ссылке
+        {isCoach ? "Пригласите спортсменов присоединиться к вам по специальной ссылке" : "Пригласите участников присоединиться к вам по специальной ссылке"}
       </h5>
       <p className="text-sm text-muted-foreground leading-tight">
       Любой, у кого есть ссылка для приглашения, может присоединиться к этому бесплатному рабочему пространству. 
