@@ -1,13 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import Logo from "@/components/logo";
 import { Input } from "@/components/ui/input";
-import { Bell, Menu } from "lucide-react";
+import { Bell, Menu, ArrowLeft } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useAuth from "@/hooks/api/use-auth";
 import { useState, useEffect, useRef } from "react";
 import { searchUsersQueryFn } from "@/lib/api";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface SearchUser {
   _id: string;
@@ -194,14 +195,36 @@ const SocialHeader = () => {
       {/* Мобильное меню */}
       <MobileMenu />
       
-      <Link to="/u/" className="flex items-center gap-1 sm:gap-2">
-        <Logo />
-        <span className="hidden sm:flex ml-1 sm:ml-2 items-center gap-1 sm:gap-2 self-center font-medium text-sm sm:text-base">T-Sync.</span>
-        <span className="px-1 sm:px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
-      </Link>
+      {/* Иконка поворота и логотип */}
+      <div className="flex items-center gap-2 relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1 rounded hover:bg-gray-100 transition-colors" aria-label="Платформа">
+              <ArrowLeft className="w-5 h-5 text-gray-500" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
+            <DropdownMenuItem asChild>
+              <a
+                href={user?.currentWorkspace?._id ? `/workspace/${user.currentWorkspace._id}` : '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full !cursor-pointer"
+              >
+                Перейти на платформу
+              </a>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Link to="/u/" className="flex items-center gap-0 sm:gap-1">
+          <Logo />
+          <span className="hidden sm:flex ml-1 sm:ml-2 items-center gap-1 sm:gap-2 self-center font-medium text-sm sm:text-base">T-Sync.</span>
+          <span className="px-1 sm:px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
+        </Link>
+      </div>
       
       {/* Контейнер поиска */}
-      <div ref={searchContainerRef} className="flex-1 max-w-xs sm:max-w-md mx-2 sm:mx-4 relative">
+      <div ref={searchContainerRef} className="flex-1 max-w-xs sm:max-w-md mx-0 sm:mx-2 relative">
         <Input
           type="text"
           placeholder="Поиск..."

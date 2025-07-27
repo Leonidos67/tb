@@ -62,8 +62,23 @@ const UsersListPage = () => {
         {/* Правая колонка */}
         <aside className="hidden lg:flex flex-col w-64 border-l bg-white p-4 sm:p-6 gap-4 sm:gap-6 min-h-svh sticky top-0">
           <div>
-            <div className="font-semibold text-base sm:text-lg mb-2">Мои подписки</div>
-            <div className="text-gray-500 text-sm">Скоро здесь появятся ваши подписки на пользователей.</div>
+            <div className="font-semibold text-base sm:text-lg mb-2">Все пользователи</div>
+            <div className="grid grid-cols-3 gap-2">
+              {users.map((user) => (
+                <Link
+                  key={user.username}
+                  to={`/u/users/${user.username}`}
+                  className="flex flex-col items-center gap-1 p-2 rounded hover:bg-gray-50 transition-colors"
+                >
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={user.profilePicture || ''} alt={user.name} />
+                    <AvatarFallback className="text-xs">{user.name?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <span className="font-semibold text-xs truncate max-w-[60px] text-center">{user.name}</span>
+                  <span className="text-gray-500 text-[10px] font-mono truncate max-w-[60px] text-center">@{user.username}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </aside>
       </div>
