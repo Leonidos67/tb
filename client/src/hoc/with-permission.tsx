@@ -21,7 +21,7 @@ const withPermission = (
     }, [user, hasPermission, navigate, workspaceId]);
 
     if (isLoading) {
-      return <div>Loading...</div>;
+      return <div>Загрузка...</div>;
     }
 
     // Check if user has the required permission

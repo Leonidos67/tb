@@ -31,10 +31,10 @@ const ProjectHeader = () => {
 
   // Fallback if no project data is found
   const projectEmoji = project?.emoji || "📊";
-  const projectName = project?.name || "Untitled project";
+  const projectName = project?.name || "У комнаты нету названия";
 
   const renderContent = () => {
-    if (isPending) return <span>Loading...</span>;
+    if (isPending) return <span>Загрузка...</span>;
     if (isError) return <span>Произошла ошибка</span>;
     return (
       <>

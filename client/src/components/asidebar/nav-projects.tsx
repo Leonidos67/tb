@@ -1,11 +1,11 @@
 import {
   ArrowRight,
-  Folder,
   Loader,
   MoreHorizontal,
   Plus,
-  Trash2,
 } from "lucide-react";
+import { AnimatedFolders } from "@/components/ui/motion/AnimatedFolders";
+import { AnimatedDelete } from "@/components/ui/motion/AnimatedDelete";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -31,12 +31,14 @@ import { Button } from "../ui/button";
 import { Permissions } from "@/constant";
 import PermissionsGuard from "../resuable/permission-guard";
 import { useState } from "react";
+import * as React from "react";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import { PaginationType } from "@/types/api.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProjectMutationFn } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/context/auth-provider";
+import { AnimatedUsers } from "../ui/motion/AnimatedUsers";
 
 export function NavProjects() {
   const navigate = useNavigate();
@@ -53,6 +55,9 @@ export function NavProjects() {
 
   const [pageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [openFolderAnimating, setOpenFolderAnimating] = React.useState(false);
+  const [deleteAnimating, setDeleteAnimating] = React.useState(false);
+  const [addUserAnimating, setAddUserAnimating] = React.useState(false);
 
   const isCoach = user?.userRole === "coach";
   const isAthlete = user?.userRole === "athlete";
@@ -113,7 +118,7 @@ export function NavProjects() {
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel className="w-full justify-between pr-0">
           <span>
-            {isCoach ? "Мои комнаты" : isAthlete ? "Мои тренировки" : "Мои комнаты"}
+            {isCoach ? "Комнаты для спортсмена" : isAthlete ? "Мои комнаты" : "Комнаты для спортсмена"}
           </span>
 
           {/* Кнопка создания для всех пользователей */}
@@ -188,16 +193,23 @@ export function NavProjects() {
                     <DropdownMenuItem
                       className="!cursor-pointer"  
                       onClick={() => navigate(`${projectUrl}`)}
+                      onMouseEnter={() => setOpenFolderAnimating(true)}
+                      onMouseLeave={() => setOpenFolderAnimating(false)}
                     >
-                      <Folder className="text-muted-foreground" />
+                      <AnimatedFolders isAnimating={openFolderAnimating} />
                       <span>Открыть</span>
                     </DropdownMenuItem>
                     
                     {/* Кнопка "Добавить участника" только для тренеров */}
                     {isCoach && (
                       <DropdownMenuItem asChild className="!cursor-pointer">
-                        <Link to={`/workspace/${workspaceId}/members`} className="flex items-center gap-2">
-                          <Plus className="text-muted-foreground" />
+                        <Link 
+                          to={`/workspace/${workspaceId}/members`} 
+                          className="flex items-center gap-2"
+                          onMouseEnter={() => setAddUserAnimating(true)}
+                          onMouseLeave={() => setAddUserAnimating(false)}
+                        >
+                          <AnimatedUsers isAnimating={addUserAnimating} />
                           <span>Добавить участника</span>
                         </Link>
                       </DropdownMenuItem>
@@ -213,8 +225,10 @@ export function NavProjects() {
                           className="!cursor-pointer"
                           disabled={isLoading}
                           onClick={() => onOpenDialog(item)}
+                          onMouseEnter={() => setDeleteAnimating(true)}
+                          onMouseLeave={() => setDeleteAnimating(false)}
                         >
-                          <Trash2 className="text-muted-foreground" />
+                          <AnimatedDelete isAnimating={deleteAnimating} />
                           <span>Удалить комнату</span>
                         </DropdownMenuItem>
                       </PermissionsGuard>
@@ -234,7 +248,7 @@ export function NavProjects() {
                 onClick={fetchNextPage}
               >
                 <MoreHorizontal className="text-sidebar-foreground/70" />
-                <span>{isFetching ? "Loading..." : "More"}</span>
+                <span>{isFetching ? "Загрузка..." : "More"}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}

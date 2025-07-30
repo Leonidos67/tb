@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Check, ChevronDown, Loader, Plus, Settings } from "lucide-react";
+import { Check, Loader, Plus, Settings } from "lucide-react";
+import { AnimatedChevronDown } from "@/components/ui/motion/AnimatedChevronDown";
 
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ import useWorkspaceId from "@/hooks/use-workspace-id";
 import useCreateWorkspaceDialog from "@/hooks/use-create-workspace-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { getAllWorkspacesUserIsMemberQueryFn } from "@/lib/api";
+import { useAuthContext } from "@/context/auth-provider";
 
 type WorkspaceType = {
   _id: string;
@@ -36,6 +38,7 @@ export function WorkspaceSwitcher() {
   const workspaceId = useWorkspaceId();
 
   const [activeWorkspace, setActiveWorkspace] = React.useState<WorkspaceType>();
+  const [chevronAnimating, setChevronAnimating] = React.useState(false);
 
   const { data, isPending } = useQuery({
     queryKey: ["userWorkspaces"],
@@ -64,10 +67,17 @@ export function WorkspaceSwitcher() {
     navigate(`/workspace/${workspace._id}`);
   };
 
+  const { user } = useAuthContext();
+
+  const isCoach = user?.userRole === "coach";
+  const isAthlete = user?.userRole === "athlete";
+
   return (
     <>
       <SidebarGroupLabel className="w-full justify-between pr-0">
-        <span>Мои спортсмены</span>
+        <span> 
+          {isCoach ? "Данные спортсмена" : isAthlete ? "Мои данные" : "Данные спортсмена"}
+        </span>
         <button
           onClick={onOpen}
           className="flex size-5 items-center justify-center rounded-full border"
@@ -82,6 +92,8 @@ export function WorkspaceSwitcher() {
               <SidebarMenuButton
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-gray-10"
+                onMouseEnter={() => setChevronAnimating(true)}
+                onMouseLeave={() => setChevronAnimating(false)}
               >
                 {activeWorkspace ? (
                   <>
@@ -102,7 +114,10 @@ export function WorkspaceSwitcher() {
                     </span>
                   </div>
                 )}
-                <ChevronDown className="ml-auto" />
+                <AnimatedChevronDown 
+                  isAnimating={chevronAnimating} 
+                  className="ml-auto"
+                />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
