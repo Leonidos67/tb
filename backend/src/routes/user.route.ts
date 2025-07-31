@@ -5,7 +5,7 @@ import isAuthenticated from "../middlewares/isAuthenticated.middleware";
 const userRoutes = Router();
 
 userRoutes.get("/current", getCurrentUserController);
-userRoutes.post("/onboarding", onboardingUserController);
+userRoutes.patch("/onboarding", onboardingUserController);
 userRoutes.post("/profile-picture", updateProfilePictureController);
 userRoutes.post("/username", setUsernameController);
 userRoutes.get("/all", getAllUsersController);

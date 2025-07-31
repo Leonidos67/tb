@@ -33,7 +33,7 @@ const RecentProjects = () => {
          text-sm text-muted-foreground
           text-center py-5"
         >
-          Проект еще не создан
+          Ни одна комната еще не создана
         </div>
       )}
 

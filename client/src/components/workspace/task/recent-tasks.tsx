@@ -45,7 +45,7 @@ const RecentTasks = () => {
           text-sm text-muted-foreground
           text-center py-5"
         >
-          Тренировки еще не созданы
+          Актуальные тренировки не найдены
         </div>
       )}
 
