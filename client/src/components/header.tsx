@@ -82,7 +82,7 @@ const Header = () => {
         <div className="flex items-center w-full justify-between">
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block text-[15px]">
+              <BreadcrumbItem className="text-[15px]">
                 {pageHeading ? (
                   <BreadcrumbLink asChild>
                     <Link to={`/workspace/${workspaceId}`}>Главная</Link>
@@ -96,7 +96,7 @@ const Header = () => {
 
               {pageHeading && (
                 <>
-                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbSeparator />
                   <BreadcrumbItem className="text-[15px]">
                     <BreadcrumbPage className="line-clamp-1">
                       {pageHeading}

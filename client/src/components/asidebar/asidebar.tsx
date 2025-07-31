@@ -51,7 +51,7 @@ const Asidebar = () => {
               {open && (
                 <Link
                   to={`/workspace/${workspaceId}`}
-                  className="hidden md:flex ml-2 items-center gap-2 self-center font-medium"
+                  className=" md:flex ml-2 items-center gap-2 self-center font-medium"
                 >
                   T-Sync.
                 </Link>

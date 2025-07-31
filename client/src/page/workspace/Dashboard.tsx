@@ -51,7 +51,7 @@ const WorkspaceDashboard = () => {
         <WorkspaceAnalytics />
         <div className="mt-4">
           <Tabs defaultValue="projects" className="w-full border rounded-lg p-2">
-            <TabsList className="w-full justify-start border-0 bg-gray-50 px-1 h-12">
+            <TabsList className="w-full justify-start border-0 bg-gray-50 px-1 h-12 overflow-x-auto whitespace-nowrap scrollbar">
               <TabsTrigger className="py-2" value="projects">
                 {isCoach ? "Мои проекты" : isAthlete ? "Мои тренировки" : "Мои проекты"}
               </TabsTrigger>
@@ -66,16 +66,24 @@ const WorkspaceDashboard = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="projects">
-              <RecentProjects />
+              <div className="max-w-full overflow-auto sm:h-auto md:max-w-4xl md:overflow-visible">
+                <RecentProjects />
+              </div>
             </TabsContent>
             <TabsContent value="tasks">
-              <RecentTasks />
+              <div className="max-w-full overflow-auto sm:h-auto md:max-w-4xl md:overflow-visible">
+                <RecentTasks />
+              </div>
             </TabsContent>
             <TabsContent value="completed">
-              <CompletedTasks />
+              <div className="max-w-full overflow-auto sm:h-auto md:max-w-4xl md:overflow-visible">
+                <CompletedTasks />
+              </div>
             </TabsContent>
             <TabsContent value="members">
-              <RecentMembers />
+              <div className="max-w-full overflow-auto sm:h-auto md:max-w-4xl md:overflow-visible">
+                <RecentMembers />
+              </div>
             </TabsContent>
           </Tabs>
         </div>

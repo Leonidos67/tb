@@ -7,7 +7,7 @@ const userRoutes = Router();
 userRoutes.get("/current", getCurrentUserController);
 userRoutes.patch("/onboarding", onboardingUserController);
 userRoutes.post("/profile-picture", updateProfilePictureController);
-userRoutes.post("/username", setUsernameController);
+userRoutes.patch("/set-username", setUsernameController);
 userRoutes.get("/all", getAllUsersController);
 userRoutes.get("/search", searchUsersController);
 userRoutes.get("/feed", getFeedController);
