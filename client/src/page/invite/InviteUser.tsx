@@ -90,7 +90,7 @@ const InviteUser = () => {
                           {isLoading && (
                             <Loader className="!w-6 !h-6 animate-spin" />
                           )}
-                          Присоединиться к тренировкам
+                          Присоединиться
                         </Button>
                       </form>
                     </div>
