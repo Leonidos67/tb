@@ -18,6 +18,7 @@ export interface TaskDocument extends Document {
   assignedTo: mongoose.Types.ObjectId | null;
   createdBy: mongoose.Types.ObjectId;
   dueDate: Date | null;
+  isHidden: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -72,6 +73,10 @@ const taskSchema = new Schema<TaskDocument>(
     dueDate: {
       type: Date,
       default: null,
+    },
+    isHidden: {
+      type: Boolean,
+      default: false,
     },
   },
   {

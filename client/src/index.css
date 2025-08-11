@@ -182,10 +182,18 @@ em-emoji-picker {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
+    background-color: white !important;
   }
 
   button[data-placeholder] {
     @apply text-muted-foreground;
+  }
+  
+  /* Дополнительные стили для обеспечения кликабельности */
+  .main-content {
+    background-color: white !important;
+    pointer-events: auto !important;
+    z-index: 1;
   }
 }

@@ -14,6 +14,7 @@ import { getAllTasksQueryFn } from "@/lib/api";
 import { TaskType } from "@/types/api.type";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import useGetWorkspaceMembers from "@/hooks/api/use-get-workspace-members";
+import { TaskStatusEnumType } from "@/constant";
 import { getAvatarColor, getAvatarFallbackText } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
@@ -43,7 +44,7 @@ const TaskTable = ({ defaultStatusFilter }: TaskTableProps) => {
   // Устанавливаем фильтр по статусу при первом рендере, если передан defaultStatusFilter
   React.useEffect(() => {
     if (defaultStatusFilter && !filters.status) {
-      setFilters({ ...filters, status: defaultStatusFilter });
+      setFilters({ ...filters, status: defaultStatusFilter as TaskStatusEnumType });
     }
     // eslint-disable-next-line
   }, [defaultStatusFilter]);

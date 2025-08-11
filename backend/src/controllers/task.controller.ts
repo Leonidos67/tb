@@ -16,6 +16,8 @@ import {
   getAllTasksService,
   getTaskByIdService,
   updateTaskService,
+  hideTaskService,
+  unhideTaskService,
 } from "../services/task.service";
 import { HTTPSTATUS } from "../config/http.config";
 
@@ -90,7 +92,10 @@ export const getAllTasksController = asyncHandler(
         : undefined,
       keyword: req.query.keyword as string | undefined,
       dueDate: req.query.dueDate as string | undefined,
+      includeHidden: req.query.includeHidden === "true",
     };
+
+
 
     const pagination = {
       pageSize: parseInt(req.query.pageSize as string) || 10,
@@ -143,6 +148,42 @@ export const deleteTaskController = asyncHandler(
 
     return res.status(HTTPSTATUS.OK).json({
       message: "Тренировка успешно удалена",
+    });
+  }
+);
+
+export const hideTaskController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user?._id;
+
+    const taskId = taskIdSchema.parse(req.params.id);
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+
+    const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+    roleGuard(role, [Permissions.EDIT_TASK]);
+
+    await hideTaskService(workspaceId, taskId);
+
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Тренировка успешно скрыта",
+    });
+  }
+);
+
+export const unhideTaskController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user?._id;
+
+    const taskId = taskIdSchema.parse(req.params.id);
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+
+    const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+    roleGuard(role, [Permissions.EDIT_TASK]);
+
+    await unhideTaskService(workspaceId, taskId);
+
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Тренировка успешно восстановлена",
     });
   }
 );

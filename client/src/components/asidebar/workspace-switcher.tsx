@@ -32,7 +32,7 @@ type WorkspaceType = {
 
 export function WorkspaceSwitcher() {
   const navigate = useNavigate();
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
 
   const { onOpen } = useCreateWorkspaceDialog();
   const workspaceId = useWorkspaceId();
@@ -85,7 +85,7 @@ export function WorkspaceSwitcher() {
           <Plus className="size-3.5" />
         </button>
       </SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-0' : ''}`}>
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

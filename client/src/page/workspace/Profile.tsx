@@ -3,7 +3,7 @@ import { useAuthContext } from "@/context/auth-provider";
 import LogoutDialog from "@/components/asidebar/logout-dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { updateProfilePictureMutationFn, setUsernameMutationFn } from "@/lib/api";
+import { updateProfilePictureMutationFn, setUsernameMutationFn, updateUserRoleMutationFn } from "@/lib/api";
 import { CopyIcon, Pencil, ChevronDown, ExternalLink, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -24,6 +24,8 @@ const Profile = () => {
   const [editLoading, setEditLoading] = useState(false);
   const [editStatus, setEditStatus] = useState<string | null>(null);
   const [showInfoOpen, setShowInfoOpen] = useState(false);
+  const [roleLoading, setRoleLoading] = useState(false);
+  const [currentRole, setCurrentRole] = useState<"coach" | "athlete" | null>(user?.userRole ?? null);
 
   if (!user) return null;
 
@@ -76,6 +78,29 @@ const Profile = () => {
       }
     } finally {
       setEditLoading(false);
+    }
+  };
+
+  const handleRoleChange = async (role: "coach" | "athlete") => {
+    if (role === currentRole) return;
+    setRoleLoading(true);
+    try {
+      await updateUserRoleMutationFn(role);
+      setCurrentRole(role);
+      await refetchAuth();
+      toast({
+        title: "Уведомление",
+        description: `Вы успешно сменили роль на: ${role === "coach" ? "Тренер" : "Спортсмен"}`,
+        variant: "success",
+      });
+    } catch {
+      toast({
+        title: "Уведомление",
+        description: "Не удалось сменить роль",
+        variant: "destructive",
+      });
+    } finally {
+      setRoleLoading(false);
     }
   };
 
@@ -241,7 +266,7 @@ const Profile = () => {
             <div>
               <div className="text-xl font-semibold mb-1 flex items-center gap-2">
                 {user.name}
-                {user.userRole === "coach" && (
+                {currentRole === "coach" && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
@@ -253,6 +278,30 @@ const Profile = () => {
                     </Tooltip>
                   </TooltipProvider>
                 )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="ml-2">
+                      {roleLoading ? "Смена..." : currentRole === "coach" ? "Тренер" : "Спортсмен"}
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="!cursor-pointer"
+                      onClick={() => handleRoleChange("coach")}
+                      disabled={roleLoading || currentRole === "coach"}
+                    >
+                      Тренер
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="!cursor-pointer"
+                      onClick={() => handleRoleChange("athlete")}
+                      disabled={roleLoading || currentRole === "athlete"}
+                    >
+                      Спортсмен
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
               <div className="text-gray-500">{user.email}</div>
               {/* username section */}

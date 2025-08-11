@@ -24,6 +24,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
@@ -42,6 +43,7 @@ export function NavMain() {
   const { user } = useAuthContext();
   const workspaceId = useWorkspaceId();
   const location = useLocation();
+  const { open } = useSidebar();
   const [isHomeAnimating, setIsHomeAnimating] = React.useState(false);
   const [isProfileAnimating, setIsProfileAnimating] = React.useState(false);
   const [isMembersAnimating, setIsMembersAnimating] = React.useState(false);
@@ -117,7 +119,7 @@ export function NavMain() {
   // ];
   return (
     <SidebarGroup className="h-auto">
-      <SidebarMenu>
+      <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-2' : ''}`}>
         {mainItems.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton 

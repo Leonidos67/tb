@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { TaskStatusEnum } from "@/constant";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { getAllTasksQueryFn } from "@/lib/api";
@@ -11,10 +12,15 @@ import {
 import { TaskType } from "@/types/api.type";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Loader } from "lucide-react";
+import { Loader, Eye, FolderOpen } from "lucide-react";
+import { useState } from "react";
+import ViewTaskDialog from "@/components/workspace/task/view-task-dialog";
+import { Link } from "react-router-dom";
 
 const RecentTasks = () => {
   const workspaceId = useWorkspaceId();
+  const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["all-tasks", workspaceId],
@@ -26,7 +32,15 @@ const RecentTasks = () => {
     enabled: !!workspaceId,
   });
 
-  const tasks: TaskType[] = data?.tasks || [];
+  const allTasks: TaskType[] = data?.tasks || [];
+  
+  // Фильтруем задачи, исключая выполненные (DONE)
+  const tasks: TaskType[] = allTasks.filter(task => task.status !== TaskStatusEnum.DONE);
+
+  const handleViewTask = (task: TaskType) => {
+    setSelectedTask(task);
+    setIsViewDialogOpen(true);
+  };
 
   return (
     <div className="flex flex-col pt-2">
@@ -68,7 +82,7 @@ const RecentTasks = () => {
                   {task.title}
                 </p>
                 <span className="text-sm text-gray-500">
-                  Due: {task.dueDate ? format(task.dueDate, "PPP") : null}
+                  Дедлайн: {task.dueDate ? format(task.dueDate, "PPP") : null}
                 </span>
               </div>
 
@@ -80,6 +94,32 @@ const RecentTasks = () => {
                 >
                   <span>{transformStatusEnum(task.status)}</span>
                 </Badge>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center space-x-2 ml-4">
+                {task.project && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="h-8 w-8 p-0"
+                    title="Перейти в комнату"
+                  >
+                    <Link to={`/workspace/${workspaceId}/project/${task.project._id}`}>
+                      <FolderOpen className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleViewTask(task)}
+                  className="h-8 w-8 p-0"
+                  title="Просмотреть тренировку"
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
               </div>
 
               {/* Assignee */}
@@ -98,6 +138,13 @@ const RecentTasks = () => {
           );
         })}
       </ul>
+
+      {/* View Task Dialog */}
+      <ViewTaskDialog
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+        task={selectedTask}
+      />
     </div>
   );
 };

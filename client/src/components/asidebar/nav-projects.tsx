@@ -3,6 +3,7 @@ import {
   Loader,
   MoreHorizontal,
   Plus,
+  Move,
 } from "lucide-react";
 import { AnimatedFolders } from "@/components/ui/motion/AnimatedFolders";
 import { AnimatedDelete } from "@/components/ui/motion/AnimatedDelete";
@@ -39,6 +40,8 @@ import { deleteProjectMutationFn } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/context/auth-provider";
 import { AnimatedUsers } from "../ui/motion/AnimatedUsers";
+import { DraggableModal } from "../ui/draggable-modal";
+import { RoomsModalContent } from "../workspace/rooms-modal-content";
 
 export function NavProjects() {
   const navigate = useNavigate();
@@ -49,15 +52,17 @@ export function NavProjects() {
   const queryClient = useQueryClient();
   const workspaceId = useWorkspaceId();
 
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
   const { onOpen } = useCreateProjectDialog();
-  const { context, open, onOpenDialog, onCloseDialog } = useConfirmDialog();
+  const { context, open: openDialog, onOpenDialog, onCloseDialog } = useConfirmDialog();
 
   const [pageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [openFolderAnimating, setOpenFolderAnimating] = React.useState(false);
   const [deleteAnimating, setDeleteAnimating] = React.useState(false);
   const [addUserAnimating, setAddUserAnimating] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = React.useState(true);
 
   const isCoach = user?.userRole === "coach";
   const isAthlete = user?.userRole === "athlete";
@@ -113,26 +118,47 @@ export function NavProjects() {
       }
     );
   };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setIsSidebarVisible(false);
+  };
+
+  const handleRestoreToSidebar = () => {
+    setIsModalOpen(false);
+    setIsSidebarVisible(true);
+  };
   return (
     <>
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      {isSidebarVisible && (
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel className="w-full justify-between pr-0">
           <span>
             {isCoach ? "Комнаты для спортсмена" : isAthlete ? "Мои комнаты" : "Комнаты для спортсмена"}
           </span>
 
-          {/* Кнопка создания для всех пользователей */}
-          <PermissionsGuard requiredPermission={Permissions.CREATE_PROJECT}>
+          {/* Кнопки для всех пользователей */}
+          <div className="flex items-center gap-1">
+            <PermissionsGuard requiredPermission={Permissions.CREATE_PROJECT}>
+              <button
+                onClick={onOpen}
+                type="button"
+                className="flex size-5 items-center justify-center rounded-full border"
+              >
+                <Plus className="size-3.5" />
+              </button>
+            </PermissionsGuard>
             <button
-              onClick={onOpen}
+              onClick={handleOpenModal}
               type="button"
-              className="flex size-5 items-center justify-center rounded-full border"
+              className="hidden md:flex size-5 items-center justify-center rounded-full border"
+              title="Открыть в drag окне"
             >
-              <Plus className="size-3.5" />
+              <Move className="size-3.5" />
             </button>
-          </PermissionsGuard>
+          </div>
         </SidebarGroupLabel>
-        <SidebarMenu className="h-[320px] scrollbar overflow-y-auto pb-2">
+        <SidebarMenu className={`h-[320px] scrollbar overflow-y-auto pb-2 transition-transform duration-200 ${!open ? '-translate-x-2' : ''}`}>
           {isError ? <div></div> : null}
           {isPending ? (
             <Loader
@@ -254,9 +280,17 @@ export function NavProjects() {
           )}
         </SidebarMenu>
       </SidebarGroup>
+      )}
+
+      <DraggableModal
+        isOpen={isModalOpen}
+        onRestore={handleRestoreToSidebar}
+      >
+        <RoomsModalContent />
+      </DraggableModal>
 
       <ConfirmDialog
-        isOpen={open}
+        isOpen={openDialog}
         isLoading={isLoading}
         onClose={onCloseDialog}
         onConfirm={handleConfirm}

@@ -141,6 +141,82 @@ export const getWorkspaceAnalyticsService = async (workspaceId: string) => {
   return { analytics };
 };
 
+export const getWorkspaceWeeklyAnalyticsService = async (workspaceId: string, weekOffset: number = 0) => {
+  // Получаем дату начала недели (понедельник) с учетом смещения
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay() + 1 + (weekOffset * 7)); // Понедельник + смещение недель
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  // Получаем дату конца недели (воскресенье)
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const weeklyAnalytics = await TaskModel.aggregate([
+    {
+      $match: {
+        workspace: new mongoose.Types.ObjectId(workspaceId),
+        createdAt: { $gte: startOfWeek, $lte: endOfWeek }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          dayOfWeek: { $dayOfWeek: "$createdAt" },
+          status: "$status"
+        },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $group: {
+        _id: "$_id.dayOfWeek",
+        tasks: {
+          $push: {
+            status: "$_id.status",
+            count: "$count"
+          }
+        },
+        totalCount: { $sum: "$count" }
+      }
+    },
+    {
+      $sort: { _id: 1 }
+    }
+  ]);
+
+  // Создаем массив дней недели (начиная с понедельника)
+  const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  const weeklyData = [];
+
+  // Создаем правильный порядок дней недели
+  for (let i = 0; i < 7; i++) {
+    // MongoDB $dayOfWeek: 1=воскресенье, 2=понедельник, 3=вторник, ..., 7=суббота
+    // Нам нужно: 0=понедельник, 1=вторник, ..., 6=воскресенье
+    const mongoDayIndex = i === 6 ? 1 : i + 2; // Преобразуем наш индекс в MongoDB индекс
+    const dayData = weeklyAnalytics.find(item => item._id === mongoDayIndex);
+    const dayName = daysOfWeek[i];
+    
+    if (dayData) {
+      const completedCount = dayData.tasks.find((task: any) => task.status === TaskStatusEnum.DONE)?.count || 0;
+      weeklyData.push({
+        day: dayName,
+        completed: completedCount,
+        total: dayData.totalCount
+      });
+    } else {
+      weeklyData.push({
+        day: dayName,
+        completed: 0,
+        total: 0
+      });
+    }
+  }
+
+  return { weeklyData };
+};
+
 export const changeMemberRoleService = async (
   workspaceId: string,
   memberId: string,

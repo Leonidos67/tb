@@ -5,6 +5,8 @@ import {
   getAllTasksController,
   getTaskByIdController,
   updateTaskController,
+  hideTaskController,
+  unhideTaskController,
 } from "../controllers/task.controller";
 
 const taskRoutes = Router();
@@ -27,5 +29,8 @@ taskRoutes.get(
   "/:id/project/:projectId/workspace/:workspaceId",
   getTaskByIdController
 );
+
+taskRoutes.patch("/:id/workspace/:workspaceId/hide", hideTaskController);
+taskRoutes.patch("/:id/workspace/:workspaceId/unhide", unhideTaskController);
 
 export default taskRoutes;

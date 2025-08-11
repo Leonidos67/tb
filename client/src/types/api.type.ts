@@ -136,6 +136,15 @@ export type AnalyticsResponseType = {
   };
 };
 
+export type WeeklyAnalyticsResponseType = {
+  message: string;
+  weeklyData: Array<{
+    day: string;
+    completed: number;
+    total: number;
+  }>;
+};
+
 export type PaginationType = {
   totalCount: number;
   pageSize: number;
@@ -265,6 +274,7 @@ export type TaskType = {
   createdBy?: string;
   dueDate: string;
   taskCode: string;
+  isHidden?: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -277,6 +287,7 @@ export type AllTaskPayloadType = {
   status?: TaskStatusEnumType | null;
   assignedTo?: string | null;
   dueDate?: string | null;
+  includeHidden?: boolean;
   pageNumber?: number | null;
   pageSize?: number | null;
 };

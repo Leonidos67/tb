@@ -6,6 +6,7 @@ import {
   AllTaskPayloadType,
   AllTaskResponseType,
   AnalyticsResponseType,
+  WeeklyAnalyticsResponseType,
   ChangeWorkspaceMemberRoleType,
   CreateProjectPayloadType,
   CreateTaskPayloadType,
@@ -91,6 +92,14 @@ export const getWorkspaceAnalyticsQueryFn = async (
   workspaceId: string
 ): Promise<AnalyticsResponseType> => {
   const response = await API.get(`/workspace/analytics/${workspaceId}`);
+  return response.data;
+};
+
+export const getWorkspaceWeeklyAnalyticsQueryFn = async (
+  workspaceId: string,
+  weekOffset: number = 0
+): Promise<WeeklyAnalyticsResponseType> => {
+  const response = await API.get(`/workspace/weekly-analytics/${workspaceId}?weekOffset=${weekOffset}`);
   return response.data;
 };
 
@@ -218,7 +227,7 @@ export const editTaskMutationFn = async ({
   data,
 }: EditTaskPayloadType): Promise<{message: string;}> => {
   const response = await API.put(
-    `/task/${taskId}/project/${projectId}/workspace/${workspaceId}/update/`,
+    `/task/${taskId}/project/${projectId}/workspace/${workspaceId}/update`,
     data
   );
   return response.data;
@@ -232,6 +241,7 @@ export const getAllTasksQueryFn = async ({
   priority,
   status,
   dueDate,
+  includeHidden,
   pageNumber,
   pageSize,
 }: AllTaskPayloadType): Promise<AllTaskResponseType> => {
@@ -244,6 +254,7 @@ export const getAllTasksQueryFn = async ({
   if (priority) queryParams.append("priority", priority);
   if (status) queryParams.append("status", status);
   if (dueDate) queryParams.append("dueDate", dueDate);
+  if (includeHidden !== undefined) queryParams.append("includeHidden", includeHidden.toString());
   if (pageNumber) queryParams.append("pageNumber", pageNumber?.toString());
   if (pageSize) queryParams.append("pageSize", pageSize?.toString());
 
@@ -263,6 +274,36 @@ export const deleteTaskMutationFn = async ({
 }> => {
   const response = await API.delete(
     `task/${taskId}/workspace/${workspaceId}/delete`
+  );
+  return response.data;
+};
+
+export const hideTaskMutationFn = async ({
+  workspaceId,
+  taskId,
+}: {
+  workspaceId: string;
+  taskId: string;
+}): Promise<{
+  message: string;
+}> => {
+  const response = await API.patch(
+    `task/${taskId}/workspace/${workspaceId}/hide`
+  );
+  return response.data;
+};
+
+export const unhideTaskMutationFn = async ({
+  workspaceId,
+  taskId,
+}: {
+  workspaceId: string;
+  taskId: string;
+}): Promise<{
+  message: string;
+}> => {
+  const response = await API.patch(
+    `task/${taskId}/workspace/${workspaceId}/unhide`
   );
   return response.data;
 };

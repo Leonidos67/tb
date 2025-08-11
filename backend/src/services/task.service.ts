@@ -106,6 +106,7 @@ export const getAllTasksService = async (
     assignedTo?: string[];
     keyword?: string;
     dueDate?: string;
+    includeHidden?: boolean;
   },
   pagination: {
     pageSize: number;
@@ -115,6 +116,11 @@ export const getAllTasksService = async (
   const query: Record<string, any> = {
     workspace: workspaceId,
   };
+
+  // По умолчанию исключаем скрытые тренировки, если не указано иное
+  if (!filters.includeHidden) {
+    query.isHidden = { $ne: true };
+  }
 
   if (filters.projectId) {
     query.project = filters.projectId;
@@ -155,6 +161,8 @@ export const getAllTasksService = async (
       .populate("project", "_id emoji name"),
     TaskModel.countDocuments(query),
   ]);
+
+
 
   const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -212,4 +220,52 @@ export const deleteTaskService = async (
   }
 
   return;
+};
+
+export const hideTaskService = async (
+  workspaceId: string,
+  taskId: string
+) => {
+  const task = await TaskModel.findOneAndUpdate(
+    {
+      _id: taskId,
+      workspace: workspaceId,
+    },
+    {
+      isHidden: true,
+    },
+    { new: true }
+  );
+
+  if (!task) {
+    throw new NotFoundException(
+      "Task not found or does not belong to the specified workspace"
+    );
+  }
+
+  return task;
+};
+
+export const unhideTaskService = async (
+  workspaceId: string,
+  taskId: string
+) => {
+  const task = await TaskModel.findOneAndUpdate(
+    {
+      _id: taskId,
+      workspace: workspaceId,
+    },
+    {
+      isHidden: false,
+    },
+    { new: true }
+  );
+
+  if (!task) {
+    throw new NotFoundException(
+      "Task not found or does not belong to the specified workspace"
+    );
+  }
+
+  return task;
 };

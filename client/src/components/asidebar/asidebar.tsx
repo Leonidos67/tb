@@ -53,7 +53,8 @@ const Asidebar = () => {
                   to={`/workspace/${workspaceId}`}
                   className=" md:flex ml-2 items-center gap-2 self-center font-medium"
                 >
-                  T-Sync.
+                  T-Sync
+                  <span className="px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
                 </Link>
               )}
             </div>
@@ -70,7 +71,7 @@ const Asidebar = () => {
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter className="dark:bg-background">
-            <SidebarMenu>
+            <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-0' : ''}`}>
               <SidebarMenuItem>
                 {isLoading ? (
                   <Loader

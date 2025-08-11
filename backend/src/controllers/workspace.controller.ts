@@ -13,6 +13,7 @@ import {
   deleteWorkspaceService,
   getAllWorkspacesUserIsMemberService,
   getWorkspaceAnalyticsService,
+  getWorkspaceWeeklyAnalyticsService,
   getWorkspaceByIdService,
   getWorkspaceMembersService,
   updateWorkspaceByIdService,
@@ -98,6 +99,24 @@ export const getWorkspaceAnalyticsController = asyncHandler(
     return res.status(HTTPSTATUS.OK).json({
       message: "Аналитика рабочей области успешно восстановлена",
       analytics,
+    });
+  }
+);
+
+export const getWorkspaceWeeklyAnalyticsController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.id);
+    const userId = req.user?._id;
+    const weekOffset = parseInt(req.query.weekOffset as string) || 0;
+
+    const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+    roleGuard(role, [Permissions.VIEW_ONLY]);
+
+    const { weeklyData } = await getWorkspaceWeeklyAnalyticsService(workspaceId, weekOffset);
+
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Недельная аналитика рабочей области успешно получена",
+      weeklyData,
     });
   }
 );
