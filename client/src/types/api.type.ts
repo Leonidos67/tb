@@ -297,3 +297,37 @@ export type AllTaskResponseType = {
   tasks: TaskType[];
   pagination: PaginationType;
 };
+
+// WEBSITE TYPES
+export type WebsiteType = {
+  _id: string;
+  userId: string;
+  username: string;
+  title: string;
+  description: string;
+  about: string;
+  profileImage: string | null;
+  gallery: string[];
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateWebsiteType = {
+  title: string;
+  description: string;
+  about: string;
+  profileImage?: string | null;
+  gallery?: string[];
+};
+
+export type CreateWebsiteResponseType = {
+  message: string;
+  website: WebsiteType;
+  url: string;
+};
+
+export type GetWebsiteByUsernameResponseType = {
+  message: string;
+  website: WebsiteType;
+};

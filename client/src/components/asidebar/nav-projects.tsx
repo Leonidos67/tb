@@ -42,8 +42,9 @@ import { useAuthContext } from "@/context/auth-provider";
 import { AnimatedUsers } from "../ui/motion/AnimatedUsers";
 import { DraggableModal } from "../ui/draggable-modal";
 import { RoomsModalContent } from "../workspace/rooms-modal-content";
+import { cn } from "@/lib/utils";
 
-export function NavProjects() {
+export function NavProjects({ compact = false, onItemClick }: { compact?: boolean; onItemClick?: () => void }) {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
@@ -62,7 +63,7 @@ export function NavProjects() {
   const [deleteAnimating, setDeleteAnimating] = React.useState(false);
   const [addUserAnimating, setAddUserAnimating] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = React.useState(true);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   const isCoach = user?.userRole === "coach";
   const isAthlete = user?.userRole === "athlete";
@@ -130,7 +131,7 @@ export function NavProjects() {
   };
   return (
     <>
-      {isSidebarVisible && (
+      {(!compact && isSidebarVisible) && (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel className="w-full justify-between pr-0">
           <span>
@@ -152,7 +153,6 @@ export function NavProjects() {
               onClick={handleOpenModal}
               type="button"
               className="hidden md:flex size-5 items-center justify-center rounded-full border"
-              title="Открыть в drag окне"
             >
               <Move className="size-3.5" />
             </button>
@@ -198,7 +198,7 @@ export function NavProjects() {
               return (
                 <SidebarMenuItem key={item._id}>
                   <SidebarMenuButton asChild isActive={projectUrl === pathname}>
-                    <Link to={projectUrl}>
+                    <Link to={projectUrl} onClick={onItemClick}>
                       {item.emoji}
                       <span>{item.name}</span>
                     </Link>
@@ -282,9 +282,57 @@ export function NavProjects() {
       </SidebarGroup>
       )}
 
+      {/* Компактный режим: только список без заголовка и кнопок */}
+      {compact && (
+        <SidebarGroup className={cn("!py-0 !px-0", "group-data-[collapsible=icon]:hidden") }>
+          <SidebarMenu className={cn("h-[320px] overflow-y-auto pb-2 transition-transform duration-200 !px-0", !open ? '-translate-x-2' : '')}>
+            {isError ? <div></div> : null}
+            {isPending ? (
+              <Loader className="w-5 h-5 animate-spin place-self-center" />
+            ) : null}
+
+            {!isPending && projects?.length === 0 ? (
+              <div className="pl-3">
+                <p className="text-xs text-muted-foreground">
+                  {"Нет комнат для отображения."}
+                </p>
+              </div>
+            ) : (
+              projects.map((item) => {
+                const projectUrl = `/workspace/${workspaceId}/project/${item._id}`;
+                return (
+                  <SidebarMenuItem key={item._id} className="!px-0">
+                    <SidebarMenuButton asChild isActive={projectUrl === pathname} className="!px-2">
+                      <Link to={projectUrl} onClick={onItemClick}>
+                        {item.emoji}
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })
+            )}
+
+            {hasMore && (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  className="text-sidebar-foreground/70"
+                  disabled={isFetching}
+                  onClick={fetchNextPage}
+                >
+                  <MoreHorizontal className="text-sidebar-foreground/70" />
+                  <span>{isFetching ? "Загрузка..." : "More"}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      )}
+
       <DraggableModal
         isOpen={isModalOpen}
         onRestore={handleRestoreToSidebar}
+        title={isCoach ? "Комнаты для спортсмена" : isAthlete ? "Мои комнаты" : "Комнаты для спортсмена"}
       >
         <RoomsModalContent />
       </DraggableModal>

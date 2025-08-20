@@ -147,7 +147,7 @@ const GarminIntegration = ({
         <div>
           <div className="space-y-4">
             {/* Статус подключения без обводки и отступов */}
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0" style={{marginBottom: '10px'}}>
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <Watch className="w-5 h-5 text-blue-600" />

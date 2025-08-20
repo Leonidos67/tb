@@ -18,6 +18,9 @@ import { TaskStatusEnumType } from "@/constant";
 import { getAvatarColor, getAvatarFallbackText } from "@/lib/helper";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
+import WeeklyCalendar from "./weekly-calendar";
+import { LayoutGrid, List } from "lucide-react";
+import CreateTaskDialog from "./create-task-dialog";
 
 type Filters = ReturnType<typeof useTaskTableFilter>[0];
 type SetFilters = ReturnType<typeof useTaskTableFilter>[1];
@@ -27,6 +30,7 @@ interface DataTableFilterToolbarProps {
   projectId?: string;
   filters: Filters;
   setFilters: SetFilters;
+  columnsControl?: React.ReactNode | null;
 }
 
 interface TaskTableProps {
@@ -39,6 +43,8 @@ const TaskTable = ({ defaultStatusFilter }: TaskTableProps) => {
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const [filters, setFilters] = useTaskTableFilter();
   // Устанавливаем фильтр по статусу при первом рендере, если передан defaultStatusFilter
@@ -86,27 +92,80 @@ const TaskTable = ({ defaultStatusFilter }: TaskTableProps) => {
     setPageSize(size);
   };
 
+  const [viewMode, setViewMode] = useState<"week" | "list">(() => {
+    if (typeof window === "undefined") return "week";
+    const saved = localStorage.getItem("tasksViewMode");
+    return saved === "list" || saved === "week" ? (saved as "list" | "week") : "week";
+  });
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem("tasksViewMode", viewMode);
+    } catch (err) {
+      // ignore persistence errors (private mode, disabled storage, etc.)
+      void err;
+    }
+  }, [viewMode]);
+
+  const handleCreateTask = (date: Date) => {
+    setSelectedDate(date);
+    setIsTaskDialogOpen(true);
+  };
+
+  const handleCloseTaskDialog = () => {
+    setIsTaskDialogOpen(false);
+    setSelectedDate(null);
+  };
+
   return (
     <div className="w-full relative">
-      <DataTable
-        isLoading={isLoading}
-        data={tasks}
-        columns={columns}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        pagination={{
-          totalCount,
-          pageNumber,
-          pageSize,
-        }}
-        filtersToolbar={
-          <DataTableFilterToolbar
-            isLoading={isLoading}
-            projectId={projectId}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        }
+      {viewMode === "list" ? (
+        <DataTable
+          isLoading={isLoading}
+          data={tasks}
+          columns={columns}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          pagination={{
+            totalCount,
+            pageNumber,
+            pageSize,
+          }}
+          filtersToolbar={(columnsControl) => (
+            <DataTableFilterToolbar
+              isLoading={isLoading}
+              projectId={projectId}
+              filters={filters}
+              setFilters={setFilters}
+              columnsControl={columnsControl}
+            />
+          )}
+          rightHeaderControls={
+            <ViewToggle mode={viewMode} onChange={setViewMode} />
+          }
+        />
+      ) : (
+        <div className="space-y-2">
+          <div className="block w-full lg:flex lg:items-center lg:justify-between">
+            <div className="flex-1">
+              <DataTableFilterToolbar
+                isLoading={isLoading}
+                projectId={projectId}
+                filters={filters}
+                setFilters={setFilters}
+                columnsControl={null}
+              />
+            </div>
+            <ViewToggle mode={viewMode} onChange={setViewMode} />
+          </div>
+          <WeeklyCalendar tasks={tasks} onCreateTask={handleCreateTask} />
+        </div>
+      )}
+      
+      <CreateTaskDialog 
+        open={isTaskDialogOpen} 
+        onOpenChange={handleCloseTaskDialog}
+        selectedDate={selectedDate}
       />
     </div>
   );
@@ -117,6 +176,7 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
   projectId,
   filters,
   setFilters,
+  columnsControl,
 }) => {
   const workspaceId = useWorkspaceId();
 
@@ -214,6 +274,8 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
             />
           )}
 
+          {columnsControl}
+
           {Object.values(filters).some(
             (value) => value !== null && value !== ""
           ) && (
@@ -242,3 +304,40 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
 };
 
 export default TaskTable;
+
+function ViewToggle({
+  mode,
+  onChange,
+}: {
+  mode: "week" | "list";
+  onChange: (m: "week" | "list") => void;
+}) {
+  const commonBtn = "h-8 px-2 text-sm font-medium";
+  const active = "bg-primary text-white border-primary hover:bg-primary";
+  const inactive = "bg-white text-foreground hover:bg-gray-50";
+
+  return (
+    <div className="flex items-center ml-auto">
+      <div className="flex rounded-md border overflow-hidden bg-white">
+        <Button
+          type="button"
+          variant="ghost"
+          className={`rounded-none border-r ${commonBtn} ${mode === "week" ? active : inactive}`}
+          aria-label="Неделя"
+          onClick={() => onChange("week")}
+        >
+          <LayoutGrid className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className={`rounded-none ${commonBtn} ${mode === "list" ? active : inactive}`}
+          aria-label="Список"
+          onClick={() => onChange("list")}
+        >
+          <List className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}

@@ -7,12 +7,14 @@ interface DraggableModalProps {
   isOpen: boolean;
   onRestore: () => void;
   children: React.ReactNode;
+  title?: string;
 }
 
 export function DraggableModal({ 
   isOpen, 
   onRestore, 
-  children 
+  children,
+  title = "Комнаты для спортсмена"
 }: DraggableModalProps) {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
@@ -89,7 +91,7 @@ export function DraggableModal({
         >
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium text-muted-foreground">
-              {!isContentVisible && "Комнаты для спортсмена"}
+              {!isContentVisible && title}
             </div>
             <div className="flex items-center gap-2">
               <Button

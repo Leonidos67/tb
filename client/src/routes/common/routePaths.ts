@@ -13,11 +13,15 @@ export const PROTECTED_ROUTES = {
   TASKS: "/workspace/:workspaceId/tasks",
   MEMBERS: "/workspace/:workspaceId/members",
   SETTINGS: "/workspace/:workspaceId/settings",
+  GENERAL_SETTINGS: "/workspace/:workspaceId/general-settings",
+  NOTIFICATIONS: "/workspace/:workspaceId/notifications",
+  USER_GUIDE: "/workspace/:workspaceId/user-guide",
   PROJECT_DETAILS: "/workspace/:workspaceId/project/:projectId",
   PROFILE: "/workspace/:workspaceId/profile",
   REQUISITES: "/workspace/:workspaceId/requisites",
   USAGE: "/workspace/:workspaceId/usage",
   COMPLETED: "/workspace/:workspaceId/completed",
+  CREATE_WEBSITE: "/workspace/:workspaceId/create-website",
 };
 
 export const BASE_ROUTE = {

@@ -40,12 +40,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createTaskMutationFn } from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import React from "react";
 
 export default function CreateTaskForm(props: {
   projectId?: string;
   onClose: () => void;
+  selectedDate?: Date | null;
 }) {
-  const { projectId, onClose } = props;
+  const { projectId, onClose, selectedDate } = props;
 
   const queryClient = useQueryClient();
   const workspaceId = useWorkspaceId();
@@ -119,8 +121,16 @@ export default function CreateTaskForm(props: {
       title: "",
       description: "",
       projectId: projectId ? projectId : "",
+      dueDate: selectedDate || new Date(),
     },
   });
+
+  // Обновляем дату в форме при изменении selectedDate
+  React.useEffect(() => {
+    if (selectedDate) {
+      form.setValue("dueDate", selectedDate);
+    }
+  }, [selectedDate, form]);
 
   // Для отслеживания значения priority
   // const selectedPriority = useWatch({ control: form.control, name: "priority" });

@@ -74,7 +74,7 @@ const SignUp = () => {
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Link
-          to="/"
+          to="https://t-sync.ru"
           className="flex items-center gap-2 self-center font-medium"
         >
           <Logo />
@@ -93,7 +93,7 @@ const SignUp = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <div className="grid gap-6">
                     <div className="flex flex-col gap-4">
-                      <GoogleOauthButton label="Signup" />
+                      <GoogleOauthButton label="Зарегистрироваться" />
                     </div>
                     <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                       <span className="relative z-10 bg-background px-2 text-muted-foreground">

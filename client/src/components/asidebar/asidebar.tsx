@@ -110,7 +110,7 @@ const Asidebar = () => {
                       <DropdownMenuGroup>
                         <DropdownMenuItem className="!cursor-pointer" onClick={() => navigate(`/workspace/${workspaceId}/profile`)}>
                           <UserIcon />
-                          Мой профиль
+                          Мои данные
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                       {/* <DropdownMenuSeparator /> */}

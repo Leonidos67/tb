@@ -15,10 +15,12 @@ import {
   EditProjectPayloadType,
   ProjectByIdPayloadType,
   ProjectResponseType,
+  CreateWebsiteType,
+  CreateWebsiteResponseType,
+  GetWebsiteByUsernameResponseType,
 } from "../types/api.type";
 import {
   AllWorkspaceResponseType,
-  CreateWorkspaceType,
   CurrentUserResponseType,
   LoginResponseType,
   loginType,
@@ -370,5 +372,26 @@ export const getFeedQueryFn = async () => {
 
 export const searchUsersQueryFn = async (query: string) => {
   const response = await API.get(`/user/search?query=${encodeURIComponent(query)}`);
+  return response.data;
+};
+
+// WEBSITE API
+export const createWebsiteMutationFn = async (data: CreateWebsiteType): Promise<CreateWebsiteResponseType> => {
+  const response = await API.post("/website/create", data);
+  return response.data;
+};
+
+export const getWebsiteByUsernameQueryFn = async (username: string): Promise<GetWebsiteByUsernameResponseType> => {
+  const response = await API.get(`/website/${username}`);
+  return response.data;
+};
+
+export const updateWebsiteMutationFn = async (data: CreateWebsiteType): Promise<CreateWebsiteResponseType> => {
+  const response = await API.put("/website/update", data);
+  return response.data;
+};
+
+export const deleteWebsiteMutationFn = async (): Promise<{ message: string }> => {
+  const response = await API.delete("/website/delete");
   return response.data;
 };

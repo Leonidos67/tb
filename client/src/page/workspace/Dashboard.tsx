@@ -47,8 +47,7 @@ const WorkspaceDashboard = () => {
           variant="ghost"
           size="icon"
           onClick={handleFullscreenToggle}
-          className="h-8 w-8"
-          title={isFullscreenOpen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
+          className="h-8 w-10 border"
         >
           {isFullscreenOpen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
         </Button>
@@ -109,8 +108,7 @@ const WorkspaceDashboard = () => {
           variant="ghost"
           size="icon"
           onClick={() => setIsFullscreenOpen(false)}
-          className="h-8 w-8"
-          title="Закрыть полноэкранный режим"
+          className="h-8 w-10 border"
         >
           <Minimize2 className="h-4 w-4" />
         </Button>

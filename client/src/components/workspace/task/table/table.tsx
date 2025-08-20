@@ -40,10 +40,11 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading?: boolean;
-  filtersToolbar?: React.ReactNode;
+  filtersToolbar?: React.ReactNode | ((columnsControl: React.ReactNode) => React.ReactNode);
   pagination?: PaginationProps;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  rightHeaderControls?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -54,6 +55,7 @@ export function DataTable<TData, TValue>({
   pagination,
   onPageChange,
   onPageSizeChange,
+  rightHeaderControls,
 }: DataTableProps<TData, TValue>) {
   const { totalCount = 0, pageNumber = 1, pageSize = 10 } = pagination || {};
 
@@ -86,47 +88,61 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
   });
 
+  const columnsControl = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="h-8 px-2">
+          Отображать <ChevronDown />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                className="capitalize cursor-pointer"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {(() => {
+                  switch (column.id) {
+                    case "_id":
+                      return "Выбрать всё";
+                    case "title":
+                      return "Заголовок";
+                    case "project":
+                      return "Комната";
+                    case "assignedTo":
+                      return "Спортсмен";
+                    case "dueDate":
+                      return "Дата";
+                    case "status":
+                      return "Статус";
+                    // case 'actions': return 'Действия';
+                    default:
+                      return column.id;
+                  }
+                })()}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  const renderedToolbar =
+    typeof filtersToolbar === "function"
+      ? filtersToolbar(columnsControl)
+      : filtersToolbar;
+
   return (
     <div className="w-full space-y-2">
       <div className="block w-full lg:flex lg:items-center lg:justify-between">
-        {filtersToolbar && <div className="flex-1"> {filtersToolbar}</div>}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto w-full lg:w-auto">
-              Отображать <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize cursor-pointer"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {(() => {
-                      switch (column.id) {
-                        case '_id': return 'Выбрать всё';
-                        case 'title': return 'Заголовок';
-                        case 'project': return 'Комната';
-                        case 'assignedTo': return 'Спортсмен';
-                        case 'dueDate': return 'Дата';
-                        case 'status': return 'Статус';
-                        // case 'actions': return 'Действия';
-                        default: return column.id;
-                      }
-                    })()}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {renderedToolbar && <div className="flex-1"> {renderedToolbar}</div>}
+        {rightHeaderControls}
       </div>
       <div className="rounded-md border">
         {isLoading ? (

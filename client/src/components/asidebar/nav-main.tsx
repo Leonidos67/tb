@@ -3,24 +3,18 @@
 import * as React from "react";
 import {
   LucideIcon,
-  // Settings,
-  // Users,
-  // CheckCircle,
-  // Archive as ArchiveIcon,
-  // Flame,
-  // Bell,
-  // TrendingUp,
-  // User,
-  // BookOpen,
 } from "lucide-react";
 import { AnimatedLayoutGrid } from "@/components/ui/motion/AnimatedLayoutGrid";
 import { AnimatedUser } from "@/components/ui/motion/AnimatedUser";
 import { AnimatedUsers } from "@/components/ui/motion/AnimatedUsers";
 import { AnimatedFlame } from "@/components/ui/motion/AnimatedFlame";
 import { AnimatedCheckCheck } from "@/components/ui/motion/AnimatedCheckCheck";
+import { AnimatedBolt } from "@/components/ui/motion/AnimatedBolt";
+import { AnimatedSwatchBook } from "@/components/ui/motion/AnimatedSwatchBook";
+import { cn } from "@/lib/utils";
+
 import {
   SidebarGroup,
-  // SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -29,8 +23,6 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { useAuthContext } from "@/context/auth-provider";
-// import { Permissions } from "@/constant";
-// import { Separator } from "@/components/ui/separator";
 
 type ItemType = {
   title: string;
@@ -39,7 +31,12 @@ type ItemType = {
   isAnimated?: boolean;
 };
 
-export function NavMain() {
+type NavMainProps = {
+  compact?: boolean;
+  onItemClick?: () => void;
+};
+
+export function NavMain({ compact = false, onItemClick }: NavMainProps) {
   const { user } = useAuthContext();
   const workspaceId = useWorkspaceId();
   const location = useLocation();
@@ -49,6 +46,8 @@ export function NavMain() {
   const [isMembersAnimating, setIsMembersAnimating] = React.useState(false);
   const [isTasksAnimating, setIsTasksAnimating] = React.useState(false);
   const [isCompletedAnimating, setIsCompletedAnimating] = React.useState(false);
+  const [isSettingsAnimating, setIsSettingsAnimating] = React.useState(false);
+  const [isUserGuideAnimating, setIsUserGuideAnimating] = React.useState(false);
 
   const pathname = location.pathname;
   const isCoach = user?.userRole === "coach";
@@ -61,7 +60,7 @@ export function NavMain() {
       isAnimated: true,
     },
     {
-      title: "Мой профиль",
+      title: "Мои данные",
       url: `/workspace/${workspaceId}/profile`,
       icon: AnimatedUser,
       isAnimated: true,
@@ -85,41 +84,11 @@ export function NavMain() {
       icon: AnimatedCheckCheck,
       isAnimated: true,
     },
-    // {
-    //   title: "Моя активность",
-    //   url: `/workspace/${workspaceId}/progress`,
-    //   icon: TrendingUp,
-    // },
-    // {
-    //   title: "Архив",
-    //   url: `/workspace/${workspaceId}/archive`,
-    //   icon: ArchiveIcon,
-    // },
+
   ];
-  // const bottomItems: ItemType[] = [
-  //   {
-  //     title: "Уведомления",
-  //     url: `/workspace/${workspaceId}/notifications`,
-  //     icon: Bell,
-  //   },
-  //   {
-  //     title: "Руководство по использованию",
-  //     url: `/workspace/${workspaceId}/usage`,
-  //     icon: BookOpen,
-  //   },
-  //   ...(canManageSettings
-  //     ? [
-  //         {
-  //           title: "Настройки",
-  //           url: `/workspace/${workspaceId}/settings`,
-  //           icon: Settings,
-  //         },
-  //       ]
-  //     : []),
-  // ];
   return (
-    <SidebarGroup className="h-auto">
-      <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-2' : ''}`}>
+    <SidebarGroup className={cn("h-auto", compact && "!p-0") }>
+      <SidebarMenu className={cn("transition-transform duration-200", !open ? '-translate-x-2' : '')}>
         {mainItems.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton 
@@ -128,7 +97,7 @@ export function NavMain() {
               onMouseEnter={() => {
                 if (item.title === "Главная") {
                   setIsHomeAnimating(true);
-                } else if (item.title === "Мой профиль") {
+                } else if (item.title === "Мои данные") {
                   setIsProfileAnimating(true);
                 } else if (item.title === "Мои спортсмены") {
                   setIsMembersAnimating(true);
@@ -141,7 +110,7 @@ export function NavMain() {
               onMouseLeave={() => {
                 if (item.title === "Главная") {
                   setIsHomeAnimating(false);
-                } else if (item.title === "Мой профиль") {
+                } else if (item.title === "Мои данные") {
                   setIsProfileAnimating(false);
                 } else if (item.title === "Мои спортсмены") {
                   setIsMembersAnimating(false);
@@ -152,9 +121,9 @@ export function NavMain() {
                 }
               }}
             >
-              <Link to={item.url} className="!text-[15px]">
+              <Link to={item.url} className="!text-[15px]" onClick={onItemClick}>
                 {item.title === "Главная" && <AnimatedLayoutGrid isAnimating={isHomeAnimating} />}
-                {item.title === "Мой профиль" && <AnimatedUser isAnimating={isProfileAnimating} />}
+                {item.title === "Мои данные" && <AnimatedUser isAnimating={isProfileAnimating} />}
                 {item.title === "Мои спортсмены" && <AnimatedUsers isAnimating={isMembersAnimating} />}
                 {item.title === "Все тренировки" && <AnimatedFlame isAnimating={isTasksAnimating} />}
                 {item.title === "Выполненные" && <AnimatedCheckCheck isAnimating={isCompletedAnimating} />}
@@ -163,18 +132,35 @@ export function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-        {/* <Separator className="my-2" /> */}
-        {/* <SidebarGroupLabel>Система</SidebarGroupLabel> */}
-        {/* {bottomItems.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton isActive={item.url === pathname} asChild>
-              <Link to={item.url} className="!text-[15px]">
-                <item.icon />
-                <span>{item.title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))} */}
+        
+        {/* Пункты системы */}
+        <SidebarMenuItem>
+          <SidebarMenuButton 
+            isActive={pathname.includes("/user-guide")} 
+            asChild
+            onMouseEnter={() => setIsUserGuideAnimating(true)}
+            onMouseLeave={() => setIsUserGuideAnimating(false)}
+          >
+            <Link to={`/workspace/${workspaceId}/user-guide`} className="!text-[15px]" onClick={onItemClick}>
+              <AnimatedSwatchBook isAnimating={isUserGuideAnimating} />
+              <span>Руководство</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        
+        <SidebarMenuItem>
+          <SidebarMenuButton 
+            isActive={pathname.includes("/general-settings")} 
+            asChild
+            onMouseEnter={() => setIsSettingsAnimating(true)}
+            onMouseLeave={() => setIsSettingsAnimating(false)}
+          >
+            <Link to={`/workspace/${workspaceId}/general-settings`} className="!text-[15px]" onClick={onItemClick}>
+              <AnimatedBolt isAnimating={isSettingsAnimating} />
+              <span>Настройки</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
   );

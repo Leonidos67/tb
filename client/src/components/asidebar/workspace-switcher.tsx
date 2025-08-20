@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, Loader, Plus, Settings } from "lucide-react";
+import { Check, Loader, Plus, Settings, Move } from "lucide-react";
 import { AnimatedChevronDown } from "@/components/ui/motion/AnimatedChevronDown";
 
 import {
@@ -24,6 +24,9 @@ import useCreateWorkspaceDialog from "@/hooks/use-create-workspace-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { getAllWorkspacesUserIsMemberQueryFn } from "@/lib/api";
 import { useAuthContext } from "@/context/auth-provider";
+import { toast } from "@/hooks/use-toast";
+import { DraggableModal } from "../ui/draggable-modal";
+import { AthleteDataModalContent } from "../workspace/athlete-data-modal-content";
 
 type WorkspaceType = {
   _id: string;
@@ -39,6 +42,8 @@ export function WorkspaceSwitcher() {
 
   const [activeWorkspace, setActiveWorkspace] = React.useState<WorkspaceType>();
   const [chevronAnimating, setChevronAnimating] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = React.useState(true);
 
   const { data, isPending } = useQuery({
     queryKey: ["userWorkspaces"],
@@ -63,8 +68,25 @@ export function WorkspaceSwitcher() {
   }, [workspaceId, workspaces, navigate]);
 
   const onSelect = (workspace: WorkspaceType) => {
+    if (workspace._id === workspaceId) {
+      toast({
+        title: "Уведомление",
+        description: "Этот спортсмен уже активен",
+      });
+      return;
+    }
     setActiveWorkspace(workspace);
     navigate(`/workspace/${workspace._id}`);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+    setIsSidebarVisible(false);
+  };
+
+  const handleRestoreToSidebar = () => {
+    setIsModalOpen(false);
+    setIsSidebarVisible(true);
   };
 
   const { user } = useAuthContext();
@@ -78,16 +100,25 @@ export function WorkspaceSwitcher() {
         <span> 
           {isCoach ? "Данные спортсмена" : isAthlete ? "Мои данные" : "Данные спортсмена"}
         </span>
-        <button
-          onClick={onOpen}
-          className="flex size-5 items-center justify-center rounded-full border"
-        >
-          <Plus className="size-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={onOpen}
+            className="flex size-5 items-center justify-center rounded-full border"
+          >
+            <Plus className="size-3.5" />
+          </button>
+          <button
+            onClick={handleOpenModal}
+            className="hidden md:flex size-5 items-center justify-center rounded-full border"
+          >
+            <Move className="size-3.5" />
+          </button>
+        </div>
       </SidebarGroupLabel>
-      <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-0' : ''}`}>
-        <SidebarMenuItem>
-          <DropdownMenu>
+      {isSidebarVisible && (
+        <SidebarMenu className={`transition-transform duration-200 ${!open ? '-translate-x-0' : ''}`}>
+          <SidebarMenuItem>
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
@@ -172,6 +203,15 @@ export function WorkspaceSwitcher() {
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
+      )}
+
+      <DraggableModal
+        isOpen={isModalOpen}
+        onRestore={handleRestoreToSidebar}
+        title={isCoach ? "Данные спортсмена" : isAthlete ? "Мои данные" : "Данные спортсмена"}
+      >
+        <AthleteDataModalContent />
+      </DraggableModal>
     </>
   );
 }

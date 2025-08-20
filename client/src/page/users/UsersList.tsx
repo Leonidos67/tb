@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Loader } from "lucide-react";
+import { Loader, Globe } from "lucide-react";
 import SocialHeader, { SocialSidebarMenu } from "@/components/social-header";
 
 interface User {
@@ -9,6 +9,15 @@ interface User {
   name: string;
   profilePicture: string | null;
 }
+
+const checkUserWebsite = (username: string): boolean => {
+  try {
+    const websites = JSON.parse(localStorage.getItem('websites') || '{}');
+    return !!websites[username];
+  } catch {
+    return false;
+  }
+};
 
 const UsersListPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -49,10 +58,13 @@ const UsersListPage = () => {
                       <AvatarImage src={user.profilePicture || ''} alt={user.name} />
                       <AvatarFallback className="text-sm">{user.name?.[0]}</AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="flex-1">
                       <div className="font-semibold text-sm sm:text-base">{user.name}</div>
                       <div className="text-blue-600 font-mono text-xs sm:text-sm">@{user.username}</div>
                     </div>
+                    {checkUserWebsite(user.username) && (
+                      <Globe className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    )}
                   </Link>
                 ))}
               </div>
@@ -68,12 +80,15 @@ const UsersListPage = () => {
                 <Link
                   key={user.username}
                   to={`/u/users/${user.username}`}
-                  className="flex flex-col items-center gap-1 p-2 rounded hover:bg-gray-50 transition-colors"
+                  className="flex flex-col items-center gap-1 p-2 rounded hover:bg-gray-50 transition-colors relative"
                 >
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={user.profilePicture || ''} alt={user.name} />
                     <AvatarFallback className="text-xs">{user.name?.[0]}</AvatarFallback>
                   </Avatar>
+                  {checkUserWebsite(user.username) && (
+                    <Globe className="w-3 h-3 text-blue-600 absolute -top-1 -right-1" />
+                  )}
                   <span className="font-semibold text-xs truncate max-w-[60px] text-center">{user.name}</span>
                   <span className="text-gray-500 text-[10px] font-mono truncate max-w-[60px] text-center">@{user.username}</span>
                 </Link>

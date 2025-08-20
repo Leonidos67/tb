@@ -10,7 +10,8 @@ import { getUserPostsQueryFn, createUserPostMutationFn, deleteUserPostMutationFn
 import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
 import SocialHeader, { SocialSidebarMenu } from "@/components/social-header";
 import { getFollowingQueryFn } from "@/lib/api";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Globe } from "lucide-react";
+import WebsiteManager from "@/components/website/website-manager";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
@@ -63,6 +64,7 @@ const UserProfile = () => {
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [following, setFollowing] = useState<FollowerUser[]>([]);
+  const [hasWebsite, setHasWebsite] = useState(false);
 
   useEffect(() => {
     if (!username) return;
@@ -94,6 +96,17 @@ const UserProfile = () => {
         .then((data) => setFollowing(data.following || []))
         .catch(() => setFollowing([]));
     }
+
+    // Проверить наличие сайта у пользователя
+    const checkWebsite = () => {
+      try {
+        const websites = JSON.parse(localStorage.getItem('websites') || '{}');
+        setHasWebsite(!!websites[username]);
+      } catch {
+        setHasWebsite(false);
+      }
+    };
+    checkWebsite();
   }, [username, currentUser]);
 
   // Получение постов
@@ -220,9 +233,35 @@ const UserProfile = () => {
                 </div>
                 <div className="text-blue-600 font-mono text-base sm:text-lg">@{user.username}</div>
                 {user.email && <div className="text-gray-500 text-sm sm:text-base">{user.email}</div>}
+                {hasWebsite && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a
+                          href={`${window.location.origin}/web/${user.username}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors"
+                        >
+                          <Globe className="w-4 h-4" />
+                          <span className="text-sm font-medium">Мой сайт</span>
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Перейти на персональный сайт</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 {currentUser?.user?.username === user.username && (
                   <>
                     <Button className="mt-4 text-sm sm:text-base">Редактировать профиль</Button>
+                    
+                    {/* Секция управления сайтом */}
+                    <div className="w-full mt-4 sm:mt-6">
+                      <WebsiteManager />
+                    </div>
+                    
                     <form onSubmit={handleCreatePost} className="w-full flex flex-col gap-2 mt-4 sm:mt-6 p-3 sm:p-4 border rounded bg-gray-50">
                       <textarea
                         className="border rounded p-2 sm:p-3 resize-none text-sm sm:text-base"

@@ -38,7 +38,7 @@ export function SocialSidebarMenu() {
             to={`/u/users/${user.username}`}
             className={`rounded-full font-semibold text-base sm:text-lg px-2 sm:px-3 py-1.5 sm:py-2 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground ${location.pathname === `/u/users/${user.username}` ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "text-sidebar-foreground"}`}
           >
-            <span className="pl-1 sm:pl-2">Мой профиль</span>
+            <span className="pl-1 sm:pl-2">Мои данные</span>
           </Link>
         )}
         

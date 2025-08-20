@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GarminIntegration from "./garmin-integration";
@@ -14,8 +13,23 @@ const IntegrationsManager = () => {
     garmin: false
   });
 
-  const [lastGlobalSync, setLastGlobalSync] = useState<string | null>(null);
-  const [isVisible, setIsVisible] = useState(true);
+  const [lastGlobalSync] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem("integrationsVisible");
+      return stored !== null ? stored === "true" : false; // по умолчанию скрыто
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("integrationsVisible", String(isVisible));
+    } catch {
+      // ignore
+    }
+  }, [isVisible]);
 
   const handleGarminConnect = () => {
     setIntegrations(prev => ({ ...prev, garmin: true }));

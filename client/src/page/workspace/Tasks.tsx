@@ -27,13 +27,12 @@ export default function Tasks() {
             variant="ghost"
             size="icon"
             onClick={handleFullscreenToggle}
-            className="h-8 w-8"
-            title={isFullscreenOpen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
+              className="px-5 py-1.5 border"
           >
             {isFullscreenOpen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
           <button
-            className="whitespace-nowrap bg-primary text-white rounded-md px-4 py-2 flex items-center font-semibold hover:bg-primary/90 transition-colors"
+            className="whitespace-nowrap bg-primary text-white rounded-md px-5 py-1.5 flex items-center font-semibold hover:bg-primary/90 transition-colors"
             onClick={() => setIsTaskDialogOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />

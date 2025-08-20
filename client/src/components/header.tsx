@@ -8,9 +8,21 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "./ui/separator";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { useAuthContext } from "@/context/auth-provider";
+import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator as UiSeparator } from "@/components/ui/separator";
+import { X, Plus } from "lucide-react";
+import { NavMain } from "@/components/asidebar/nav-main";
+import { NavProjects } from "@/components/asidebar/nav-projects";
+import { useState } from "react";
+import useCreateWorkspaceDialog from "@/hooks/use-create-workspace-dialog";
+import CreateWorkspaceDialog from "@/components/workspace/create-workspace-dialog";
+import useCreateProjectDialog from "@/hooks/use-create-project-dialog";
+import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
 // import { RefreshCcw, Maximize2, Minimize2, Plus } from "lucide-react";
 // import { useEffect, useState } from "react";
 // import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -24,6 +36,9 @@ import { useAuthContext } from "@/context/auth-provider";
 // import useCreateProjectDialog from "@/hooks/use-create-project-dialog";
 // import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
 // import CreateTaskDialog from "@/components/workspace/task/create-task-dialog";
+import { AnimatedUser } from "@/components/ui/motion/AnimatedUser";
+import { AnimatedUsers } from "@/components/ui/motion/AnimatedUsers";
+import { AnimatedBolt } from "@/components/ui/motion/AnimatedBolt";
 
 const Header = () => {
   const location = useLocation();
@@ -38,8 +53,11 @@ const Header = () => {
     if (pathname.includes("/settings")) return "Настройки";
     if (pathname.includes("/tasks")) return "Все тренировки";
     if (pathname.includes("/members")) return isCoach ? "Мои спортсмены" : "Участники";
-    if (pathname.includes("/profile")) return "Мой профиль";
+    if (pathname.includes("/profile")) return "Мои данные";
     if (pathname.includes("/completed")) return "Выполненные тренировки";
+    if (pathname.includes("/user-guide")) return "Руководство по использованию";
+    if (pathname.includes("/general-settings")) return "Генеральные настройки";
+    if (pathname.includes("/create-website")) return "Создание сайта";
     return null; // Default label
   };
 
@@ -55,6 +73,12 @@ const Header = () => {
   // const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   // // Для диалога создания комнаты
   // const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
+
+  const [openMenuDialog, setOpenMenuDialog] = useState(false);
+  const { onOpen: onOpenWorkspaceDialog } = useCreateWorkspaceDialog();
+  const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<"quick" | "pages" | "rooms">("quick");
 
   // useEffect(() => {
   //   function handleFullscreenChange() {
@@ -106,6 +130,139 @@ const Header = () => {
               )}
             </BreadcrumbList>
           </Breadcrumb>
+          {/* Кнопка Меню команд и модалка */}
+          <div className="ml-2">
+            <Dialog open={openMenuDialog} onOpenChange={setOpenMenuDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Меню команд
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md w-full" hideCloseButton>
+                <div className="flex flex-col gap-3">
+                  {/* Поиск + закрыть */}
+                  <div className="flex items-center gap-2">
+                    <Input placeholder="Поиск" className="flex-1" />
+                    <DialogClose asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </DialogClose>
+                  </div>
+
+                  {/* Категории */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant={activeTab === "quick" ? "secondary" : "outline"}
+                      size="sm"
+                      onClick={() => setActiveTab("quick")}
+                    >
+                      Быстрые команды
+                    </Button>
+                    <Button
+                      variant={activeTab === "pages" ? "secondary" : "outline"}
+                      size="sm"
+                      onClick={() => setActiveTab("pages")}
+                    >
+                      Страницы
+                    </Button>
+                    <Button
+                      variant={activeTab === "rooms" ? "secondary" : "outline"}
+                      size="sm"
+                      onClick={() => setActiveTab("rooms")}
+                    >
+                      Комнаты
+                    </Button>
+                  </div>
+
+                  {/* Контент вкладок */}
+                  {activeTab === "quick" && (
+                    <div className="flex flex-col gap-2">
+                      {/* Действия создания */}
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          variant="ghost"
+                          className="justify-start gap-2"
+                          onClick={() => {
+                            setOpenMenuDialog(false);
+                            onOpenWorkspaceDialog();
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>Создать новую Рабочую Зону</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start gap-2"
+                          onClick={() => {
+                            setOpenMenuDialog(false);
+                            onOpenProjectDialog();
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>Создать новую комнату</span>
+                        </Button>
+                      </div>
+
+                      <UiSeparator />
+
+                      {/* Навигация */}
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          variant="ghost"
+                          className="justify-start gap-2"
+                          onClick={() => {
+                            setOpenMenuDialog(false);
+                            navigate(`/workspace/${workspaceId}/profile`);
+                          }}
+                        >
+                          <AnimatedUser />
+                          <span>Мой профиль</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start gap-2"
+                          onClick={() => {
+                            setOpenMenuDialog(false);
+                            navigate(`/workspace/${workspaceId}/general-settings`);
+                          }}
+                        >
+                          <AnimatedBolt />
+                          <span>Профиль команды</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start gap-2"
+                          onClick={() => {
+                            setOpenMenuDialog(false);
+                            navigate(`/workspace/${workspaceId}/members`);
+                          }}
+                        >
+                          <AnimatedUsers />
+                          <span>Пригласить пользователей</span>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "pages" && (
+                    <div className="flex flex-col gap-2 !p-0">
+                      <NavMain compact onItemClick={() => setOpenMenuDialog(false)} />
+                    </div>
+                  )}
+
+                  {activeTab === "rooms" && (
+                    <div className="flex flex-col gap-2 !p-0">
+                      <NavProjects compact onItemClick={() => setOpenMenuDialog(false)} />
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+            {/* Диалоги для создания */}
+            <CreateWorkspaceDialog />
+            <CreateProjectDialog />
+          </div>
           {/* <div className="flex items-center gap-2 ml-auto">
             <button
               type="button"
@@ -117,7 +274,6 @@ const Header = () => {
             </button>
             <button
               type="button"
-              title={isFullscreen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
               onClick={() => {
                 if (isFullscreen) {
                   if (document.exitFullscreen) {

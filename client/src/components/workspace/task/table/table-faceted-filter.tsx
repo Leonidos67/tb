@@ -98,7 +98,7 @@ export function DataTableFacetedFilter({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
-          <CommandInput placeholder={`Фильтр по: ${title}`} />
+          <CommandInput placeholder={`Отображать по: ${title}`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>

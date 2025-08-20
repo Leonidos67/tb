@@ -20,7 +20,7 @@ const GoogleOauthButton = (props: { label: string }) => {
           fill="currentColor"
         />
       </svg>
-      {label} with Google
+      {label} при помощи Google
     </Button>
   );
 };
