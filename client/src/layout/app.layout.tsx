@@ -5,6 +5,7 @@ import Asidebar from "@/components/asidebar/asidebar";
 import CreateWorkspaceDialog from "@/components/workspace/create-workspace-dialog";
 import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
 import Header from "@/components/header";
+import AiFab from "@/components/ai/ai-fab";
 
 const AppLayout = () => {
   return (
@@ -20,6 +21,7 @@ const AppLayout = () => {
               </div>
               <CreateWorkspaceDialog />
               <CreateProjectDialog />
+              <AiFab />
             </div>
           </SidebarInset>
         </div>

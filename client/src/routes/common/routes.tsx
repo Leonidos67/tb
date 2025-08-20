@@ -19,6 +19,7 @@ import UsersListPage from "@/page/users/UsersList";
 import UserProfile from "@/page/users/Profile";
 import SocialMainPage from "@/page/users/index";
 import PublicWebsitePage from "@/page/website/PublicWebsite";
+import AiAssistant from "@/page/ai/Assistant";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_IN, element: <SignIn /> },
@@ -40,6 +41,7 @@ export const protectedRoutePaths = [
   { path: PROTECTED_ROUTES.USAGE, element: <Usage /> },
   { path: PROTECTED_ROUTES.COMPLETED, element: <CompletedTasks /> },
   { path: PROTECTED_ROUTES.CREATE_WEBSITE, element: <CreateWebsite /> },
+  { path: PROTECTED_ROUTES.AI, element: <AiAssistant /> },
 ];
 
 export const baseRoutePaths = [

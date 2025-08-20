@@ -22,6 +22,7 @@ export const PROTECTED_ROUTES = {
   USAGE: "/workspace/:workspaceId/usage",
   COMPLETED: "/workspace/:workspaceId/completed",
   CREATE_WEBSITE: "/workspace/:workspaceId/create-website",
+  AI: "/workspace/:workspaceId/ai",
 };
 
 export const BASE_ROUTE = {

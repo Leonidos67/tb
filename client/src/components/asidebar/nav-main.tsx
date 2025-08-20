@@ -11,6 +11,7 @@ import { AnimatedFlame } from "@/components/ui/motion/AnimatedFlame";
 import { AnimatedCheckCheck } from "@/components/ui/motion/AnimatedCheckCheck";
 import { AnimatedBolt } from "@/components/ui/motion/AnimatedBolt";
 import { AnimatedSwatchBook } from "@/components/ui/motion/AnimatedSwatchBook";
+import { AnimatedWand } from "@/components/ui/motion/AnimatedWand";
 import { cn } from "@/lib/utils";
 
 import {
@@ -48,6 +49,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
   const [isCompletedAnimating, setIsCompletedAnimating] = React.useState(false);
   const [isSettingsAnimating, setIsSettingsAnimating] = React.useState(false);
   const [isUserGuideAnimating, setIsUserGuideAnimating] = React.useState(false);
+  const [isAiAnimating, setIsAiAnimating] = React.useState(false);
 
   const pathname = location.pathname;
   const isCoach = user?.userRole === "coach";
@@ -84,6 +86,12 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
       icon: AnimatedCheckCheck,
       isAnimated: true,
     },
+    {
+      title: "AI ассистент",
+      url: `/workspace/${workspaceId}/ai`,
+      icon: AnimatedWand,
+      isAnimated: true,
+    },
 
   ];
   return (
@@ -105,6 +113,8 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                   setIsTasksAnimating(true);
                 } else if (item.title === "Выполненные") {
                   setIsCompletedAnimating(true);
+                } else if (item.title === "AI ассистент") {
+                  setIsAiAnimating(true);
                 }
               }}
               onMouseLeave={() => {
@@ -118,6 +128,8 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                   setIsTasksAnimating(false);
                 } else if (item.title === "Выполненные") {
                   setIsCompletedAnimating(false);
+                } else if (item.title === "AI ассистент") {
+                  setIsAiAnimating(false);
                 }
               }}
             >
@@ -127,6 +139,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                 {item.title === "Мои спортсмены" && <AnimatedUsers isAnimating={isMembersAnimating} />}
                 {item.title === "Все тренировки" && <AnimatedFlame isAnimating={isTasksAnimating} />}
                 {item.title === "Выполненные" && <AnimatedCheckCheck isAnimating={isCompletedAnimating} />}
+                {item.title === "AI ассистент" && <AnimatedWand className="text-slate-500" isAnimating={isAiAnimating} />}
                 <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>

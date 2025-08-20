@@ -58,6 +58,7 @@ const Header = () => {
     if (pathname.includes("/user-guide")) return "Руководство по использованию";
     if (pathname.includes("/general-settings")) return "Генеральные настройки";
     if (pathname.includes("/create-website")) return "Создание сайта";
+    if (pathname.includes("/ai")) return "Ai-ассистент";
     return null; // Default label
   };
 
