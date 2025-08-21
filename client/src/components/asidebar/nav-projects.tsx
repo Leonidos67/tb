@@ -285,7 +285,7 @@ export function NavProjects({ compact = false, onItemClick }: { compact?: boolea
       {/* Компактный режим: только список без заголовка и кнопок */}
       {compact && (
         <SidebarGroup className={cn("!py-0 !px-0", "group-data-[collapsible=icon]:hidden") }>
-          <SidebarMenu className={cn("h-[320px] overflow-y-auto pb-2 transition-transform duration-200 !px-0", !open ? '-translate-x-2' : '')}>
+          <SidebarMenu className={cn("max-h-[320px] overflow-y-auto pb-0 transition-transform duration-200 !px-0", !open ? '-translate-x-2' : '')}>
             {isError ? <div></div> : null}
             {isPending ? (
               <Loader className="w-5 h-5 animate-spin place-self-center" />

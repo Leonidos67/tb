@@ -16,8 +16,8 @@ const AiFab = () => {
         className="flex items-center gap-2 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary bg-background/80 backdrop-blur border px-3 py-2"
         aria-label="Open AI assistant"
       >
-        <div><SiriOrb size="28px" /></div>
-        <span className="text-sm font-medium">Спросить у ии</span>
+        <div><SiriOrb size="24px" /></div>
+        <span className="text-sm font-medium mr-1">Спросить у ии</span>
       </Link>
     </div>
   );

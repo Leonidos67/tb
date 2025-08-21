@@ -87,7 +87,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
       isAnimated: true,
     },
     {
-      title: "AI ассистент",
+      title: "ИИ-ассистент",
       url: `/workspace/${workspaceId}/ai`,
       icon: AnimatedWand,
       isAnimated: true,
@@ -113,7 +113,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                   setIsTasksAnimating(true);
                 } else if (item.title === "Выполненные") {
                   setIsCompletedAnimating(true);
-                } else if (item.title === "AI ассистент") {
+                } else if (item.title === "ИИ-ассистент") {
                   setIsAiAnimating(true);
                 }
               }}
@@ -128,7 +128,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                   setIsTasksAnimating(false);
                 } else if (item.title === "Выполненные") {
                   setIsCompletedAnimating(false);
-                } else if (item.title === "AI ассистент") {
+                } else if (item.title === "ИИ-ассистент") {
                   setIsAiAnimating(false);
                 }
               }}
@@ -139,7 +139,7 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
                 {item.title === "Мои спортсмены" && <AnimatedUsers isAnimating={isMembersAnimating} />}
                 {item.title === "Все тренировки" && <AnimatedFlame isAnimating={isTasksAnimating} />}
                 {item.title === "Выполненные" && <AnimatedCheckCheck isAnimating={isCompletedAnimating} />}
-                {item.title === "AI ассистент" && <AnimatedWand className="text-slate-500" isAnimating={isAiAnimating} />}
+                {item.title === "ИИ-ассистент" && <AnimatedWand className="text-slate-500" isAnimating={isAiAnimating} />}
                 <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>

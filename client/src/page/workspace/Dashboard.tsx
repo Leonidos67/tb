@@ -12,6 +12,7 @@ import { useState } from "react";
 import { onboardingMutationFn } from "@/lib/api";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BottomSheet from "@/components/ui/bottom-sheet";
 import FullscreenModal from "@/components/ui/fullscreen-modal";
 
 const WorkspaceDashboard = () => {
@@ -20,6 +21,7 @@ const WorkspaceDashboard = () => {
   const shouldShowOnboarding = Boolean(user?.isNewUser && user?.userRole !== "athlete");
   const [open, setOpen] = useState(shouldShowOnboarding);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const isCoach = user?.userRole === "coach";
   const isAthlete = user?.userRole === "athlete";
@@ -43,6 +45,7 @@ const WorkspaceDashboard = () => {
             {isCoach ? "Рабочая область" : isAthlete ? "Тренировочная зона" : "Рабочая область"}
           </h2>
         </div>
+        <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="icon"
@@ -51,6 +54,15 @@ const WorkspaceDashboard = () => {
         >
           {isFullscreenOpen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsBottomSheetOpen(true)}
+          className="h-8"
+        >
+          Открыть панель
+        </Button>
+        </div>
       </div>
       <WorkspaceAnalytics />
       <div className="mt-4">
@@ -166,6 +178,22 @@ const WorkspaceDashboard = () => {
         />
       )}
       <DashboardContent />
+      <BottomSheet
+        open={isBottomSheetOpen}
+        onOpenChange={setIsBottomSheetOpen}
+        title={isCoach ? "Панель тренера" : isAthlete ? "Панель спортсмена" : "Панель"}
+        description="Быстрый доступ к действиям и информации"
+      >
+        <div className="space-y-3">
+          <div className="text-sm text-muted-foreground">Быстрые действия</div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="secondary" onClick={() => setIsBottomSheetOpen(false)}>Закрыть</Button>
+            <Button variant="default">Новая тренировка</Button>
+            <Button variant="outline">Пригласить участника</Button>
+            <Button variant="outline">Создать комнату</Button>
+          </div>
+        </div>
+      </BottomSheet>
       <FullscreenModal
         isOpen={isFullscreenOpen}
         onClose={() => setIsFullscreenOpen(false)}
