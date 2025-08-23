@@ -32,7 +32,7 @@ export default function Tasks() {
             {isFullscreenOpen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
           <button
-            className="whitespace-nowrap bg-primary text-white rounded-md px-5 py-1.5 flex items-center font-semibold hover:bg-primary/90 transition-colors"
+            className="whitespace-nowrap bg-primary text-primary-foreground rounded-md px-5 py-1.5 flex items-center font-semibold hover:bg-primary/90 transition-colors"
             onClick={() => setIsTaskDialogOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -40,7 +40,6 @@ export default function Tasks() {
           </button>
         </div>
       </div>
-      <CreateTaskDialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen} />
       {/* {Task Table} */}
       <div className="w-full overflow-x-auto">
         <TaskTable />
@@ -51,6 +50,7 @@ export default function Tasks() {
   return (
     <>
       <TasksContent />
+      <CreateTaskDialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen} />
       <FullscreenModal
         isOpen={isFullscreenOpen}
         onClose={() => setIsFullscreenOpen(false)}

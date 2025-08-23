@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CalendarIcon, Loader } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Form,
   FormControl,
@@ -26,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "../../ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -47,6 +49,7 @@ export default function CreateTaskForm(props: {
   onClose: () => void;
   selectedDate?: Date | null;
 }) {
+  const isMobile = useIsMobile();
   const { projectId, onClose, selectedDate } = props;
 
   const queryClient = useQueryClient();
@@ -198,19 +201,22 @@ export default function CreateTaskForm(props: {
   return (
     <div className="w-full h-auto max-w-full">
       <div className="h-full">
-        <div className="mb-5 pb-2 border-b">
-          <h1
-            className="text-xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1
-           text-center sm:text-left"
-          >
-            Создание тренировки
-          </h1>
-          {/* <p className="text-muted-foreground text-sm leading-tight">
-            
-          </p> */}
-        </div>
+        {!isMobile && (
+          <div className="mb-5 pb-2 border-b">
+            <h1
+              className="text-xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1
+             text-center sm:text-left"
+            >
+              Создание тренировки
+            </h1>
+            {/* <p className="text-muted-foreground text-sm leading-tight">
+              
+            </p> */}
+          </div>
+        )}
+        {isMobile && <div className="mt-2" />}
         <Form {...form}>
-          <form className="space-y-3" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="space-y-3 mb-3" onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               <FormField
                 control={form.control}
@@ -403,8 +409,11 @@ export default function CreateTaskForm(props: {
             {/* Если выбраны брики, показываем два выпадающих списка */}
             {/* Удаляю все проверки, связанные с priority и бриками */}
 
+            {/* Убираю разделитель для мобильной версии */}
+            {/* {isMobile && <Separator className="my-4" />} */}
+
             <Button
-              className="flex place-self-end  h-[40px] text-white font-semibold"
+              className="flex place-self-end  h-[40px] text-black font-semibold"
               type="submit"
               disabled={isPending}
             >

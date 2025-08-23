@@ -80,7 +80,7 @@ export function MobileMenu() {
           <SheetTitle className="text-left flex items-center gap-2">
             <Logo />
             <span className="font-medium">T-Sync.</span>
-            <span className="px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
+            <span className="px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-semibold">beta</span>
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col p-4 gap-2">
@@ -219,7 +219,7 @@ const SocialHeader = () => {
         <Link to="/u/" className="flex items-center gap-0 sm:gap-1">
           <Logo />
           <span className="hidden sm:flex ml-1 sm:ml-2 items-center gap-1 sm:gap-2 self-center font-medium text-sm sm:text-base">T-Sync.</span>
-          <span className="px-1 sm:px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
+          <span className="px-1 sm:px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-semibold">beta</span>
         </Link>
       </div>
       

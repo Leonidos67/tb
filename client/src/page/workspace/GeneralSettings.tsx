@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { EyeOff, Eye, ChevronDown as ChevronDownIcon } from "lucide-react";
+import { EyeOff, Eye, ChevronDown as ChevronDownIcon, Check, Circle } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTheme } from "@/context/theme-provider";
 
 const GeneralSettings = () => {
   const [isWorkspaceInfoVisible, setIsWorkspaceInfoVisible] = useState(true);
@@ -26,54 +27,14 @@ const GeneralSettings = () => {
   const [pageUpdatesEmails, setPageUpdatesEmails] = useState(true);
   const [workspaceDigestEmails, setWorkspaceDigestEmails] = useState(true);
   const [announcementsEmails, setAnnouncementsEmails] = useState(false);
+  
+  // Используем глобальный провайдер темы
+  const { theme, setTheme } = useTheme();
 
-  // Загружаем состояние из localStorage при монтировании
-  useEffect(() => {
-    const savedWorkspaceInfo = localStorage.getItem('general-settings-workspace-info-visible');
-    const savedSecurity = localStorage.getItem('general-settings-security-visible');
-    const savedSystemView = localStorage.getItem('general-settings-system-view-visible');
-    const savedNotifications = localStorage.getItem('general-settings-notifications-visible');
-    
-    if (savedWorkspaceInfo !== null) {
-      setIsWorkspaceInfoVisible(JSON.parse(savedWorkspaceInfo));
-    }
-    if (savedSecurity !== null) {
-      setIsSecurityVisible(JSON.parse(savedSecurity));
-    }
-    if (savedSystemView !== null) {
-      setIsSystemViewVisible(JSON.parse(savedSystemView));
-    }
-    if (savedNotifications !== null) {
-      setIsNotificationsVisible(JSON.parse(savedNotifications));
-    }
-
-    // Загружаем состояние уведомлений
-    const savedNewTasks = localStorage.getItem('general-settings-new-tasks-notifications');
-    const savedTaskUpdates = localStorage.getItem('general-settings-task-updates-notifications');
-    const savedProjectUpdates = localStorage.getItem('general-settings-project-updates-notifications');
-    const savedPushNotifications = localStorage.getItem('general-settings-push-notifications');
-    const savedDesktopComments = localStorage.getItem('general-settings-desktop-comments-notifications');
-    const savedDesktopMeetings = localStorage.getItem('general-settings-desktop-meeting-notifications');
-    const savedSlack = localStorage.getItem('general-settings-slack-notifications');
-    const savedWorkspaceActivity = localStorage.getItem('general-settings-workspace-activity-emails');
-    const savedAlwaysSendEmails = localStorage.getItem('general-settings-always-send-emails');
-    const savedPageUpdates = localStorage.getItem('general-settings-page-updates-emails');
-    const savedWorkspaceDigest = localStorage.getItem('general-settings-workspace-digest-emails');
-    const savedAnnouncements = localStorage.getItem('general-settings-announcements-emails');
-    
-    if (savedNewTasks !== null) setNewTasksNotifications(JSON.parse(savedNewTasks));
-    if (savedTaskUpdates !== null) setTaskUpdatesNotifications(JSON.parse(savedTaskUpdates));
-    if (savedProjectUpdates !== null) setProjectUpdatesNotifications(JSON.parse(savedProjectUpdates));
-    if (savedPushNotifications !== null) setPushNotifications(JSON.parse(savedPushNotifications));
-    if (savedDesktopComments !== null) setDesktopCommentsNotifications(JSON.parse(savedDesktopComments));
-    if (savedDesktopMeetings !== null) setDesktopMeetingNotifications(JSON.parse(savedDesktopMeetings));
-    if (savedSlack !== null) setSlackNotifications(JSON.parse(savedSlack));
-    if (savedWorkspaceActivity !== null) setWorkspaceActivityEmails(JSON.parse(savedWorkspaceActivity));
-    if (savedAlwaysSendEmails !== null) setAlwaysSendEmails(JSON.parse(savedAlwaysSendEmails));
-    if (savedPageUpdates !== null) setPageUpdatesEmails(JSON.parse(savedPageUpdates));
-    if (savedWorkspaceDigest !== null) setWorkspaceDigestEmails(JSON.parse(savedWorkspaceDigest));
-    if (savedAnnouncements !== null) setAnnouncementsEmails(JSON.parse(savedAnnouncements));
-  }, []);
+  // Функция для переключения темы
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme);
+  };
 
   // Функции для переключения видимости блоков
   const handleToggleWorkspaceInfo = () => {
@@ -161,16 +122,173 @@ const GeneralSettings = () => {
     localStorage.setItem('general-settings-announcements-emails', JSON.stringify(checked));
   };
 
+  // Загружаем состояние из localStorage при монтировании
+  useEffect(() => {
+    const savedWorkspaceInfo = localStorage.getItem('general-settings-workspace-info-visible');
+    const savedSecurity = localStorage.getItem('general-settings-security-visible');
+    const savedSystemView = localStorage.getItem('general-settings-system-view-visible');
+    const savedNotifications = localStorage.getItem('general-settings-notifications-visible');
+    
+    if (savedWorkspaceInfo !== null) {
+      setIsWorkspaceInfoVisible(JSON.parse(savedWorkspaceInfo));
+    }
+    if (savedSecurity !== null) {
+      setIsSecurityVisible(JSON.parse(savedSecurity));
+    }
+    if (savedSystemView !== null) {
+      setIsSystemViewVisible(JSON.parse(savedSystemView));
+    }
+    if (savedNotifications !== null) {
+      setIsNotificationsVisible(JSON.parse(savedNotifications));
+    }
+
+    // Загружаем состояние уведомлений
+    const savedNewTasks = localStorage.getItem('general-settings-new-tasks-notifications');
+    const savedTaskUpdates = localStorage.getItem('general-settings-task-updates-notifications');
+    const savedProjectUpdates = localStorage.getItem('general-settings-project-updates-notifications');
+    const savedPushNotifications = localStorage.getItem('general-settings-push-notifications');
+    const savedDesktopComments = localStorage.getItem('general-settings-desktop-comments-notifications');
+    const savedDesktopMeetings = localStorage.getItem('general-settings-desktop-meeting-notifications');
+    const savedSlack = localStorage.getItem('general-settings-slack-notifications');
+    const savedWorkspaceActivity = localStorage.getItem('general-settings-workspace-activity-emails');
+    const savedAlwaysSendEmails = localStorage.getItem('general-settings-always-send-emails');
+    const savedPageUpdates = localStorage.getItem('general-settings-page-updates-emails');
+    const savedWorkspaceDigest = localStorage.getItem('general-settings-workspace-digest-emails');
+    const savedAnnouncements = localStorage.getItem('general-settings-announcements-emails');
+    
+    if (savedNewTasks !== null) setNewTasksNotifications(JSON.parse(savedNewTasks));
+    if (savedTaskUpdates !== null) setTaskUpdatesNotifications(JSON.parse(savedTaskUpdates));
+    if (savedProjectUpdates !== null) setProjectUpdatesNotifications(JSON.parse(savedProjectUpdates));
+    if (savedPushNotifications !== null) setPushNotifications(JSON.parse(savedPushNotifications));
+    if (savedDesktopComments !== null) setDesktopCommentsNotifications(JSON.parse(savedDesktopComments));
+    if (savedDesktopMeetings !== null) setDesktopMeetingNotifications(JSON.parse(savedDesktopMeetings));
+    if (savedSlack !== null) setSlackNotifications(JSON.parse(savedSlack));
+    if (savedWorkspaceActivity !== null) setWorkspaceActivityEmails(JSON.parse(savedWorkspaceActivity));
+    if (savedAlwaysSendEmails !== null) setAlwaysSendEmails(JSON.parse(savedAlwaysSendEmails));
+    if (savedPageUpdates !== null) setPageUpdatesEmails(JSON.parse(savedPageUpdates));
+    if (savedWorkspaceDigest !== null) setWorkspaceDigestEmails(JSON.parse(savedWorkspaceDigest));
+    if (savedAnnouncements !== null) setAnnouncementsEmails(JSON.parse(savedAnnouncements));
+  }, []);
+
   return (
-    <div className="space-y-6">
+    <div className="page-container space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Общие настройки</h1>
         <p className="text-muted-foreground">
           Управляйте основными настройками вашего рабочего пространства
         </p>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Текущая тема:</span>
+          <Badge variant="outline" className="capitalize">
+            {theme === 'light' ? 'Светлая' : 'Темная'}
+          </Badge>
+        </div>
       </div>
 
       <div className="grid gap-6">
+
+      <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 sm:pb-6">
+            <div>
+              <CardTitle>Системные настройки</CardTitle>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleToggleSystemView}
+              aria-label={isSystemViewVisible ? "Скрыть блок" : "Показать блок"}
+            >
+              {isSystemViewVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </CardHeader>
+          {isSystemViewVisible && (
+            <CardContent className="space-y-6">
+              {/* Часовой пояс */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="timezone" className="!cursor-pointer">Часовой пояс</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Напоминания и уведомления будут доставляться в зависимости от вашего часового пояса.
+                    </p>
+                  </div>
+                  <Button disabled variant="outline" className="w-full sm:w-[180px] opacity-60 px-3 py-2" style={{ cursor: 'default' }}>
+                    <span className="text-sm font-medium truncate">(GMT +3:00) Москва</span>
+                    <ChevronDownIcon className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Внешний вид */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-medium !cursor-pointer">Внешний вид</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Настройте дизайн T-Sync на вашем устройстве
+                    </p>
+                  </div>
+                </div>
+
+                {/* Выбор темы: 3 горизонтальных блока */}
+                <div className="flex flex-row flex-nowrap items-start gap-3 overflow-x-auto pb-1">
+                  {/* Светлая */}
+                  <button
+                    type="button"
+                    onClick={() => handleThemeChange('light')}
+                    className="group relative rounded-xl transition-colors text-left w-[200px]"
+                  >
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-border" style={{ width: '200px', height: '100px' }}>
+                      <div className="absolute top-2 right-2 inline-flex items-center justify-center rounded-full bg-background/80 backdrop-blur p-1.5 shadow-sm">
+                        {theme === 'light' ? <Check className="h-4 w-4 text-primary" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
+                      </div>
+                    </div>
+                    <div className="px-3 py-2 text-center">
+                      <p className="text-sm font-medium">Светлая</p>
+                    </div>
+                  </button>
+
+                  {/* Темная */}
+                  <button
+                    type="button"
+                    onClick={() => handleThemeChange('dark')}
+                    className="group relative rounded-xl transition-colors text-left w-[200px]"
+                  >
+                    <div className="relative overflow-hidden rounded-xl bg-black border border-border" style={{ width: '200px', height: '100px' }}>
+                      <div className="absolute top-2 right-2 inline-flex items-center justify-center rounded-full bg-background/80 backdrop-blur p-1.5 shadow-sm">
+                        {theme === 'dark' ? <Check className="h-4 w-4 text-primary" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
+                      </div>
+                    </div>
+                    <div className="px-3 py-2 text-center">
+                      <p className="text-sm font-medium">Темная</p>
+                    </div>
+                  </button>
+
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Язык */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-medium !cursor-pointer">Язык</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Выберите язык, используемый в пользовательском интерфейсе.
+                    </p>
+                  </div>
+                  <Button disabled variant="outline" className="w-full sm:w-[180px] opacity-60 px-3 py-2 flex items-center justify-between" style={{ cursor: 'default' }}>
+                    <span className="text-sm font-medium truncate">ru</span>
+                    <ChevronDownIcon className="h-4 w-4 opacity-50 flex-shrink-0" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+        
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <div>
@@ -327,76 +445,6 @@ const GeneralSettings = () => {
               <p className="text-sm text-muted-foreground">
                 Настройки безопасности будут доступны в ближайшее время
               </p>
-            </CardContent>
-          )}
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 sm:pb-6">
-            <div>
-              <CardTitle>Системные настройки</CardTitle>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleToggleSystemView}
-              aria-label={isSystemViewVisible ? "Скрыть блок" : "Показать блок"}
-            >
-              {isSystemViewVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </Button>
-          </CardHeader>
-          {isSystemViewVisible && (
-            <CardContent className="space-y-6">
-              {/* Часовой пояс */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="timezone" className="!cursor-pointer">Часовой пояс</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Напоминания и уведомления будут доставляться в зависимости от вашего часового пояса.
-                    </p>
-                  </div>
-                  <Button disabled variant="outline" className="w-full sm:w-[180px] opacity-60 px-3 py-2" style={{ cursor: 'default' }}>
-                    <span className="text-sm font-medium truncate">(GMT +3:00) Москва</span>
-                    <ChevronDownIcon className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Внешний вид */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-medium !cursor-pointer">Внешний вид</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Настройте дизайн T-Sync на вашем устройстве
-                    </p>
-                  </div>
-                  <Button disabled variant="outline" className="w-full sm:w-[180px] opacity-60 px-3 py-2" style={{ cursor: 'default' }}>
-                    <span className="text-sm font-medium truncate">Использовать системные настройки</span>
-                    <ChevronDownIcon className="h-4 w-4 opacity-50 ml-2 flex-shrink-0" />
-                  </Button>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Язык */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-medium !cursor-pointer">Язык</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Выберите язык, используемый в пользовательском интерфейсе.
-                    </p>
-                  </div>
-                  <Button disabled variant="outline" className="w-full sm:w-[180px] opacity-60 px-3 py-2 flex items-center justify-between" style={{ cursor: 'default' }}>
-                    <span className="text-sm font-medium truncate">ru</span>
-                    <ChevronDownIcon className="h-4 w-4 opacity-50 flex-shrink-0" />
-                  </Button>
-                </div>
-              </div>
             </CardContent>
           )}
         </Card>

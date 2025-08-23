@@ -20,7 +20,7 @@ const ChevronFirst = ({
   width = 28,
   height = 28,
   strokeWidth = 2,
-  stroke = "#000000",
+  stroke = "currentColor",
   ...props
 }: ChevronFirstProps) => {
   const controls = useAnimation();

@@ -207,7 +207,7 @@ export function NavProjects({ compact = false, onItemClick }: { compact?: boolea
                     <DropdownMenuTrigger asChild>
                       <SidebarMenuAction showOnHover>
                         <MoreHorizontal />
-                        <span className="sr-only">More</span>
+                        <span className="sr-only">Еще</span>
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -274,7 +274,7 @@ export function NavProjects({ compact = false, onItemClick }: { compact?: boolea
                 onClick={fetchNextPage}
               >
                 <MoreHorizontal className="text-sidebar-foreground/70" />
-                <span>{isFetching ? "Загрузка..." : "More"}</span>
+                <span>{isFetching ? "Загрузка..." : "Загрузить еще"}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}
@@ -321,7 +321,7 @@ export function NavProjects({ compact = false, onItemClick }: { compact?: boolea
                   onClick={fetchNextPage}
                 >
                   <MoreHorizontal className="text-sidebar-foreground/70" />
-                  <span>{isFetching ? "Загрузка..." : "More"}</span>
+                  <span>{isFetching ? "Загрузка..." : "Загрузить еще"}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )}

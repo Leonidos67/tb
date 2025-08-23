@@ -13,11 +13,11 @@ import useWorkspaceId from "@/hooks/use-workspace-id";
 import { useAuthContext } from "@/context/auth-provider";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import BottomSheet from "@/components/ui/bottom-sheet";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator as UiSeparator } from "@/components/ui/separator";
-import { X, Plus, Maximize2, Minimize2, ChevronDown, Circle } from "lucide-react";
+import { X, Plus, ChevronDown, RefreshCcw, Maximize2, Minimize2 } from "lucide-react";
 import { NavMain } from "@/components/asidebar/nav-main";
 import { NavProjects } from "@/components/asidebar/nav-projects";
 import { useState, useEffect } from "react";
@@ -64,7 +64,7 @@ const Header = () => {
   };
 
   const pageHeading = getPageLabel(pathname);
-  // const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   // const [time, setTime] = useState(() => {
   //   const now = new Date();
   //   return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -77,70 +77,53 @@ const Header = () => {
   // const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
 
   const [openMenuDialog, setOpenMenuDialog] = useState(false);
+
+  // Отслеживание изменений полноэкранного режима
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // Функция для переключения полноэкранного режима
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    } else {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
+  };
+
+  // Функция для обновления страницы
+  const refreshPage = () => {
+    window.location.reload();
+  };
   const { onOpen: onOpenWorkspaceDialog } = useCreateWorkspaceDialog();
   const { onOpen: onOpenProjectDialog } = useCreateProjectDialog();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"quick" | "pages" | "rooms">("quick");
   const isMobile = useIsMobile();
   
-  // Состояния для полноэкранного режима и времени
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentTime, setCurrentTime] = useState(() => {
-    const now = new Date();
-    return now.toLocaleTimeString('ru-RU', { 
-      hour: '2-digit', 
-      minute: '2-digit'
-    });
-  });
-  const [currentTimeDetailed, setCurrentTimeDetailed] = useState(() => {
-    const now = new Date();
-    return now.toLocaleTimeString('ru-RU', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      second: '2-digit'
-    });
-  });
 
 
-  // useEffect для отслеживания полноэкранного режима
-  useEffect(() => {
-    function handleFullscreenChange() {
-      setIsFullscreen(!!document.fullscreenElement);
-    }
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
 
-  // useEffect для обновления времени
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleTimeString('ru-RU', { 
-        hour: '2-digit', 
-        minute: '2-digit'
-      }));
-      setCurrentTimeDetailed(now.toLocaleTimeString('ru-RU', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit'
-      }));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
-  // Функция для переключения полноэкранного режима
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  };
+
+
+
+
 
   return (
-    <header className="flex sticky top-0 z-50 bg-white h-12 shrink-0 items-center border-b">
+            <header className="flex sticky top-0 z-50 bg-background h-12 shrink-0 items-center border-b">
       <div className="flex flex-1 items-center gap-2 px-3">
         <SidebarTrigger />
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -173,49 +156,9 @@ const Header = () => {
           </Breadcrumb>
           {/* Кнопка Меню команд и модалка */}
           <div className="ml-2 flex items-center gap-2">
-            {/* Время - всегда видимо */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <div className="flex items-center justify-center h-8 px-3 text-sm font-medium text-gray-600 cursor-pointer hover:bg-gray-100 rounded-md transition-colors">
-                  <div className="relative mr-2">
-                    <Circle className="h-2 w-2 text-black animate-pulse" />
-                    <div className="absolute inset-0 rounded-full bg-black opacity-10 animate-ping"></div>
-                  </div>
-                  {currentTime}
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-4" align="start" side="bottom">
-                <div className="text-center">
-                  <div className="text-3xl font-mono font-bold text-gray-900 mb-2">
-                    {currentTimeDetailed}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    (GMT +3:00) Москва
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
 
-            {/* Десктопная версия - скрыта на мобильных */}
-            <div className="hidden md:flex items-center gap-2">
-              {/* Полноэкранный режим */}
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-8 w-8"
-                onClick={toggleFullscreen}
-              >
-                {isFullscreen ? (
-                  <Minimize2 className="h-4 w-4" />
-                ) : (
-                  <Maximize2 className="h-4 w-4" />
-                )}
-              </Button>
-              {/* Кнопка - Добавить кнопку
-              <Button variant="outline" size="sm">
-                Добавить кнопку
-              </Button> */}
-            </div>
+
+
 
             {/* Мобильная версия - кнопка Еще */}
             <div className="md:hidden">
@@ -227,34 +170,54 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  {/* Полноэкранный режим */}
-                  <DropdownMenuItem className="!cursor-pointer" onClick={toggleFullscreen}>
-                    {isFullscreen ? (
-                      <Minimize2 className="h-4 w-4 mr-2" />
-                    ) : (
-                      <Maximize2 className="h-4 w-4 mr-2" />
-                    )}
-                    {isFullscreen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
-                  </DropdownMenuItem>
-                  {/* Разделитель */}
-                  <UiSeparator />
+
                   {/* Быстрый доступ */}
                   <DropdownMenuItem className="!cursor-pointer" onClick={() => setOpenMenuDialog(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Быстрый доступ
                   </DropdownMenuItem>
+
+                  {/* Кнопка обновления страницы */}
+                  <DropdownMenuItem className="!cursor-pointer" onClick={refreshPage}>
+                    <RefreshCcw className="h-4 w-4 mr-2" />
+                    Обновить страницу
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             
-            {/* Десктоп: диалог Быстрый доступ */}
+            {/* Десктоп: кнопки управления и диалог Быстрый доступ */}
             {!isMobile && (
-              <Dialog open={openMenuDialog} onOpenChange={setOpenMenuDialog}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="!cursor-pointer hidden md:inline-flex">
-                    Быстрый доступ
-                  </Button>
-                </DialogTrigger>
+              <>
+                {/* Кнопка обновления страницы */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshPage}
+                  className="!cursor-pointer"
+                  title="Обновить страницу"
+                >
+                  <RefreshCcw className="h-4 w-4" />
+                </Button>
+
+                {/* Кнопка полноэкранного режима */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleFullscreen}
+                  className="!cursor-pointer"
+                  title={isFullscreen ? "Выйти из полноэкранного режима" : "Полноэкранный режим"}
+                >
+                  {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                </Button>
+
+                {/* Диалог Быстрый доступ */}
+                <Dialog open={openMenuDialog} onOpenChange={setOpenMenuDialog}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="!cursor-pointer">
+                      Быстрый доступ
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent className="max-w-md w-full" hideCloseButton>
                   <div className="flex flex-col gap-3">
                     {/* Поиск + кнопка закрытия справа от инпута */}
@@ -363,6 +326,7 @@ const Header = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              </>
             )}
 
             {/* Мобильный BottomSheet для Быстрый доступ */}

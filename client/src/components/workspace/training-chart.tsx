@@ -20,10 +20,10 @@ interface TooltipProps {
 const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-3 border rounded-lg shadow-lg">
-        <p className="font-medium">{`${label}`}</p>
-        <p className="text-green-600">{`Выполнено: ${payload[0].value}`}</p>
-        <p className="text-gray-600">{`Всего: ${payload[1].value}`}</p>
+      <div className="bg-white dark:bg-card p-3 border rounded-lg shadow-lg">
+        <p className="font-medium text-gray-900 dark:text-foreground">{`${label}`}</p>
+        <p className="text-green-600 dark:text-green-400">{`Выполнено: ${payload[0].value}`}</p>
+        <p className="text-gray-600 dark:text-white">{`Всего: ${payload[1].value}`}</p>
       </div>
     );
   }
@@ -100,7 +100,7 @@ const TrainingChart = () => {
   const yTicks = Array.from({ length: maxValue + 1 }, (_, i) => i);
 
   return (
-    <Card className="shadow-none w-full">
+    <Card className="shadow-none w-full training-chart">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 sm:pb-6">
         <CardTitle className="text-sm font-medium">График тренировок</CardTitle>
         <Button
@@ -127,22 +127,22 @@ const TrainingChart = () => {
                     data={weeklyData} 
                     margin={{ top: 20, right: 50, left: 0, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-300 dark:text-gray-600" />
                     <XAxis 
                       dataKey="day" 
-                      tick={{ fontSize: 12 }}
-                      className="text-xs sm:text-sm"
+                      tick={{ fontSize: 12, fill: 'currentColor' }}
+                      className="text-xs sm:text-sm text-gray-900 dark:text-white"
                     />
                     <YAxis 
                       tickFormatter={(value) => Math.round(value).toString()}
                       domain={[0, 'dataMax']}
                       ticks={yTicks}
-                      tick={{ fontSize: 12 }}
-                      className="text-xs sm:text-sm"
+                      tick={{ fontSize: 12, fill: 'currentColor' }}
+                      className="text-xs sm:text-sm text-gray-900 dark:text-white"
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Bar dataKey="completed" fill="#22c55e" name="Выполнено" />
-                    <Bar dataKey="total" fill="#000000" name="Всего" />
+                    <Bar dataKey="total" fill="currentColor" className="text-black dark:text-white" name="Всего" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -182,7 +182,7 @@ const TrainingChart = () => {
                   </div>
                   
                   {/* Диапазон дат */}
-                  <div className="text-sm text-gray-600 font-medium text-center">
+                  <div className="text-sm text-gray-600 dark:text-white font-medium text-center">
                     {weekDates[0].toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })} - {weekDates[6].toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
                   </div>
                   
@@ -203,11 +203,11 @@ const TrainingChart = () => {
                 <div className="flex justify-center gap-4 sm:gap-6 mt-3 text-xs sm:text-sm">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <div className="w-3 h-3 sm:w-4 sm:h-4 rounded" style={{ backgroundColor: "#22c55e" }} />
-                    <span className="text-gray-800 font-medium">Выполнено</span>
+                    <span className="text-gray-800 dark:text-white font-medium">Выполнено</span>
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded" style={{ backgroundColor: "#000000" }} />
-                    <span className="text-gray-800 font-medium">Всего</span>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-black dark:bg-white" />
+                    <span className="text-gray-800 dark:text-white font-medium">Всего</span>
                   </div>
                 </div>
               </div>

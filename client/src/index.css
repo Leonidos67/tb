@@ -180,10 +180,23 @@ em-emoji-picker {
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
+  
+  html {
+    @apply bg-background;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+  }
+  
   body {
-    @apply bg-white text-foreground;
-    background-color: white !important;
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+  }
+
+  .dark body {
+    @apply bg-background text-foreground;
   }
 
   button[data-placeholder] {
@@ -192,8 +205,540 @@ em-emoji-picker {
   
   /* Дополнительные стили для обеспечения кликабельности */
   .main-content {
-    background-color: white !important;
+    @apply bg-background;
     pointer-events: auto !important;
     z-index: 1;
+    transition: background-color 0.3s ease;
   }
+
+  /* Стили для основного контейнера страницы */
+  .page-container {
+    @apply bg-background min-h-screen;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Стили для карточек */
+  .card {
+    @apply bg-card text-card-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+
+
+
+
+
+
+
+
+
+
+  /* Стили для кнопки скрытия сайдбара */
+  .sidebar-trigger {
+    @apply text-foreground;
+    transition: color 0.3s ease;
+  }
+
+  .dark .sidebar-trigger {
+    @apply text-foreground;
+  }
+
+  /* Стили для beta блока */
+  .beta-badge {
+    @apply bg-foreground text-background;
+  }
+
+  /* Стили для кнопок AI */
+  .ai-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Стили для табов */
+  .tabs-list {
+    @apply bg-muted;
+  }
+
+  /* Стили для модальных окон */
+  .modal-background {
+    @apply bg-background;
+  }
+
+  /* Стили для hover эффектов в темной теме */
+  .dark .hover\:bg-gray-100:hover {
+    @apply hover:bg-accent;
+  }
+
+  .dark .hover\:bg-gray-200:hover {
+    @apply hover:bg-accent;
+  }
+
+  /* Стили для кнопок в темной теме */
+  .dark button.hover\:bg-gray-100:hover {
+    @apply hover:bg-accent;
+  }
+
+  .dark button.hover\:bg-gray-200:hover {
+    @apply hover:bg-accent;
+  }
+
+  /* Стили для дней недели */
+  .weekday-header {
+    @apply bg-muted;
+  }
+
+  .weekday-header-current {
+    @apply bg-foreground text-background;
+  }
+
+  .weekday-header-current .text-xs {
+    @apply text-background/80;
+  }
+
+  .weekday-header-current .text-sm {
+    @apply text-background;
+  }
+
+  /* Стили для карточек дней недели */
+  .weekday-card {
+    @apply bg-card;
+  }
+
+  /* Стили для карточек тренировок */
+  .task-card {
+    @apply bg-card hover:bg-accent;
+  }
+
+  /* Стили для кнопок добавления тренировки */
+  .add-task-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Стили для кнопок копирования */
+  .copy-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Стили для профиля */
+  .profile-card {
+    @apply bg-card;
+  }
+
+  /* Стили для страницы AI в темной теме */
+  .dark .ai-page {
+    @apply bg-background text-foreground;
+  }
+
+  /* Стили для сообщений AI в темной теме */
+  .dark .ai-message-user {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .dark .ai-message-model {
+    @apply bg-muted text-foreground border border-border;
+  }
+
+  /* Стили для инпутов AI в темной теме */
+  .dark .ai-input-container {
+    @apply bg-card border-border;
+  }
+
+  /* Стили для фона инпут-блока в темной теме */
+  .dark .ai-input-bg {
+    @apply bg-card;
+  }
+
+  .dark .ai-textarea {
+    @apply bg-card text-foreground border-border placeholder:text-muted-foreground;
+  }
+
+  .dark .ai-textarea:focus {
+    @apply ring-ring border-ring;
+  }
+
+  /* Стили для кнопок AI в темной теме */
+  .dark .ai-button-outline {
+    @apply bg-card text-foreground border-border hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .dark .ai-button-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Стили для списка спортсменов в темной теме */
+  .dark .ai-athlete-item {
+    @apply bg-card text-foreground border-border hover:bg-accent;
+  }
+
+  .dark .ai-athlete-selected {
+    @apply bg-green-600 text-white border-green-600;
+  }
+
+  /* Стили для dropdown комнат в темной теме */
+  .dark .room-dropdown {
+    @apply bg-card text-foreground border-border shadow-lg;
+  }
+
+  .dark .room-dropdown button:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* Стили для SiriOrb в темной теме */
+  .dark .siri-orb-container {
+    @apply bg-background;
+  }
+
+  .dark .siri-orb-text {
+    @apply bg-white/90 text-black border-gray-200;
+  }
+
+  /* Стили для светлой темы SiriOrb текста */
+  .siri-orb-text {
+    @apply bg-white/90 text-black border-gray-200;
+  }
+
+  /* Стили для выбранных спортсменов в темной теме - теперь соответствуют стилям кнопок */
+  .dark .ai-selected-athlete {
+    @apply bg-card text-foreground border-border;
+  }
+
+  .dark .ai-selected-athlete-remove {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .dark .ai-selected-athlete-info {
+    @apply bg-muted text-muted-foreground border-border;
+  }
+
+  /* Стили для прикрепленных пользователей - соответствуют стилям кнопок */
+  .dark .ai-attached-user {
+    @apply bg-card text-foreground border-border shadow-sm;
+  }
+
+  .dark .ai-attached-user:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .dark .ai-attached-user-remove {
+    @apply hover:bg-accent hover:text-accent-foreground hover:scale-110;
+  }
+
+  .dark .ai-attached-user-info {
+    @apply bg-muted text-muted-foreground border-border;
+  }
+
+  /* Стили для мобильного BottomSheet в темной теме */
+  .dark .ai-bottom-sheet {
+    @apply bg-card text-foreground border-border;
+  }
+
+  /* Стили для inline кнопки AI в темной теме */
+  .dark .ai-inline-button {
+    @apply bg-card text-foreground border-border shadow-lg hover:bg-accent;
+  }
+
+  /* Стили для ошибок в темной теме */
+  .dark .ai-error {
+    @apply text-red-400;
+  }
+
+  /* Стили для загрузки в темной теме */
+  .dark .ai-loading {
+    @apply text-muted-foreground;
+  }
+
+  /* Стили для placeholder текста в темной теме */
+  .dark .ai-placeholder {
+    @apply text-muted-foreground;
+  }
+
+  /* Стили для hover эффектов в темной теме */
+  .dark .ai-hover-effect:hover {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* Стили для фокуса в темной теме */
+  .dark .ai-focus:focus {
+    @apply ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Стили для анимаций в темной теме */
+  .dark .ai-animate {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Стили для границ в темной теме */
+  .dark .ai-border {
+    @apply border-border;
+  }
+
+  /* Стили для теней в темной теме */
+  .dark .ai-shadow {
+    @apply shadow-lg shadow-black/20;
+  }
+
+  /* Стили для backdrop в темной теме */
+  .dark .ai-backdrop {
+    @apply backdrop-blur-sm bg-background/80;
+  }
+
+  /* Стили для скроллбара в темной теме */
+  .dark .scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  .dark .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/50;
+  }
+
+  .dark .scrollbar:hover::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/70;
+  }
+
+  /* Стили для скроллбара страницы AI в темной теме */
+  .dark .ai-page .scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  /* Стили для вкладок дашборда в темной теме */
+  .dark .dashboard-tabs {
+    @apply bg-card border-border;
+  }
+
+  .dark .dashboard-tabs-list {
+    @apply bg-muted;
+  }
+
+  .dark .dashboard-tabs-trigger {
+    @apply text-muted-foreground hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .dark .dashboard-tabs-trigger[data-state="active"] {
+    @apply bg-background text-foreground shadow-sm;
+  }
+
+  /* Стили для списка участников в темной теме */
+  .dark .member-item {
+    @apply bg-card hover:bg-accent/50;
+  }
+
+  .dark .member-name {
+    @apply text-foreground;
+  }
+
+  .dark .member-role {
+    @apply text-muted-foreground;
+  }
+
+  .dark .member-date {
+    @apply text-muted-foreground;
+  }
+
+  .dark .ai-page .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/50;
+  }
+
+  .dark .ai-page .scrollbar:hover::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/70;
+  }
+
+  /* Стили для Firefox скроллбара в темной теме */
+  .dark .scrollbar {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.5) hsl(var(--muted));
+  }
+
+  .dark .scrollbar:hover {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.7) hsl(var(--muted));
+  }
+
+  /* Дополнительные стили для анимаций и переходов в темной теме */
+  .dark .ai-transition {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Стили для фокуса на интерактивных элементах в темной теме */
+  .dark .ai-focus-ring:focus {
+    @apply ring-2 ring-ring ring-offset-2 ring-offset-background outline-none;
+  }
+
+  /* Стили для активных состояний в темной теме */
+  .dark .ai-active {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* Стили для disabled состояний в темной теме */
+  .dark .ai-disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Стили для loading состояний в темной теме */
+  .dark .ai-loading-spinner {
+    @apply text-muted-foreground;
+  }
+
+  /* Стили для success состояний в темной теме */
+  .dark .ai-success {
+    @apply text-green-400;
+  }
+
+  /* Стили для warning состояний в темной теме */
+  .dark .ai-warning {
+    @apply text-yellow-400;
+  }
+
+  /* Стили для info состояний в темной теме */
+  .dark .ai-info {
+    @apply text-blue-400;
+  }
+
+  /* Стили для улучшения внешнего вида страницы AI в темной теме */
+  .dark .ai-page {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted) / 0.1) 100%);
+  }
+
+  /* Стили для фона страницы AI в темной теме - такой же как на странице "Задай мне любой вопрос" */
+  .dark .ai-page-background {
+    background: linear-gradient(135deg, 
+      radial-gradient(circle at 30% 70%, rgba(59, 130, 246, 0.15), transparent 60%),
+      radial-gradient(circle at 70% 30%, rgba(147, 51, 234, 0.2), transparent 60%)
+    );
+  }
+
+  /* Стили для градиентного фона в темной теме */
+  .dark .ai-gradient-bg {
+    background: linear-gradient(135deg, 
+      hsl(var(--background)) 0%, 
+      hsl(var(--muted) / 0.05) 25%, 
+      hsl(var(--accent) / 0.02) 50%, 
+      hsl(var(--muted) / 0.05) 75%, 
+      hsl(var(--background)) 100%
+    );
+  }
+
+  /* Стили для карточек в темной теме */
+  .dark .ai-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg;
+  }
+
+  /* Стили для hover эффектов на карточках */
+  .dark .ai-card:hover {
+    @apply bg-card border-border shadow-xl transform scale-[1.02];
+  }
+
+  /* Стили для текста в темной теме */
+  .dark .ai-text-primary {
+    @apply text-foreground;
+  }
+
+  .dark .ai-text-secondary {
+    @apply text-muted-foreground;
+  }
+
+  /* Стили для иконок в темной теме */
+  .dark .ai-icon {
+    @apply text-muted-foreground;
+  }
+
+  .dark .ai-icon:hover {
+    @apply text-foreground;
+  }
+
+  /* Стили для разделителей в темной теме */
+  .dark .ai-divider {
+    @apply border-border/30;
+  }
+
+  /* Стили для тени в темной теме */
+  .dark .ai-shadow-soft {
+    @apply shadow-lg shadow-black/10;
+  }
+
+  .dark .ai-shadow-medium {
+    @apply shadow-xl shadow-black/20;
+  }
+
+  .dark .ai-shadow-strong {
+    @apply shadow-2xl shadow-black/30;
+  }
+
+  /* Стили для анимаций появления в темной теме */
+  .dark .ai-fade-in {
+    animation: aiFadeIn 0.3s ease-out;
+  }
+
+  @keyframes aiFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Стили для пульсации в темной теме */
+  .dark .ai-pulse {
+    animation: aiPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes aiPulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Стили для блеска в темной теме */
+  .dark .ai-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .ai-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .dark .ai-shine:hover::before {
+    left: 100%;
+  }
+
+  /* Стили для графика тренировок в темной теме */
+  .dark .training-chart {
+    @apply bg-card text-foreground;
+  }
+
+  .dark .training-chart .recharts-cartesian-grid-horizontal line,
+  .dark .training-chart .recharts-cartesian-grid-vertical line {
+    @apply stroke-gray-600;
+  }
+
+  .dark .training-chart .recharts-xAxis .recharts-cartesian-axis-tick text,
+  .dark .training-chart .recharts-yAxis .recharts-cartesian-axis-tick text {
+    @apply fill-white;
+  }
+
+  .dark .training-chart .recharts-tooltip {
+    @apply bg-card border-border;
+  }
+
+}
+
+/* Blue selection highlight */
+::selection {
+  background: rgba(59, 130, 246, 0.25); /* Tailwind blue-500 at 25% */
+  color: inherit;
+}
+
+::-moz-selection {
+  background: rgba(59, 130, 246, 0.25);
+  color: inherit;
 }

@@ -4,25 +4,13 @@ import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
 } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader as CenterDialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 
 
 type BottomSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title?: string;
-  description?: string;
   children?: React.ReactNode;
   className?: string;
   swipeToClose?: boolean;
@@ -32,14 +20,11 @@ type BottomSheetProps = {
 const BottomSheet: React.FC<BottomSheetProps> = ({
   open,
   onOpenChange,
-  title,
-  description,
   children,
   className,
   swipeToClose = true,
   swipeCloseThreshold = 140,
 }) => {
-  const isMobile = useIsMobile();
   const [dragY, setDragY] = useState(0);
   const startYRef = useRef<number | null>(null);
   const isDraggingRef = useRef(false);
@@ -82,32 +67,13 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     startYRef.current = null;
   }, [dragY, onOpenChange, swipeCloseThreshold, swipeToClose]);
 
-  // Desktop: use centered dialog with close button
-  if (!isMobile) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className={className}>
-          {(title || description) && (
-            <CenterDialogHeader>
-              {title && <DialogTitle>{title}</DialogTitle>}
-              {description && (
-                <DialogDescription>{description}</DialogDescription>
-              )}
-            </CenterDialogHeader>
-          )}
-          <div className="mt-2">{children}</div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  // Mobile: swipeable bottom sheet
+  // Swipeable bottom sheet (all devices)
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
         hideCloseButton
-        className={cn("z-[60] rounded-t-2xl rounded-b-none min-h-[30vh]", className)}
+        className={cn("z-[70] rounded-t-2xl rounded-b-none min-h-[30vh]", className)}
         ref={(node) => {
           contentRef.current = node;
         }}
@@ -124,16 +90,13 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
         >
           <div className="h-1 w-20 rounded-full bg-muted-foreground/40" />
         </div>
-        {(title || description) && (
-          <SheetHeader className="px-1 select-none">
-            {title && <SheetTitle>{title}</SheetTitle>}
-            {description && (
-              <SheetDescription>{description}</SheetDescription>
-            )}
-          </SheetHeader>
-        )}
+        
+        {/* Разделитель после блока для свайпа с отступами как в быстром доступе */}
+        <div className="mt-6">
+          <Separator />
+        </div>
+        
         <div
-          className="mt-2"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={endDrag}

@@ -182,7 +182,7 @@ export default function EditProjectForm(props: {
 
             <Button
               disabled={isPending}
-              className="flex place-self-end  h-[40px] text-white font-semibold"
+              className="flex place-self-end h-[40px] text-white dark:text-black font-semibold"
               type="submit"
             >
               {isPending && <Loader className="animate-spin" />}

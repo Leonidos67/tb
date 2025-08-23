@@ -30,7 +30,7 @@ const RecentMembers = () => {
             <li
               key={index}
               role="listitem"
-              className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 hover:bg-gray-50"
+              className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border-0 dark:border-0 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
             >
               {/* Avatar */}
               <div className="flex-shrink-0">
@@ -47,10 +47,10 @@ const RecentMembers = () => {
 
               {/* Member Details */}
               <div className="flex flex-col">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-gray-900 dark:text-foreground">
                   {member.userId.name}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-muted-foreground">
                   {member.role.name === "OWNER"
                     ? "владелец"
                     : member.role.name === "ADMIN"
@@ -62,7 +62,7 @@ const RecentMembers = () => {
               </div>
 
               {/* Joined Date */}
-              <div className="ml-auto text-sm text-gray-500">
+              <div className="ml-auto text-sm text-gray-500 dark:text-muted-foreground">
                 <p>Вступил</p>
                 <p>{member.joinedAt ? format(member.joinedAt, "PPP") : null}</p>
               </div>

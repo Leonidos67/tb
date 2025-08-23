@@ -12,6 +12,7 @@ import { AnimatedCheckCheck } from "@/components/ui/motion/AnimatedCheckCheck";
 import { AnimatedBolt } from "@/components/ui/motion/AnimatedBolt";
 import { AnimatedSwatchBook } from "@/components/ui/motion/AnimatedSwatchBook";
 import { AnimatedWand } from "@/components/ui/motion/AnimatedWand";
+import { AudioLines } from "@/components/ui/motion/AudioLines";
 import { cn } from "@/lib/utils";
 
 import {
@@ -19,6 +20,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarGroupLabel,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
@@ -75,6 +77,12 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
       isAnimated: true,
     }] : []),
     {
+      title: "ИИ-ассистент",
+      url: `/workspace/${workspaceId}/ai`,
+      icon: AnimatedWand,
+      isAnimated: true,
+    },
+    {
       title: "Все тренировки",
       url: `/workspace/${workspaceId}/tasks`,
       icon: AnimatedFlame,
@@ -86,64 +94,94 @@ export function NavMain({ compact = false, onItemClick }: NavMainProps) {
       icon: AnimatedCheckCheck,
       isAnimated: true,
     },
-    {
-      title: "ИИ-ассистент",
-      url: `/workspace/${workspaceId}/ai`,
-      icon: AnimatedWand,
-      isAnimated: true,
-    },
 
   ];
   return (
     <SidebarGroup className={cn("h-auto", compact && "!p-0") }>
       <SidebarMenu className={cn("transition-transform duration-200", !open ? '-translate-x-2' : '')}>
         {mainItems.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton 
-              isActive={item.url === pathname} 
-              asChild
-              onMouseEnter={() => {
-                if (item.title === "Главная") {
-                  setIsHomeAnimating(true);
-                } else if (item.title === "Мои данные") {
-                  setIsProfileAnimating(true);
-                } else if (item.title === "Мои спортсмены") {
-                  setIsMembersAnimating(true);
-                } else if (item.title === "Все тренировки") {
-                  setIsTasksAnimating(true);
-                } else if (item.title === "Выполненные") {
-                  setIsCompletedAnimating(true);
-                } else if (item.title === "ИИ-ассистент") {
-                  setIsAiAnimating(true);
-                }
-              }}
-              onMouseLeave={() => {
-                if (item.title === "Главная") {
-                  setIsHomeAnimating(false);
-                } else if (item.title === "Мои данные") {
-                  setIsProfileAnimating(false);
-                } else if (item.title === "Мои спортсмены") {
-                  setIsMembersAnimating(false);
-                } else if (item.title === "Все тренировки") {
-                  setIsTasksAnimating(false);
-                } else if (item.title === "Выполненные") {
-                  setIsCompletedAnimating(false);
-                } else if (item.title === "ИИ-ассистент") {
-                  setIsAiAnimating(false);
-                }
-              }}
-            >
-              <Link to={item.url} className="!text-[15px]" onClick={onItemClick}>
-                {item.title === "Главная" && <AnimatedLayoutGrid isAnimating={isHomeAnimating} />}
-                {item.title === "Мои данные" && <AnimatedUser isAnimating={isProfileAnimating} />}
-                {item.title === "Мои спортсмены" && <AnimatedUsers isAnimating={isMembersAnimating} />}
-                {item.title === "Все тренировки" && <AnimatedFlame isAnimating={isTasksAnimating} />}
-                {item.title === "Выполненные" && <AnimatedCheckCheck isAnimating={isCompletedAnimating} />}
-                {item.title === "ИИ-ассистент" && <AnimatedWand className="text-slate-500" isAnimating={isAiAnimating} />}
-                <span>{item.title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <React.Fragment key={item.title}>
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                isActive={item.url === pathname} 
+                asChild
+                onMouseEnter={() => {
+                  if (item.title === "Главная") {
+                    setIsHomeAnimating(true);
+                  } else if (item.title === "Мои данные") {
+                    setIsProfileAnimating(true);
+                  } else if (item.title === "Мои спортсмены") {
+                    setIsMembersAnimating(true);
+                  } else if (item.title === "ИИ-ассистент") {
+                    setIsAiAnimating(true);
+                  } else if (item.title === "Все тренировки") {
+                    setIsTasksAnimating(true);
+                  } else if (item.title === "Выполненные") {
+                    setIsCompletedAnimating(true);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (item.title === "Главная") {
+                    setIsHomeAnimating(false);
+                  } else if (item.title === "Мои данные") {
+                    setIsProfileAnimating(false);
+                  } else if (item.title === "Мои спортсмены") {
+                    setIsMembersAnimating(false);
+                  } else if (item.title === "Все тренировки") {
+                    setIsTasksAnimating(false);
+                  } else if (item.title === "Выполненные") {
+                    setIsCompletedAnimating(false);
+                  } else if (item.title === "ИИ-ассистент") {
+                    setIsAiAnimating(false);
+                  }
+                }}
+              >
+                <Link
+                  to={item.url}
+                  className={cn(
+                    "!text-[15px]",
+                    item.title === "ИИ-ассистент" && "hover:bg-transparent active:bg-transparent"
+                  )}
+                  style={
+                    item.title === "ИИ-ассистент"
+                      ? {
+                          backgroundImage:
+                            `radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.35), transparent 60%),` +
+                            `radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.4), transparent 60%)`,
+                        }
+                      : undefined
+                  }
+                  onClick={onItemClick}
+                >
+                  {item.title === "Главная" && <AnimatedLayoutGrid isAnimating={isHomeAnimating} />}
+                  {item.title === "Мои данные" && <AnimatedUser isAnimating={isProfileAnimating} />}
+                  {item.title === "Мои спортсмены" && <AnimatedUsers isAnimating={isMembersAnimating} />}
+                  {item.title === "Все тренировки" && <AnimatedFlame isAnimating={isTasksAnimating} />}
+                  {item.title === "Выполненные" && <AnimatedCheckCheck isAnimating={isCompletedAnimating} />}
+                  {item.title === "ИИ-ассистент" && (
+                    <AudioLines isAnimating={isAiAnimating} />
+                  )}
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            {item.title === "ИИ-ассистент" && (
+              <SidebarMenuItem>
+                <SidebarGroupLabel className="w-full justify-between pr-0">
+                  <span>Тренировки</span>
+                </SidebarGroupLabel>
+              </SidebarMenuItem>
+            )}
+
+            {item.title === "Выполненные" && (
+              <SidebarMenuItem>
+                <SidebarGroupLabel className="w-full justify-between pr-0">
+                  <span>Система</span>
+                </SidebarGroupLabel>
+              </SidebarMenuItem>
+            )}
+          </React.Fragment>
         ))}
         
         {/* Пункты системы */}

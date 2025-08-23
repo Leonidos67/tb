@@ -162,7 +162,7 @@ export default function CompletedTasks() {
     }
 
     return (
-      <ul role="list" className="divide-y divide-gray-200">
+      <ul role="list" className="space-y-3">
         {tasks.map((task) => {
           const name = task?.assignedTo?.name || "";
           const initials = getAvatarFallbackText(name);
@@ -170,17 +170,17 @@ export default function CompletedTasks() {
           return (
             <li
               key={task._id}
-              className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-border/50 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
             >
               {/* Task Info */}
-              <div className="flex flex-col space-y-1 flex-grow">
-                <span className="text-sm capitalize text-gray-600 font-medium">
+              <div className="flex flex-col flex-grow">
+                <span className="text-sm capitalize text-gray-600 dark:text-muted-foreground font-medium">
                   {task.taskCode}
                 </span>
-                <p className="text-md font-semibold text-gray-800 truncate">
+                <p className="text-sm font-medium text-gray-900 dark:text-foreground truncate">
                   {task.title}
                 </p>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-muted-foreground">
                   Дата: {task.dueDate ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru }) : "Не указана"}
                 </span>
               </div>
@@ -196,7 +196,7 @@ export default function CompletedTasks() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 ml-4">
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -206,34 +206,34 @@ export default function CompletedTasks() {
                   <Info className="h-4 w-4" />
                 </Button>
                 
-                                 {showHideButton ? (
-                   <Button
-                     variant="ghost"
-                     size="sm"
-                     onClick={() => handleHideTask(task._id)}
-                     disabled={hideTaskMutation.isPending}
-                     className="h-8 w-8 p-0"
-                     title="Скрыть тренировку"
-                   >
-                     <Trash2 className="h-4 w-4" />
-                   </Button>
-                 ) : (
-                   <Button
-                     variant="ghost"
-                     size="sm"
-                     onClick={() => handleUnhideTask(task._id)}
-                     disabled={unhideTaskMutation.isPending}
-                     className="h-8 w-8 p-0"
-                     title="Восстановить тренировку"
-                   >
-                     <Plus className="h-4 w-4" />
-                   </Button>
-                 )}
+                {showHideButton ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleHideTask(task._id)}
+                    disabled={hideTaskMutation.isPending}
+                    className="h-8 w-8 p-0"
+                    title="Скрыть тренировку"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleUnhideTask(task._id)}
+                    disabled={unhideTaskMutation.isPending}
+                    className="h-8 w-8 p-0"
+                    title="Восстановить тренировку"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
 
               {/* Assignee */}
-              <div className="flex items-center space-x-2 ml-2">
-                <Avatar className="h-8 w-8">
+              <div className="flex-shrink-0">
+                <Avatar className="h-9 w-9">
                   <AvatarImage
                     src={task.assignedTo?.profilePicture || ""}
                     alt={task.assignedTo?.name}
@@ -270,7 +270,7 @@ export default function CompletedTasks() {
               {isFullscreenOpen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
             <button
-              className="whitespace-nowrap bg-primary text-white rounded-md px-5 py-1.5 flex items-center font-semibold hover:bg-primary/90 transition-colors"
+              className="whitespace-nowrap bg-primary text-primary-foreground rounded-md px-5 py-1.5 flex items-center font-semibold hover:bg-primary/90 transition-colors"
               onClick={() => setIsTaskDialogOpen(true)}
             >
               <Plus className="w-4 h-4 mr-2" />

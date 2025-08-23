@@ -278,7 +278,7 @@ const Profile = () => {
         </Dialog>
       </div>
       <div className="w-full">
-        <div className="w-full border rounded-lg p-6 bg-white flex flex-col items-start text-left shadow-sm">
+        <div className="w-full border rounded-lg p-6 bg-card flex flex-col items-start text-left shadow-sm">
           <div className="flex flex-row items-center gap-6 mb-4">
             <div className="relative group">
               <Avatar className="w-24 h-24 cursor-pointer" onClick={handleAvatarClick}>

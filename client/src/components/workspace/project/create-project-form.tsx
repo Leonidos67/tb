@@ -97,7 +97,7 @@ export default function CreateProjectForm({
 
   return (
     <div className="w-full h-auto max-w-full">
-      <div className="h-full">
+      <div className="h-full pb-4">
         <div className="mb-5 pb-2 border-b">
           <h1
             className="text-xl tracking-[-0.16px] dark:text-[#fcfdffef] font-semibold mb-1
@@ -112,7 +112,7 @@ export default function CreateProjectForm({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-white">
                 Установите фото
               </label>
               <Popover>
@@ -135,7 +135,7 @@ export default function CreateProjectForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="dark:text-[#f1f7feb5] text-sm">
+                    <FormLabel className="dark:text-white text-sm">
                       Название комнаты
                     </FormLabel>
                     <FormControl>
@@ -156,7 +156,7 @@ export default function CreateProjectForm({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="dark:text-[#f1f7feb5] text-sm">
+                    <FormLabel className="dark:text-white text-sm">
                       Описание
                       <span className="text-xs font-extralight ml-2">
                         необязательно
@@ -177,7 +177,7 @@ export default function CreateProjectForm({
 
             <Button
               disabled={isPending}
-              className="flex place-self-end  h-[40px] text-white font-semibold"
+              className="flex w-full h-[40px] text-black font-semibold"
               type="submit"
             >
               {isPending && <Loader className="animate-spin" />}

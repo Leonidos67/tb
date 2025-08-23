@@ -54,7 +54,7 @@ const Asidebar = () => {
                   className=" md:flex ml-2 items-center gap-2 self-center font-medium"
                 >
                   T-Sync
-                  <span className="px-2 py-0.5 rounded-full bg-black text-white text-xs font-semibold">beta</span>
+                  <span className="px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-semibold">beta</span>
                 </Link>
               )}
             </div>

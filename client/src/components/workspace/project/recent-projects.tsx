@@ -37,51 +37,56 @@ const RecentProjects = () => {
         </div>
       )}
 
-      <ul role="list" className="space-y-2">
+      <ul role="list" className="space-y-3">
         {projects.map((project) => {
           const name = project.createdBy.name;
           const initials = getAvatarFallbackText(name);
           const avatarColor = getAvatarColor(name);
 
           return (
-            <li
-              key={project._id}
-              role="listitem"
-              className="shadow-none cursor-pointer border-0 py-2 hover:bg-gray-50 transition-colors ease-in-out "
+            <Link
+              to={`/workspace/${workspaceId}/project/${project._id}`}
+              className="block"
             >
-              <Link
-                to={`/workspace/${workspaceId}/project/${project._id}`}
-                className="grid gap-8 p-0"
+              <li
+                key={project._id}
+                role="listitem"
+                className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border-0 dark:border-0 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
               >
-                <div className="flex items-start gap-2">
+                {/* Project Emoji */}
+                <div className="flex-shrink-0">
                   <div className="text-xl !leading-[1.4rem]">
                     {project.emoji}
                   </div>
-                  <div className="grid gap-1">
-                    <p className="text-sm font-medium leading-none">
-                      {project.name}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {project.createdAt
-                        ? format(project.createdAt, "PPP")
-                        : null}
-                    </p>
-                  </div>
-                  <div className="ml-auto flex items-center gap-4">
-                    <span className="text-sm text-gray-500">Создатель:</span>
-                    <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage
-                        src={project.createdBy.profilePicture || ""}
-                        alt="Avatar"
-                      />
-                      <AvatarFallback className={avatarColor}>
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
                 </div>
-              </Link>
-            </li>
+
+                {/* Project Details */}
+                <div className="flex flex-col flex-grow">
+                  <p className="text-sm font-medium text-gray-900 dark:text-foreground">
+                    {project.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-muted-foreground">
+                    {project.createdAt
+                      ? format(project.createdAt, "PPP")
+                      : null}
+                  </p>
+                </div>
+
+                {/* Creator Info */}
+                <div className="flex items-center gap-2 ml-auto">
+                  <span className="text-sm text-gray-500 dark:text-muted-foreground">Создатель:</span>
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage
+                      src={project.createdBy.profilePicture || ""}
+                      alt="Avatar"
+                    />
+                    <AvatarFallback className={avatarColor}>
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </li>
+            </Link>
           );
         })}
       </ul>

@@ -117,7 +117,7 @@ const FullscreenModal: React.FC<FullscreenModalProps> = ({
         rounded-lg = border-radius: 0.5rem (8px)
       */}
       <div 
-        className="relative w-full h-full bg-white rounded-lg overflow-hidden"
+        className="relative w-full h-full bg-background rounded-lg overflow-hidden"
         style={{ pointerEvents: 'auto' }}
       >
         {/* Контент с отступами */}

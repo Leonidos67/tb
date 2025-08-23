@@ -60,7 +60,7 @@ export default function SimpleCompletedTasks() {
 
   return (
     <div className="flex flex-col pt-2">
-      <ul role="list" className="divide-y divide-gray-200">
+      <ul role="list" className="space-y-3">
         {completedTasks.map((task) => {
           const name = task?.assignedTo?.name || "";
           const initials = getAvatarFallbackText(name);
@@ -68,17 +68,17 @@ export default function SimpleCompletedTasks() {
           return (
             <li
               key={task._id}
-              className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-border/50 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
             >
               {/* Task Info */}
-              <div className="flex flex-col space-y-1 flex-grow">
-                <span className="text-sm capitalize text-gray-600 font-medium">
+              <div className="flex flex-col flex-grow">
+                <span className="text-sm capitalize text-gray-600 dark:text-muted-foreground font-medium">
                   {task.taskCode}
                 </span>
-                <p className="text-md font-semibold text-gray-800 truncate">
+                <p className="text-sm font-medium text-gray-900 dark:text-foreground truncate">
                   {task.title}
                 </p>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-muted-foreground">
                   Дата: {task.dueDate ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru }) : "Не указана"}
                 </span>
               </div>
@@ -94,7 +94,7 @@ export default function SimpleCompletedTasks() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 ml-4">
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -107,8 +107,8 @@ export default function SimpleCompletedTasks() {
               </div>
 
               {/* Assignee */}
-              <div className="flex items-center space-x-2 ml-2">
-                <Avatar className="h-8 w-8">
+              <div className="flex-shrink-0">
+                <Avatar className="h-9 w-9">
                   <AvatarImage
                     src={task.assignedTo?.profilePicture || ""}
                     alt={task.assignedTo?.name}
