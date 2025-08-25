@@ -1,14 +1,30 @@
-import { getCurrentUserQueryFn } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
+import { getCurrentUserQueryFn } from "@/lib/api";
 
 const useAuth = () => {
-  const query = useQuery({
-    queryKey: ["authUser"],
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["auth"],
     queryFn: getCurrentUserQueryFn,
-    staleTime: 0,
-    retry: 2,
+    retry: false,
+    refetchOnWindowFocus: false,
+    // Only fetch if we have a token
+    enabled: !!localStorage.getItem('authToken'),
   });
-  return query;
+
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    // Refetch to clear the user data
+    refetch();
+  };
+
+  return {
+    data,
+    isLoading,
+    error,
+    logout,
+    refetch,
+    isAuthenticated: !!localStorage.getItem('authToken') && !!data?.user,
+  };
 };
 
 export default useAuth;
