@@ -1,75 +1,50 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { logoutMutationFn } from "@/lib/api";
-import { toast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { Loader } from "lucide-react";
+import { LogOut } from "lucide-react";
+import useAuth from "@/hooks/api/use-auth";
 
-const LogoutDialog = (props: {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const { isOpen, setIsOpen } = props;
-  const navigate = useNavigate();
+const LogoutDialog = () => {
+  const { logout } = useAuth();
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: logoutMutationFn,
-    onSuccess: () => {
-      queryClient.resetQueries({
-        queryKey: ["authUser"],
-      });
-      navigate("/");
-      setIsOpen(false);
-    },
-    onError: (error) => {
-      toast({
-        title: "Уведомление",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Handle logout action
-  const handleLogout = useCallback(() => {
-    if (isPending) return;
-    mutate();
-  }, [isPending, mutate]);
+  const handleLogout = () => {
+    logout();
+    // Redirect to login page
+    window.location.href = "/";
+  };
 
   return (
-    <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Вы уверены, что хотите выйти из системы?</DialogTitle>
-            <DialogDescription>
-              На этом ваша текущая сессия завершится, и вам нужно будет снова войти в систему
-              чтобы получить доступ к своей учетной записи.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button type="button" onClick={() => setIsOpen(false)}>
-              Отменить
-            </Button>
-            <Button disabled={isPending} type="button" onClick={handleLogout}>
-              {isPending && <Loader className="animate-spin" />}
-              Выйти
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" className="w-full justify-start">
+          <LogOut className="mr-2 h-4 w-4" />
+          Выйти
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Вы действительно хотите выйти из аккаунта?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogAction onClick={handleLogout}>
+            Выйти
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
