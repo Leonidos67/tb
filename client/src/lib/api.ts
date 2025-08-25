@@ -31,13 +31,27 @@ export const loginMutationFn = async (
   data: loginType
 ): Promise<LoginResponseType> => {
   const response = await API.post("/auth/login", data);
+  // Save JWT token to localStorage
+  if (response.data.token) {
+    localStorage.setItem('authToken', response.data.token);
+  }
   return response.data;
 };
 
-export const registerMutationFn = async (data: registerType) =>
-  await API.post("/auth/register", data);
+export const registerMutationFn = async (data: registerType): Promise<RegisterResponseType> => {
+  const response = await API.post("/auth/register", data);
+  // Save JWT token to localStorage
+  if (response.data.token) {
+    localStorage.setItem('authToken', response.data.token);
+  }
+  return response.data;
+};
 
-export const logoutMutationFn = async () => await API.post("/auth/logout");
+export const logoutMutationFn = async () => {
+  // Remove JWT token from localStorage
+  localStorage.removeItem('authToken');
+  return await API.post("/auth/logout");
+};
 
 export const updateUserRoleMutationFn = async (userRole: "coach" | "athlete") => {
   const response = await API.put("/auth/role", { userRole });
