@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/context/auth-provider";
-import LogoutDialog from "@/components/asidebar/logout-dialog";
+
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { updateProfilePictureMutationFn, setUsernameMutationFn, updateUserRoleMutationFn } from "@/lib/api";
@@ -11,15 +11,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
-import WebsiteManager from "@/components/website/website-manager";
+
 import useWorkspaceId from "@/hooks/use-workspace-id";
-import { useGetWebsiteByUsername } from "@/hooks/api/use-website";
+import { BalanceDisplay } from "@/components/payment/balance-display";
 
 const PROFILE_BASE_URL = window.location.origin + "/u/users/";
 
 const Profile = () => {
   const { user, refetchAuth } = useAuthContext();
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState(user?.username || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,9 +31,6 @@ const Profile = () => {
   const [currentRole, setCurrentRole] = useState<"coach" | "athlete" | null>(user?.userRole ?? null);
   const navigate = useNavigate();
   const workspaceId = useWorkspaceId();
-  // Hook запроса сайта должен вызываться до любого условного return
-  const websiteUsername = user?.username ?? "";
-  const { data: websiteData } = useGetWebsiteByUsername(websiteUsername);
 
   if (!user) return null;
 
@@ -114,16 +110,6 @@ const Profile = () => {
   };
 
   const profileUrl = `${PROFILE_BASE_URL}${username}`;
-  const localWebsiteData = (() => {
-    if (!username) return null;
-    try {
-      const websites = JSON.parse(localStorage.getItem("websites") || "{}");
-      return websites[username] || null;
-    } catch {
-      return null;
-    }
-  })();
-  const hasWebsite = Boolean(websiteData?.website || localWebsiteData);
 
   return (
     <main className="flex flex-1 flex-col py-4 md:pt-3">
@@ -142,26 +128,7 @@ const Profile = () => {
                 <span className="hidden sm:inline">Открыть публичный профиль</span>
                 <span className="sm:hidden">Профиль</span>
               </Button>
-              {hasWebsite ? (
-                <Button
-                  type="button"
-                  variant="default"
-                  onClick={() => navigate(`/workspace/${workspaceId}/create-website`)}
-                  className="flex items-center gap-2"
-                >
-                  Перейти в управление сайтом
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate(`/workspace/${workspaceId}/create-website`)}
-                  className="flex items-center gap-2"
-                >
-                  <Pencil className="w-4 h-4" />
-                  Создать сайт
-                </Button>
-              )}
+
             </>
           )}
           {!username ? (
@@ -353,15 +320,17 @@ const Profile = () => {
           </div>
         </div>
         
-        {/* Секция управления сайтом */}
+        {/* Секция баланса */}
         <div className="w-full mt-6">
-          <WebsiteManager />
+          <h3 className="text-lg font-semibold mb-4">Баланс</h3>
+          <BalanceDisplay />
         </div>
         
-        <Button variant="default" className="mt-6" onClick={() => setIsLogoutOpen(true)}>
-          Выйти из аккаунта
-        </Button>
-        <LogoutDialog isOpen={isLogoutOpen} setIsOpen={setIsLogoutOpen} />
+
+        
+
+        
+
       </div>
     </main>
   );

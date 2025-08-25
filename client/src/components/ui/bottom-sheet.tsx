@@ -92,7 +92,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
         </div>
         
         {/* Разделитель после блока для свайпа с отступами как в быстром доступе */}
-        <div className="mt-6">
+        <div className="mt-6 mb-5">
           <Separator />
         </div>
         

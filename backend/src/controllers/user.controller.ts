@@ -80,10 +80,22 @@ export const getPublicUserController = asyncHandler(
     if (!username) {
       return res.status(400).json({ message: "username is required" });
     }
-    const user = await UserModel.findOne({ username: username.toLowerCase().trim() });
+    
+    let user;
+    
+    // Check if the parameter is a valid MongoDB ObjectId
+    if (username.match(/^[0-9a-fA-F]{24}$/)) {
+      // If it's a valid ObjectId, search by ID
+      user = await UserModel.findById(username);
+    } else {
+      // Otherwise, search by username
+      user = await UserModel.findOne({ username: username.toLowerCase().trim() });
+    }
+    
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
     return res.status(200).json({
       name: user.name,
       username: user.username,

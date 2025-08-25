@@ -44,14 +44,14 @@ const RecentProjects = () => {
           const avatarColor = getAvatarColor(name);
 
           return (
-            <Link
-              to={`/workspace/${workspaceId}/project/${project._id}`}
-              className="block"
+            <li
+              key={project._id}
+              role="listitem"
+              className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border-0 dark:border-0 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
             >
-              <li
-                key={project._id}
-                role="listitem"
-                className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border-0 dark:border-0 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
+              <Link
+                to={`/workspace/${workspaceId}/project/${project._id}`}
+                className="block w-full"
               >
                 {/* Project Emoji */}
                 <div className="flex-shrink-0">
@@ -72,9 +72,8 @@ const RecentProjects = () => {
                   </p>
                 </div>
 
-                {/* Creator Info */}
-                <div className="flex items-center gap-2 ml-auto">
-                  <span className="text-sm text-gray-500 dark:text-muted-foreground">Создатель:</span>
+                {/* Creator Avatar - moved to right side */}
+                <div className="ml-auto">
                   <Avatar className="h-9 w-9">
                     <AvatarImage
                       src={project.createdBy.profilePicture || ""}
@@ -85,8 +84,8 @@ const RecentProjects = () => {
                     </AvatarFallback>
                   </Avatar>
                 </div>
-              </li>
-            </Link>
+              </Link>
+            </li>
           );
         })}
       </ul>

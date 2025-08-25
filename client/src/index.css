@@ -711,6 +711,31 @@ em-emoji-picker {
     left: 100%;
   }
 
+  /* Стили для диалога онбординга в светлой теме */
+  .onboarding-option {
+    @apply border-border bg-card text-foreground;
+  }
+
+  .onboarding-option:hover {
+    @apply bg-accent/50 border-ring/50;
+  }
+
+  .onboarding-option.selected {
+    @apply border-ring bg-accent/20;
+  }
+
+  .onboarding-description {
+    @apply text-muted-foreground;
+  }
+
+  .onboarding-title {
+    @apply text-foreground;
+  }
+
+  .onboarding-empty-block {
+    @apply min-h-[80px] bg-muted/20 border border-border/30 rounded-lg;
+  }
+
   /* Стили для графика тренировок в темной теме */
   .dark .training-chart {
     @apply bg-card text-foreground;
@@ -728,6 +753,31 @@ em-emoji-picker {
 
   .dark .training-chart .recharts-tooltip {
     @apply bg-card border-border;
+  }
+
+  /* Стили для диалога онбординга в темной теме */
+  .dark .onboarding-option {
+    @apply border-border bg-card text-foreground;
+  }
+
+  .dark .onboarding-option:hover {
+    @apply bg-accent/50 border-ring/50;
+  }
+
+  .dark .onboarding-option.selected {
+    @apply border-ring bg-accent/20;
+  }
+
+  .dark .onboarding-description {
+    @apply text-muted-foreground;
+  }
+
+  .dark .onboarding-title {
+    @apply text-foreground;
+  }
+
+  .dark .onboarding-empty-block {
+    @apply min-h-[80px] bg-muted/20 border border-border/30 rounded-lg;
   }
 
 }

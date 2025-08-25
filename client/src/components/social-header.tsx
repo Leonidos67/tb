@@ -217,7 +217,7 @@ const SocialHeader = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Link to="/u/" className="flex items-center gap-0 sm:gap-1">
-          <Logo />
+          <Logo noLink />
           <span className="hidden sm:flex ml-1 sm:ml-2 items-center gap-1 sm:gap-2 self-center font-medium text-sm sm:text-base">T-Sync.</span>
           <span className="px-1 sm:px-2 py-0.5 rounded-full bg-foreground text-background text-xs font-semibold">beta</span>
         </Link>

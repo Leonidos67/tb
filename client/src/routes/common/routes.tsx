@@ -20,6 +20,7 @@ import UserProfile from "@/page/users/Profile";
 import SocialMainPage from "@/page/users/index";
 import PublicWebsitePage from "@/page/website/PublicWebsite";
 import AiAssistant from "@/page/ai/Assistant";
+import PaymentSuccess from "@/page/payment/PaymentSuccess";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_IN, element: <SignIn /> },
@@ -46,6 +47,7 @@ export const protectedRoutePaths = [
 
 export const baseRoutePaths = [
   { path: BASE_ROUTE.INVITE_URL, element: <InviteUser /> },
+  { path: BASE_ROUTE.PAYMENT_SUCCESS, element: <PaymentSuccess /> },
   { path: "/u/", element: <SocialMainPage /> },
   { path: "/u/users", element: <UsersListPage /> },
   { path: "/u/users/:username", element: <UserProfile /> },

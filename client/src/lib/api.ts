@@ -395,3 +395,75 @@ export const deleteWebsiteMutationFn = async (): Promise<{ message: string }> =>
   const response = await API.delete("/website/delete");
   return response.data;
 };
+
+//********* PAYMENT ****************
+//************* */
+
+export interface CreatePaymentPayload {
+  amount: number;
+  description: string;
+  currency?: string;
+}
+
+export interface PaymentResponse {
+  id: string;
+  status: string;
+  paid: boolean;
+  amount: {
+    value: string;
+    currency: string;
+  };
+  confirmation: {
+    type: string;
+    confirmation_url: string;
+  };
+  created_at: string;
+  description: string;
+}
+
+export const createPaymentMutationFn = async (
+  data: CreatePaymentPayload
+): Promise<PaymentResponse> => {
+  const response = await API.post("/payment/create", data);
+  return response.data.data; // Возвращаем data.data, так как backend оборачивает в { success: true, data: {...} }
+};
+
+export const getPaymentStatusQueryFn = async (
+  paymentId: string
+): Promise<PaymentResponse> => {
+  const response = await API.get(`/payment/status/${paymentId}`);
+  return response.data.data; // Возвращаем data.data, так как backend оборачивает в { success: true, data: {...} }
+};
+
+// Баланс
+export interface BalanceResponse {
+  balance: number;
+  currency: string;
+}
+
+export const getUserBalanceQueryFn = async (): Promise<BalanceResponse> => {
+  const response = await API.get("/payment/balance");
+  return response.data.data;
+};
+
+export const handleSuccessfulPaymentMutationFn = async (data: { paymentId: string; amount: number }): Promise<{ message: string; balance: number; currency: string }> => {
+  const response = await API.post("/payment/success", data);
+  return response.data.data;
+};
+
+// История платежей
+export interface PaymentHistoryResponse {
+  payments: Array<{
+    id: string;
+    amount: number;
+    status: 'succeeded' | 'pending' | 'canceled' | 'failed';
+    description: string;
+    createdAt: string;
+    currency: string;
+  }>;
+}
+
+export const getPaymentHistoryQueryFn = async (): Promise<PaymentHistoryResponse> => {
+  const response = await API.get("/payment/history");
+  return response.data.data;
+};

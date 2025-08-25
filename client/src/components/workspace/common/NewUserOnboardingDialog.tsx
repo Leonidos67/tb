@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogHeader,
@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
 import { useAuthContext } from "@/context/auth-provider";
+import { useTheme } from "@/context/theme-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { updateUserRoleMutationFn } from "@/lib/api";
+import { Check, Circle } from "lucide-react";
 
 interface NewUserOnboardingDialogProps {
   open: boolean;
@@ -21,32 +23,6 @@ interface NewUserOnboardingDialogProps {
 }
 
 const options = [
-  {
-    key: "coach",
-    title: "Я - Тренер",
-    description: "Уже имеется своя команда",
-  },
-  {
-    key: "athlete",
-    title: "Я - Спортсмен",
-    description: "У меня уже есть тренер",
-  },
-];
-
-const athleteInfo = (
-  <div className="mt-0 text-base text-gray-700">
-    Тренер должен прислать вам вступительную ссылку-приглашение
-  </div>
-);
-
-const coachOptions = [
-  { key: "1-20", label: "1 - 20" },
-  { key: "21-50", label: "21 - 50" },
-  { key: "50-200", label: "50 - 200" },
-  { key: "200+", label: "200+" },
-];
-
-const usageContextOptions = [
   {
     key: "team",
     title: "С моей командой",
@@ -59,16 +35,69 @@ const usageContextOptions = [
   },
 ];
 
+const coachOptions = [
+  { key: "1-10", label: "1 - 10" },
+  { key: "11-25", label: "11 - 25" },
+  { key: "26-50", label: "26 - 50" },
+  { key: "51-100", label: "51 - 100" },
+  { key: "101+", label: "101+" },
+];
+
+// Компонент выбора темы
+const ThemeSelector = ({ selectedTheme, onThemeSelect }: { selectedTheme: string; onThemeSelect: (theme: string) => void }) => {
+  return (
+    <div className="flex flex-row flex-nowrap items-start gap-3 overflow-x-auto pb-1">
+      {/* Светлая */}
+      <button
+        type="button"
+        onClick={() => onThemeSelect('light')}
+        className="group relative rounded-xl transition-colors text-left w-[160px]"
+      >
+        <div className="relative overflow-hidden rounded-xl bg-white border border-border" style={{ width: '160px', height: '80px' }}>
+          <div className="absolute top-2 right-2 inline-flex items-center justify-center rounded-full bg-background/80 backdrop-blur p-1.5 shadow-sm">
+            {selectedTheme === 'light' ? <Check className="h-3 w-3 text-primary" /> : <Circle className="h-3 w-3 text-muted-foreground" />}
+          </div>
+        </div>
+        <div className="px-2 py-2 text-center">
+          <p className="text-sm font-medium">Светлая</p>
+        </div>
+      </button>
+
+      {/* Темная */}
+      <button
+        type="button"
+        onClick={() => onThemeSelect('dark')}
+        className="group relative rounded-xl transition-colors text-left w-[160px]"
+      >
+        <div className="relative overflow-hidden rounded-xl bg-black border border-border" style={{ width: '160px', height: '80px' }}>
+          <div className="absolute top-2 right-2 inline-flex items-center justify-center rounded-full bg-background/80 backdrop-blur p-1.5 shadow-sm">
+            {selectedTheme === 'dark' ? <Check className="h-3 w-3 text-primary" /> : <Circle className="h-3 w-3 text-muted-foreground" />}
+          </div>
+        </div>
+        <div className="px-2 py-2 text-center">
+          <p className="text-sm font-medium">Темная</p>
+        </div>
+      </button>
+    </div>
+  );
+};
+
 
 export default function NewUserOnboardingDialog({ open, onClose, onFinish }: NewUserOnboardingDialogProps) {
   const [step, setStep] = useState<number>(1);
   const [selected, setSelected] = useState<string>("");
   const [coachCount, setCoachCount] = useState<string>("");
   const [usageContext, setUsageContext] = useState<string>("");
+  const [selectedTheme, setSelectedTheme] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState<string>("");
   const { refetchAuth } = useAuthContext();
+  const { theme: currentTheme, setTheme } = useTheme();
   const queryClient = useQueryClient();
+
+  // Инициализируем выбранную тему текущей активной темой
+  useEffect(() => {
+    setSelectedTheme(currentTheme);
+  }, [currentTheme]);
 
   // Мутация для обновления роли пользователя
   const updateUserRoleMutation = useMutation({
@@ -92,12 +121,18 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
   });
 
   const handleRoleSelect = (key: string) => {
-    setRole(key);
+    setUsageContext(key);
     setSelected(key);
-    if (key === "coach") {
+    if (key === "team") {
       setStep(2);
-    } else if (key === "athlete") {
-      setStep(2);
+    } else if (key === "solo") {
+      setStep(3);
+    }
+  };
+
+  const handleContinue = () => {
+    if (usageContext === "team") {
+      setStep(3);
     }
   };
 
@@ -105,16 +140,16 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
     setLoading(true);
     try {
       // Обновляем роль пользователя на сервере
-      if (role === "coach") {
+      if (usageContext === "team") {
         await updateUserRoleMutation.mutateAsync("coach");
-      } else if (role === "athlete") {
+      } else if (usageContext === "solo") {
         await updateUserRoleMutation.mutateAsync("athlete");
       }
       
       if (onFinish) {
-        if (role === "coach") {
-          await onFinish(usageContext || coachCount || "coach");
-        } else if (role === "athlete") {
+        if (usageContext === "team") {
+          await onFinish(coachCount || "coach");
+        } else if (usageContext === "solo") {
           await onFinish("athlete");
         }
       }
@@ -129,13 +164,26 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
   const handleBack = () => {
     if (step === 2) {
       setStep(1);
-      setRole("");
+      setUsageContext("");
       setSelected("");
       setCoachCount("");
     } else if (step === 3) {
-      setStep(2);
-      setUsageContext("");
+      if (usageContext === "team") {
+        setStep(2);
+      } else {
+        setStep(1);
+        setUsageContext("");
+        setSelected("");
+      }
+    } else if (step === 4) {
+      setStep(3);
     }
+  };
+
+  const handleThemeSelect = (theme: string) => {
+    setSelectedTheme(theme);
+    // Сразу применяем тему при выборе
+    setTheme(theme as 'light' | 'dark');
   };
 
   return (
@@ -160,8 +208,8 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
             {step === 1 && (
               <>
                 <DialogHeader>
-                  <DialogTitle>Как вы планируете использовать T-Sync?</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="onboarding-title">Как вы будете использовать сервис?</DialogTitle>
+                  <DialogDescription className="onboarding-description">
                     Эти ответы помогут вам персонализировать свою работу
                   </DialogDescription>
                 </DialogHeader>
@@ -169,22 +217,22 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
                   {options.map(option => (
                     <button
                       key={option.key}
-                      className={`border rounded px-4 py-2 text-left transition-colors ${selected === option.key ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}
+                      className={`onboarding-option border rounded px-4 py-2 text-left transition-colors ${selected === option.key ? 'selected border-ring bg-accent' : 'border-border hover:bg-accent'}`}
                       onClick={() => handleRoleSelect(option.key)}
                       disabled={loading}
                     >
                       <div className="font-semibold">{option.title}</div>
-                      <div className="text-sm text-gray-500">{option.description}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
                     </button>
                   ))}
                 </div>
               </>
             )}
-            {step === 2 && role === "coach" && (
+            {step === 2 && usageContext === "team" && (
               <>
                 <DialogHeader>
-                  <DialogTitle>Какое количество спортсменов вы тренируете?</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="onboarding-title">Какое количество спортсменов вы тренируете?</DialogTitle>
+                  <DialogDescription className="onboarding-description">
                     Эти ответы помогут вам персонализировать свою работу
                   </DialogDescription>
                 </DialogHeader>
@@ -192,7 +240,7 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
                   {coachOptions.map(opt => (
                     <button
                       key={opt.key}
-                      className={`border rounded px-4 py-2 text-left transition-colors ${coachCount === opt.key ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}
+                      className={`onboarding-option border rounded px-4 py-2 text-left transition-colors ${coachCount === opt.key ? 'selected border-ring bg-accent' : 'border-border hover:bg-accent'}`}
                       onClick={() => setCoachCount(opt.key)}
                       disabled={loading}
                     >
@@ -204,55 +252,73 @@ export default function NewUserOnboardingDialog({ open, onClose, onFinish }: New
                   <Button variant="outline" onClick={handleBack} disabled={loading}>
                     Назад
                   </Button>
-                  <Button onClick={() => setStep(3)} disabled={!coachCount || loading}>
+                  <Button onClick={handleContinue} disabled={!coachCount || loading}>
                     Продолжить
                   </Button>
                 </DialogFooter>
               </>
             )}
-            {step === 2 && role === "athlete" && (
+            {step === 3 && usageContext === "team" && (
               <>
                 <DialogHeader>
-                  <DialogTitle>Вам нужно получить приглашение</DialogTitle>
+                  <DialogTitle className="onboarding-title">Выберите тему оформления</DialogTitle>
+                  <DialogDescription className="onboarding-description">
+                    Выберите, как будет выглядеть T-Sync
+                  </DialogDescription>
                 </DialogHeader>
-                {athleteInfo}
+                <ThemeSelector 
+                  selectedTheme={selectedTheme} 
+                  onThemeSelect={handleThemeSelect} 
+                />
                 <DialogFooter>
                   <Button variant="outline" onClick={handleBack} disabled={loading}>
                     Назад
                   </Button>
-                  <Button onClick={handleFinish} disabled={loading}>
+                  <Button onClick={() => setStep(4)} disabled={loading}>
                     Продолжить
                   </Button>
                 </DialogFooter>
               </>
             )}
-            {step === 3 && role === "coach" && (
+            {step === 4 && usageContext === "team" && (
               <>
                 <DialogHeader>
-                  <DialogTitle>Как вы будете использовать сервис?</DialogTitle>
-                  <DialogDescription>
-                    Эти ответы помогут вам персонализировать свою работу
+                  <DialogTitle className="onboarding-title">Отлично!</DialogTitle>
+                  <DialogDescription className="onboarding-description">
+                    Ваш профиль настроен для работы с командой
                   </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-3 mt-4">
-                  {usageContextOptions.map(option => (
-                    <button
-                      key={option.key}
-                      className={`border rounded px-4 py-2 text-left transition-colors ${usageContext === option.key ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}
-                      onClick={() => setUsageContext(option.key)}
-                      disabled={loading}
-                    >
-                      <div className="font-semibold">{option.title}</div>
-                      <div className="text-sm text-gray-500">{option.description}</div>
-                    </button>
-                  ))}
+                <div className="mt-6 onboarding-empty-block">
+                  {/* Пустой блок */}
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={handleBack} disabled={loading}>
                     Назад
                   </Button>
-                  <Button onClick={handleFinish} disabled={!usageContext || loading}> 
-                    Продолжить
+                  <Button onClick={handleFinish} disabled={loading}>
+                    Завершить
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
+            {step === 3 && usageContext === "solo" && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="onboarding-title">Выберите тему оформления</DialogTitle>
+                  <DialogDescription className="onboarding-description">
+                    Выберите, как будет выглядеть T-Sync
+                  </DialogDescription>
+                </DialogHeader>
+                <ThemeSelector 
+                  selectedTheme={selectedTheme} 
+                  onThemeSelect={handleThemeSelect} 
+                />
+                <DialogFooter>
+                  <Button variant="outline" onClick={handleBack} disabled={loading}>
+                    Назад
+                  </Button>
+                  <Button onClick={handleFinish} disabled={loading}>
+                    Завершить
                   </Button>
                 </DialogFooter>
               </>

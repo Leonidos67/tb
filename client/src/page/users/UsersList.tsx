@@ -26,7 +26,7 @@ const UsersListPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/user/all")
+    fetch("/api/user/public/all")
       .then((res) => res.json())
       .then((data) => {
         setUsers(data.users || []);

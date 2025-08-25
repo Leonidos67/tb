@@ -6,16 +6,19 @@ import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/api/use-auth";
 import { getFollowersQueryFn, followUserMutationFn, unfollowUserMutationFn } from "@/lib/api";
-import { getUserPostsQueryFn, createUserPostMutationFn, deleteUserPostMutationFn, likeUserPostMutationFn } from "@/lib/api";
+import { getUserPostsQueryFn, deleteUserPostMutationFn, likeUserPostMutationFn } from "@/lib/api";
 import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
 import SocialHeader, { SocialSidebarMenu } from "@/components/social-header";
 import { getFollowingQueryFn } from "@/lib/api";
 import { EllipsisVertical, Globe } from "lucide-react";
-import WebsiteManager from "@/components/website/website-manager";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale/ru";
+import { PaymentButton } from "@/components/payment/payment-button";
+import { SubscriptionInfo } from "@/components/payment/subscription-info";
+import { BalanceDisplay } from "@/components/payment/balance-display";
+import { PaymentHistory } from "@/components/payment/payment-history";
 
 interface PublicUser {
   name: string;
@@ -57,9 +60,6 @@ const UserProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [postText, setPostText] = useState("");
-  const [postImage, setPostImage] = useState<string | null>(null);
-  const [postLoading, setPostLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -145,31 +145,7 @@ const UserProfile = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPostImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
 
-  const handleCreatePost = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!postText.trim()) return;
-    setPostLoading(true);
-    try {
-      await createUserPostMutationFn(username!, { text: postText, image: postImage });
-      setPostText("");
-      setPostImage(null);
-      // Обновить ленту
-      const data = await getUserPostsQueryFn(username!);
-      setPosts(data.posts || []);
-    } finally {
-      setPostLoading(false);
-    }
-  };
 
   const userId = currentUser?.user?._id;
 
@@ -257,24 +233,40 @@ const UserProfile = () => {
                   <>
                     <Button className="mt-4 text-sm sm:text-base">Редактировать профиль</Button>
                     
-                    {/* Секция управления сайтом */}
-                    <div className="w-full mt-4 sm:mt-6">
-                      <WebsiteManager />
+                    {/* Секция баланса */}
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold mb-4">Баланс</h3>
+                      <BalanceDisplay />
                     </div>
                     
-                    <form onSubmit={handleCreatePost} className="w-full flex flex-col gap-2 mt-4 sm:mt-6 p-3 sm:p-4 border rounded bg-gray-50">
-                      <textarea
-                        className="border rounded p-2 sm:p-3 resize-none text-sm sm:text-base"
-                        rows={3}
-                        placeholder="Что нового?"
-                        value={postText}
-                        onChange={e => setPostText(e.target.value)}
-                        disabled={postLoading}
+                    {/* Информация о подписке */}
+                    <div className="mt-4">
+                      <SubscriptionInfo 
+                        isPremium={false} // Здесь можно добавить логику проверки подписки
+                        className="mb-4"
                       />
-                      <input type="file" accept="image/*" onChange={handleImageChange} disabled={postLoading} className="text-sm" />
-                      {postImage && <img src={postImage} alt="preview" className="max-h-32 sm:max-h-40 object-contain rounded" />}
-                      <Button type="submit" disabled={postLoading || !postText.trim()} className="self-end text-sm sm:text-base">Опубликовать</Button>
-                    </form>
+                      
+                      {/* Кнопки оплаты */}
+                      <div className="space-y-2">
+                        <PaymentButton 
+                          amount={1}
+                          description="Тестовое пополнение баланса на 1 ₽"
+                          className="w-full text-sm sm:text-base bg-green-600 hover:bg-green-700"
+                        />
+                        <PaymentButton 
+                          amount={100}
+                          description="Подписка на T-Sync Premium"
+                          className="w-full text-sm sm:text-base"
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* История платежей */}
+                    <div className="mt-4">
+                      <PaymentHistory />
+                    </div>
+                    
+
                   </>
                 )}
                 {currentUser?.user && currentUser.user.username !== user.username && (

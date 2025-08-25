@@ -21,6 +21,7 @@ import projectRoutes from "./routes/project.route";
 import taskRoutes from "./routes/task.route";
 import publicUserRoutes from "./routes/public-user.route";
 import aiRoutes from "./routes/ai.route";
+import paymentRoutes from "./routes/payment.route";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -74,6 +75,7 @@ app.use(`${BASE_PATH}/member`, isAuthenticated, memberRoutes);
 app.use(`${BASE_PATH}/project`, isAuthenticated, projectRoutes);
 app.use(`${BASE_PATH}/task`, isAuthenticated, taskRoutes);
 app.use(`${BASE_PATH}/v1/ai`, aiRoutes);
+app.use(`${BASE_PATH}/payment`, paymentRoutes);
 
 app.use(errorHandler);
 
