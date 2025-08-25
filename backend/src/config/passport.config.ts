@@ -1,44 +1,26 @@
 import passport from "passport";
-import { Request } from "express";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as LocalStrategy } from "passport-local";
-
 import { config } from "./app.config";
-import { NotFoundException } from "../utils/appError";
-import { ProviderEnum } from "../enums/account-provider.enum";
-import {
-  loginOrCreateAccountService,
-  verifyUserService,
-} from "../services/auth.service";
+import { findUserByEmail, findUserById } from "../services/user.service";
+import { comparePassword } from "../utils/bcrypt";
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: config.GOOGLE_CLIENT_ID,
-      clientSecret: config.GOOGLE_CLIENT_SECRET,
-      callbackURL: config.GOOGLE_CALLBACK_URL,
-      scope: ["profile", "email"],
-      passReqToCallback: true,
+      clientID: config.GOOGLE_CLIENT_ID!,
+      clientSecret: config.GOOGLE_CLIENT_SECRET!,
+      callbackURL: config.GOOGLE_CALLBACK_URL!,
     },
-    async (req: Request, accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
-        const { email, sub: googleId, picture } = profile._json;
-        console.log(profile, "profile");
-        console.log(googleId, "googleId");
-        if (!googleId) {
-          throw new NotFoundException("Google ID (sub) is missing");
+        const user = await findUserByEmail(profile.emails![0].value);
+        if (user) {
+          return done(null, user);
         }
-
-        const { user } = await loginOrCreateAccountService({
-          provider: ProviderEnum.GOOGLE,
-          displayName: profile.displayName,
-          providerId: googleId,
-          picture: picture,
-          email: email,
-        });
-        done(null, user);
+        return done(null, false);
       } catch (error) {
-        done(error, false);
+        return done(error);
       }
     }
   )
@@ -49,18 +31,38 @@ passport.use(
     {
       usernameField: "email",
       passwordField: "password",
-      session: true,
     },
     async (email, password, done) => {
       try {
-        const user = await verifyUserService({ email, password });
+        const user = await findUserByEmail(email);
+        if (!user) {
+          return done(null, false, { message: "Пользователь не найден" });
+        }
+
+        const isPasswordValid = await comparePassword(password, user.password!);
+        if (!isPasswordValid) {
+          return done(null, false, { message: "Неверный пароль" });
+        }
+
         return done(null, user);
-      } catch (error: any) {
-        return done(error, false, { message: error?.message });
+      } catch (error) {
+        return done(error);
       }
     }
   )
 );
 
-passport.serializeUser((user: any, done) => done(null, user));
-passport.deserializeUser((user: any, done) => done(null, user));
+// Serialize user for JWT (we don't need to store in session)
+passport.serializeUser((user: any, done) => {
+  done(null, user._id);
+});
+
+// Deserialize user for JWT (we don't need to retrieve from session)
+passport.deserializeUser(async (id: string, done) => {
+  try {
+    const user = await findUserById(id);
+    done(null, user);
+  } catch (error) {
+    done(error);
+  }
+});
