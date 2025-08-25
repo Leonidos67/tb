@@ -13,7 +13,7 @@ import { TaskType } from "@/types/api.type";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { Loader, Info, Eye } from "lucide-react";
+import { Loader, Eye } from "lucide-react";
 import { useState } from "react";
 import ViewTaskDialog from "@/components/workspace/task/view-task-dialog";
 

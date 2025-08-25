@@ -11,7 +11,6 @@ interface PaymentButtonProps {
   className?: string;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
-  onSuccess?: () => void;
   onError?: () => void;
 }
 
@@ -22,7 +21,6 @@ export const PaymentButton = ({
   className,
   variant = "default",
   size = "default",
-  onSuccess,
   onError
 }: PaymentButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);

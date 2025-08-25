@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/context/auth-provider";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 
-import useWorkspaceId from "@/hooks/use-workspace-id";
+// import useWorkspaceId from "@/hooks/use-workspace-id";
 import { BalanceDisplay } from "@/components/payment/balance-display";
 
 const PROFILE_BASE_URL = window.location.origin + "/u/users/";
@@ -29,8 +28,7 @@ const Profile = () => {
   const [showInfoOpen, setShowInfoOpen] = useState(false);
   const [roleLoading, setRoleLoading] = useState(false);
   const [currentRole, setCurrentRole] = useState<"coach" | "athlete" | null>(user?.userRole ?? null);
-  const navigate = useNavigate();
-  const workspaceId = useWorkspaceId();
+  
 
   if (!user) return null;
 

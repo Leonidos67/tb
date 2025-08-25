@@ -313,21 +313,4 @@ export type WebsiteType = {
   updatedAt: string;
 };
 
-export type CreateWebsiteType = {
-  title: string;
-  description: string;
-  about: string;
-  profileImage?: string | null;
-  gallery?: string[];
-};
-
-export type CreateWebsiteResponseType = {
-  message: string;
-  website: WebsiteType;
-  url: string;
-};
-
-export type GetWebsiteByUsernameResponseType = {
-  message: string;
-  website: WebsiteType;
-};
+// Website types removed

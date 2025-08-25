@@ -143,7 +143,7 @@ function Dock() {
   );
 }
 
-const FEEDBACK_WIDTH = 360;
+// const FEEDBACK_WIDTH = 360; // unused
 const FEEDBACK_HEIGHT = 200;
 
 function Feedback({
@@ -246,11 +246,11 @@ function Feedback({
   );
 }
 
-const LOGO_SPRING = {
-  type: "spring",
-  stiffness: 350 / SPEED,
-  damping: 35,
-} as const;
+// const LOGO_SPRING = {
+//   type: "spring",
+//   stiffness: 350 / SPEED,
+//   damping: 35,
+// } as const;
 
 function Kbd({ children, className }: { children: string; className?: string }) {
   return (

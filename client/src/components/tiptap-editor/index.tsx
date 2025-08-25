@@ -20,8 +20,7 @@ import {
   Image as ImageIcon,
   Video,
   Link as LinkIcon,
-  Palette,
-  Type
+  Palette
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

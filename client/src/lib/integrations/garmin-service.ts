@@ -2,8 +2,7 @@ import {
   GarminActivity,
   GarminUser,
   GarminConnectionStatus,
-  SyncResult,
-  IntegrationError
+  SyncResult
 } from "@/types/integrations.type";
 
 // Конфигурация для демо-режима (без реальных API ключей)
@@ -100,7 +99,7 @@ class GarminService {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
-  public async handleAuthCallback(code: string, state: string): Promise<boolean> {
+  public async handleAuthCallback(_code: string, _state: string): Promise<boolean> {
     try {
       // Имитация обмена кода на токены
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -300,7 +299,7 @@ class GarminService {
     localStorage.removeItem('garmin_last_sync');
   }
 
-  public async downloadFITFile(activityId: string): Promise<ArrayBuffer | null> {
+  public async downloadFITFile(_activityId: string): Promise<ArrayBuffer | null> {
     try {
       const token = await this.getValidToken();
       if (!token) return null;

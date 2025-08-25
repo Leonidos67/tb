@@ -48,24 +48,7 @@ export const BalanceDisplay = ({ className, onBalanceUpdate }: BalanceDisplayPro
     }
   }, []);
 
-  const handlePaymentSuccess = () => {
-    // Обновляем баланс после успешной оплаты
-    fetchBalance();
-    setShowPayment(false);
-    toast({
-      title: "Успешно",
-      description: "Баланс пополнен!",
-      variant: "success",
-    });
-  };
-
-  const handlePaymentError = () => {
-    toast({
-      title: "Ошибка",
-      description: "Не удалось пополнить баланс",
-      variant: "destructive",
-    });
-  };
+  // Уведомления и обновление баланса обрабатываются после возврата с оплаты
 
   if (loading) {
     return (
@@ -127,8 +110,6 @@ export const BalanceDisplay = ({ className, onBalanceUpdate }: BalanceDisplayPro
                 amount={1}
                 description="Тестовое пополнение баланса на 1 ₽"
                 className="w-full bg-green-600 hover:bg-green-700"
-                onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
               />
               {[1, 2, 1000, 2000].map((amount) => (
                 <PaymentButton
@@ -136,8 +117,6 @@ export const BalanceDisplay = ({ className, onBalanceUpdate }: BalanceDisplayPro
                   amount={amount}
                   description={`Пополнение баланса на ${amount} ₽`}
                   className="w-full"
-                  onSuccess={handlePaymentSuccess}
-                  onError={handlePaymentError}
                 />
               ))}
             </div>

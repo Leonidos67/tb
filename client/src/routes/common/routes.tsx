@@ -12,13 +12,11 @@ import Tasks from "@/page/workspace/Tasks";
 import Profile from "@/page/workspace/Profile";
 import Usage from "@/page/workspace/Usage";
 import CompletedTasks from "@/page/workspace/CompletedTasks";
-import CreateWebsite from "@/page/website/CreateWebsite";
 import { AUTH_ROUTES, BASE_ROUTE, PROTECTED_ROUTES } from "./routePaths";
 import InviteUser from "@/page/invite/InviteUser";
 import UsersListPage from "@/page/users/UsersList";
 import UserProfile from "@/page/users/Profile";
 import SocialMainPage from "@/page/users/index";
-import PublicWebsitePage from "@/page/website/PublicWebsite";
 import AiAssistant from "@/page/ai/Assistant";
 import PaymentSuccess from "@/page/payment/PaymentSuccess";
 
@@ -41,7 +39,7 @@ export const protectedRoutePaths = [
   { path: PROTECTED_ROUTES.REQUISITES, element: <Profile /> },
   { path: PROTECTED_ROUTES.USAGE, element: <Usage /> },
   { path: PROTECTED_ROUTES.COMPLETED, element: <CompletedTasks /> },
-  { path: PROTECTED_ROUTES.CREATE_WEBSITE, element: <CreateWebsite /> },
+  // removed CreateWebsite route
   { path: PROTECTED_ROUTES.AI, element: <AiAssistant /> },
 ];
 
@@ -51,5 +49,5 @@ export const baseRoutePaths = [
   { path: "/u/", element: <SocialMainPage /> },
   { path: "/u/users", element: <UsersListPage /> },
   { path: "/u/users/:username", element: <UserProfile /> },
-  { path: "/web/:username", element: <PublicWebsitePage /> },
+  // removed public website route
 ];

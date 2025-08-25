@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { Variants } from "motion/react";
+import type { Variants, Transition } from "motion/react";
 import { motion, useAnimation } from "motion/react";
 
 interface AnimatedDeleteProps {
@@ -14,7 +14,7 @@ const lidVariants: Variants = {
   animate: { y: -1.1 },
 };
 
-const springTransition = {
+const springTransition: Transition = {
   type: "spring",
   stiffness: 500,
   damping: 30,

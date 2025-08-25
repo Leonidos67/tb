@@ -13,6 +13,8 @@ type BottomSheetProps = {
   onOpenChange: (open: boolean) => void;
   children?: React.ReactNode;
   className?: string;
+  title?: string;
+  description?: string;
   swipeToClose?: boolean;
   swipeCloseThreshold?: number; // pixels
 };

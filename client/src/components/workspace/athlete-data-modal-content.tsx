@@ -12,7 +12,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
+  
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -29,8 +29,6 @@ export function AthleteDataModalContent() {
   const workspaceId = useWorkspaceId();
   const { user } = useAuthContext();
 
-  const [activeWorkspace, setActiveWorkspace] = React.useState<WorkspaceType>();
-
   const { data, isPending } = useQuery({
     queryKey: ["userWorkspaces"],
     queryFn: getAllWorkspacesUserIsMemberQueryFn,
@@ -41,15 +39,7 @@ export function AthleteDataModalContent() {
   const workspaces = data?.workspaces;
 
   React.useEffect(() => {
-    if (workspaces?.length) {
-      const workspace = workspaceId
-        ? workspaces.find((ws) => ws._id === workspaceId)
-        : workspaces[0];
-
-      if (workspace) {
-        setActiveWorkspace(workspace);
-      }
-    }
+    // no-op: убрали локальное состояние активной зоны
   }, [workspaceId, workspaces]);
 
   const onSelect = (workspace: WorkspaceType) => {
@@ -60,7 +50,6 @@ export function AthleteDataModalContent() {
       });
       return;
     }
-    setActiveWorkspace(workspace);
     navigate(`/workspace/${workspace._id}`);
   };
 

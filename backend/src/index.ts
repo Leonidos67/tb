@@ -79,7 +79,8 @@ app.use(`${BASE_PATH}/payment`, paymentRoutes);
 
 app.use(errorHandler);
 
-app.listen(config.PORT, async () => {
-  console.log(`Server listening on port ${config.PORT} in ${config.NODE_ENV}`);
+const port = Number(config.PORT) || 5000;
+app.listen(port, "0.0.0.0", async () => {
+  console.log(`Server listening on port ${port} in ${config.NODE_ENV}`);
   await connectDatabase();
 });
