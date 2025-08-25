@@ -33,7 +33,15 @@ export const getMemberRoleInWorkspace = async (
 
   const roleName = member.role?.name;
 
-  return { role: roleName };
+  // Ensure role is a valid role type
+  if (!roleName || !Object.values(Roles).includes(roleName as any)) {
+    throw new UnauthorizedException(
+      "Invalid role in workspace",
+      ErrorCodeEnum.ACCESS_UNAUTHORIZED
+    );
+  }
+
+  return { role: roleName as keyof typeof Roles };
 };
 
 export const joinWorkspaceByInviteService = async (
