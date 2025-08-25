@@ -3,22 +3,36 @@ import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { config } from "../config/app.config";
 import { registerSchema } from "../validation/auth.validation";
 import { HTTPSTATUS } from "../config/http.config";
-import { registerUserService, updateUserRoleService } from "../services/auth.service";
+import { registerUserService, updateUserRoleService, createOrUpdateGoogleUser } from "../services/auth.service";
 import passport from "passport";
+import jwt from "jsonwebtoken";
 
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
-    const currentWorkspace = req.user?.currentWorkspace;
+    try {
+      // Create or update user from Google profile
+      const { user, workspaceId } = await createOrUpdateGoogleUser(req.user as any);
+      
+      // Generate JWT token for Google OAuth
+      if (!config.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not configured");
+      }
 
-    if (!currentWorkspace) {
+      const token = jwt.sign(
+        { userId: (user as any)._id.toString() },
+        config.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      return res.redirect(
+        `${config.FRONTEND_ORIGIN}/workspace/${workspaceId}?token=${token}`
+      );
+    } catch (error) {
+      console.error("Google OAuth error:", error);
       return res.redirect(
         `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`
       );
     }
-
-    return res.redirect(
-      `${config.FRONTEND_ORIGIN}/workspace/${currentWorkspace}`
-    );
   }
 );
 
@@ -28,10 +42,24 @@ export const registerUserController = asyncHandler(
       ...req.body,
     });
 
-    await registerUserService(body);
+    const { userId, workspaceId } = await registerUserService(body);
+
+    // Generate JWT token
+    if (!config.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not configured");
+    }
+
+    const token = jwt.sign(
+      { userId: userId.toString() },
+      config.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
 
     return res.status(HTTPSTATUS.CREATED).json({
       message: "Пользователь успешно создан",
+      token,
+      userId,
+      workspaceId,
     });
   }
 );
@@ -55,15 +83,21 @@ export const loginController = asyncHandler(
           });
         }
 
-        req.logIn(user, (err) => {
-          if (err) {
-            return next(err);
-          }
+        // Generate JWT token
+        if (!config.JWT_SECRET) {
+          return next(new Error("JWT_SECRET is not configured"));
+        }
 
-          return res.status(HTTPSTATUS.OK).json({
-            message: "Успешно вошел в систему",
-            user,
-          });
+        const token = jwt.sign(
+          { userId: user._id.toString() },
+          config.JWT_SECRET,
+          { expiresIn: '24h' }
+        );
+
+        return res.status(HTTPSTATUS.OK).json({
+          message: "Успешно вошел в систему",
+          user,
+          token,
         });
       }
     )(req, res, next);
@@ -72,15 +106,7 @@ export const loginController = asyncHandler(
 
 export const logOutController = asyncHandler(
   async (req: Request, res: Response) => {
-    req.logout((err) => {
-      if (err) {
-        console.error("Ошибка выхода из системы:", err);
-        return res
-          .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
-          .json({ error: "Не удалось выйти из системы" });
-      }
-    });
-
+    // With JWT, logout is handled client-side by removing the token
     return res
       .status(HTTPSTATUS.OK)
       .json({ message: "Успешно вышел из системы" });
