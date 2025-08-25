@@ -1,15 +1,30 @@
-import { DashboardSkeleton } from "@/components/skeleton-loaders/dashboard-skeleton";
-import useAuth from "@/hooks/api/use-auth";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuthContext } from "@/context/auth-provider";
 
-const ProtectedRoute = () => {
-  const { data: authData, isLoading } = useAuth();
-  const user = authData?.user;
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { isAuthenticated, isLoading } = useAuthContext();
+  const location = useLocation();
 
   if (isLoading) {
-    return <DashboardSkeleton />;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4">Загрузка...</p>
+        </div>
+      </div>
+    );
   }
-  return user ? <Outlet /> : <Navigate to="/" replace />;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/sign-in" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
