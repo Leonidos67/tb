@@ -3,35 +3,30 @@ import passport from "passport";
 import { config } from "../config/app.config";
 import {
   googleLoginCallback,
+  registerUserController,
   loginController,
   logOutController,
-  registerUserController,
   updateUserRoleController,
 } from "../controllers/auth.controller";
-import isAuthenticated from "../middlewares/isAuthenticated.middleware";
 
-const failedUrl = `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`;
+const router = Router();
 
-const authRoutes = Router();
-
-authRoutes.post("/register", registerUserController);
-authRoutes.post("/login", loginController);
-authRoutes.post("/logout", logOutController);
-authRoutes.put("/role", isAuthenticated, updateUserRoleController);
-
-authRoutes.get(
+// Google OAuth routes
+router.get(
   "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-authRoutes.get(
+router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: failedUrl,
-  }),
+  passport.authenticate("google", { failureRedirect: `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure` }),
   googleLoginCallback
 );
 
-export default authRoutes;
+// Local authentication routes
+router.post("/register", registerUserController);
+router.post("/login", loginController);
+router.post("/logout", logOutController);
+router.put("/role", updateUserRoleController);
+
+export default router;
