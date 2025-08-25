@@ -5,13 +5,18 @@ import {
 } from "@/constant";
 
 export type loginType = { email: string; password: string };
-export type LoginResponseType = {
+export interface LoginResponseType {
   message: string;
-  user: {
-    _id: string;
-    currentWorkspace: string;
-  };
-};
+  user: UserType;
+  token: string;
+}
+
+export interface RegisterResponseType {
+  message: string;
+  token: string;
+  userId: string;
+  workspaceId: string;
+}
 
 export type registerType = {
   name: string;
