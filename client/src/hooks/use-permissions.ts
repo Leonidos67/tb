@@ -9,14 +9,20 @@ const usePermissions = (
   const [permissions, setPermissions] = useState<PermissionType[]>([]);
 
   useEffect(() => {
-    if (user && workspace) {
-      const member = workspace.members.find(
-        (member) => member.userId === user._id
-      );
-      if (member) {
-        setPermissions(member.role.permissions || []);
-      }
+    if (!user || !workspace) {
+      setPermissions([]);
+      return;
     }
+
+    const member = workspace.members?.find(
+      (member) => member.userId === user._id
+    );
+
+    const perms = (member && member.role && Array.isArray(member.role.permissions))
+      ? (member.role.permissions as PermissionType[])
+      : [];
+
+    setPermissions(perms);
   }, [user, workspace]);
 
   return useMemo(() => permissions, [permissions]);

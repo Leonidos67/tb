@@ -45,11 +45,11 @@ const RecentProjects = () => {
 
           return (
             <Link
+              key={project._id}
               to={`/workspace/${workspaceId}/project/${project._id}`}
               className="block"
             >
               <li
-                key={project._id}
                 role="listitem"
                 className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-card border-0 dark:border-0 hover:bg-gray-50 dark:hover:bg-accent/50 transition-colors duration-200"
               >

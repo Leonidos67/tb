@@ -1,5 +1,5 @@
 import { ErrorCodeEnum } from "../enums/error-code.enum";
-import { Roles } from "../enums/role.enum";
+import { Roles, RoleType } from "../enums/role.enum";
 import MemberModel from "../models/member.model";
 import RoleModel from "../models/roles-permission.model";
 import WorkspaceModel from "../models/workspace.model";
@@ -31,7 +31,12 @@ export const getMemberRoleInWorkspace = async (
     );
   }
 
-  const roleName = member.role?.name;
+  let roleName = member.role?.name as RoleType | undefined;
+
+  // Fallback: если у участника не установлена роль или значение невалидно, даём роль MEMBER
+  if (!roleName || !Object.prototype.hasOwnProperty.call(Roles, roleName)) {
+    roleName = Roles.MEMBER;
+  }
 
   return { role: roleName };
 };
